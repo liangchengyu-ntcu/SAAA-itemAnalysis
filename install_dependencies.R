@@ -6,7 +6,7 @@
 # 注意：正常啟動 app.R 不會安裝套件，只有本維護腳本會改動 R library。
 # =============================================================================
 
-if (dir.exists(".Rlib")) {
+if (dir.exists(".Rlib") && length(list.files(".Rlib")) > 0L) {
   .libPaths(c(".Rlib", .libPaths()))
 }
 

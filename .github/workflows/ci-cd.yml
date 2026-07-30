@@ -21,14 +21,12 @@ jobs:
           r-version: '4.4.0'
           use-public-rspm: true
 
-      - name: Install Linux System Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libgmp-dev libmpfr-dev
-
-      - name: Install R Package Dependencies
-        run: |
-          Rscript -e "install.packages(c('bslib', 'data.table', 'future', 'openxlsx', 'promises', 'Rmpfr', 'shiny', 'shinybusy', 'writexl', 'zip', 'rsconnect'), repos = 'https://cloud.r-project.org')"
+      - name: Install R Dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::shinybusy
+            any::rsconnect
 
       - name: Run Smoke Test
         run: |
@@ -54,14 +52,12 @@ jobs:
           r-version: '4.4.0'
           use-public-rspm: true
 
-      - name: Install Linux System Dependencies
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libgmp-dev libmpfr-dev
-
-      - name: Install R Package Dependencies
-        run: |
-          Rscript -e "install.packages(c('bslib', 'data.table', 'future', 'openxlsx', 'promises', 'Rmpfr', 'shiny', 'shinybusy', 'writexl', 'zip', 'rsconnect'), repos = 'https://cloud.r-project.org')"
+      - name: Install R Dependencies
+        uses: r-lib/actions/setup-r-dependencies@v2
+        with:
+          extra-packages: |
+            any::shinybusy
+            any::rsconnect
 
       - name: Update manifest.json
         run: |
