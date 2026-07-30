@@ -1,7 +1,7 @@
 {
   "version": 1,
   "locale": "C",
-  "platform": "4.5.2",
+  "platform": "4.4.0",
   "metadata": {
     "appmode": "shiny",
     "primary_rmd": null,
@@ -16,8 +16,8 @@
   },
   "packages": {
     "R6": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "R6",
         "Title": "Encapsulated Classes with Reference Semantics",
@@ -37,19 +37,25 @@
         "Packaged": "2025-02-14 21:15:19 UTC; winston",
         "Author": "Winston Chang [aut, cre],\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Winston Chang <winston@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-02-15 00:50:02 UTC",
-        "Built": "R 4.5.0; ; 2025-02-15 01:07:20 UTC; unix"
+        "Built": "R 4.4.0; ; 2025-02-15 04:51:19 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "R6",
+        "RemoteRef": "R6",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "2.6.1"
       }
     },
     "Rcpp": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "Rcpp",
         "Title": "Seamless R and C++ Integration",
-        "Version": "1.1.1-1.1",
-        "Date": "2026-04-19",
+        "Version": "1.1.2",
+        "Date": "2026-07-01",
         "Authors@R": "c(person(\"Dirk\", \"Eddelbuettel\", role = c(\"aut\", \"cre\"), email = \"edd@debian.org\",\n                    comment = c(ORCID = \"0000-0001-6419-907X\")),\n             person(\"Romain\", \"Francois\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0002-2444-4226\")),\n             person(\"JJ\", \"Allaire\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0003-0174-9868\")),\n             person(\"Kevin\", \"Ushey\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0003-2880-7407\")),\n             person(\"Qiang\", \"Kou\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0001-6786-5453\")),\n             person(\"Nathan\", \"Russell\", role = \"aut\"),\n             person(\"Iñaki\", \"Ucar\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0001-6403-5550\")),\n             person(\"Doug\", \"Bates\", role = \"aut\",\n                    comment = c(ORCID = \"0000-0001-8316-9503\")),\n             person(\"John\", \"Chambers\", role = \"aut\"))",
         "Description": "The 'Rcpp' package provides R functions as well as C++ classes which\n offer a seamless integration of R and C++. Many R data types and objects can be\n mapped back and forth to C++ equivalents which facilitates both writing of new\n code as well as easier integration of third-party libraries. Documentation\n about 'Rcpp' is provided by several vignettes included in this package, via the\n 'Rcpp Gallery' site at <https://gallery.rcpp.org>, the paper by Eddelbuettel and\n Francois (2011, <doi:10.18637/jss.v040.i08>), the book by Eddelbuettel (2013,\n <doi:10.1007/978-1-4614-6868-4>) and the paper by Eddelbuettel and Balamuta (2018,\n <doi:10.1080/00031305.2017.1375990>); see 'citation(\"Rcpp\")' for details.",
         "Depends": "R (>= 3.5.0)",
@@ -58,23 +64,27 @@
         "URL": "https://www.rcpp.org,\nhttps://dirk.eddelbuettel.com/code/rcpp.html,\nhttps://github.com/RcppCore/Rcpp",
         "License": "GPL (>= 2)",
         "BugReports": "https://github.com/RcppCore/Rcpp/issues",
-        "MailingList": "rcpp-devel@lists.r-forge.r-project.org",
         "RoxygenNote": "6.1.1",
         "Encoding": "UTF-8",
         "VignetteBuilder": "Rcpp",
         "NeedsCompilation": "yes",
-        "Packaged": "2026-04-23 14:12:31 UTC; edd",
+        "Packaged": "2026-07-01 11:00:56 UTC; edd",
         "Author": "Dirk Eddelbuettel [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-6419-907X>),\n  Romain Francois [aut] (ORCID: <https://orcid.org/0000-0002-2444-4226>),\n  JJ Allaire [aut] (ORCID: <https://orcid.org/0000-0003-0174-9868>),\n  Kevin Ushey [aut] (ORCID: <https://orcid.org/0000-0003-2880-7407>),\n  Qiang Kou [aut] (ORCID: <https://orcid.org/0000-0001-6786-5453>),\n  Nathan Russell [aut],\n  Iñaki Ucar [aut] (ORCID: <https://orcid.org/0000-0001-6403-5550>),\n  Doug Bates [aut] (ORCID: <https://orcid.org/0000-0001-8316-9503>),\n  John Chambers [aut]",
         "Maintainer": "Dirk Eddelbuettel <edd@debian.org>",
-        "Repository": "CRAN",
-        "Date/Publication": "2026-04-24 05:30:02 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-04-24 13:22:07 UTC; unix",
-        "Archs": "Rcpp.so.dSYM"
+        "Repository": "RSPM",
+        "Date/Publication": "2026-07-05 08:30:08 UTC",
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-07-06 08:10:59 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "Rcpp",
+        "RemoteRef": "Rcpp",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.1.2"
       }
     },
     "Rmpfr": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "Rmpfr",
         "Title": "Interface R to MPFR - Multiple Precision Floating-Point Reliable",
@@ -100,15 +110,20 @@
         "Packaged": "2025-10-21 15:11:29 UTC; maechler",
         "Author": "Martin Maechler [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-8685-9910>),\n  Richard M. Heiberger [ctb] (formatHex(), *Bin, *Dec),\n  John C. Nash [ctb] (hjkMpfr(), origin of unirootR()),\n  Hans W. Borchers [ctb] (optimizeR(*, \"GoldenRatio\"); origin of\n    hjkMpfr()),\n  Mikael Jagan [ctb] (safer convert.c; configure.ac etc, ORCID:\n    <https://orcid.org/0000-0002-3542-2938>)",
         "Maintainer": "Martin Maechler <maechler@stat.math.ethz.ch>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-10-27 06:11:02 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-10-27 07:53:52 UTC; unix",
-        "Archs": "Rmpfr.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-10-28 18:28:04 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "Rmpfr",
+        "RemoteRef": "Rmpfr",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.1-2"
       }
     },
     "base64enc": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "base64enc",
         "Version": "0.1-6",
@@ -124,15 +139,21 @@
         "BugReports": "https://github.com/s-u/base64enc/issues",
         "NeedsCompilation": "yes",
         "Packaged": "2026-02-02 01:51:07 UTC; rforge",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-02-02 06:31:10 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-02-02 07:45:38 UTC; unix",
-        "Archs": "base64enc.so.dSYM"
+        "Encoding": "UTF-8",
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-02-03 04:29:12 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "base64enc",
+        "RemoteRef": "base64enc",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.1-6"
       }
     },
     "bslib": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "bslib",
         "Title": "Custom 'Bootstrap' 'Sass' Themes for 'shiny' and 'rmarkdown'",
@@ -158,14 +179,20 @@
         "Packaged": "2026-05-15 15:16:19 UTC; cpsievert",
         "Author": "Carson Sievert [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-4958-2844>),\n  Joe Cheng [aut],\n  Garrick Aden-Buie [aut] (ORCID:\n    <https://orcid.org/0000-0002-7111-0077>),\n  Posit Software, PBC [cph, fnd],\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Javi Aguilar [ctb, cph] (Bootstrap colorpicker library),\n  Thomas Park [ctb, cph] (Bootswatch library),\n  PayPal [ctb, cph] (Bootstrap accessibility plugin)",
         "Maintainer": "Carson Sievert <carson@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-05-16 08:10:07 UTC",
-        "Built": "R 4.5.2; ; 2026-05-16 12:22:33 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-05-17 04:55:50 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "bslib",
+        "RemoteRef": "bslib",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.11.0"
       }
     },
     "cachem": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "cachem",
         "Version": "1.1.0",
@@ -185,15 +212,20 @@
         "Packaged": "2024-05-15 15:54:22 UTC; winston",
         "Author": "Winston Chang [aut, cre],\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Winston Chang <winston@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2024-05-16 09:50:11 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-03-31 21:43:44 UTC; unix",
-        "Archs": "cachem.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2024-05-17 04:26:41 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "cachem",
+        "RemoteRef": "cachem",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.1.0"
       }
     },
     "cli": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "cli",
         "Title": "Helpers for Developing Command Line Interfaces",
@@ -215,15 +247,20 @@
         "Packaged": "2026-04-08 18:14:45 UTC; gaborcsardi",
         "Author": "Gábor Csárdi [aut, cre],\n  Hadley Wickham [ctb],\n  Kirill Müller [ctb],\n  Salim Brüggemann [ctb] (ORCID: <https://orcid.org/0000-0002-5329-5987>),\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
         "Maintainer": "Gábor Csárdi <gabor@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-04-09 09:50:18 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-04-15 04:52:40 UTC; unix",
-        "Archs": "cli.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-04-10 04:47:45 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "cli",
+        "RemoteRef": "cli",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "3.6.6"
       }
     },
     "codetools": {
       "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "codetools",
         "Version": "0.2-20",
@@ -239,12 +276,12 @@
         "Packaged": "2024-03-31 18:18:09 UTC; luke",
         "Repository": "CRAN",
         "Date/Publication": "2024-03-31 20:10:06 UTC",
-        "Built": "R 4.5.2; ; 2025-11-01 02:09:42 UTC; unix"
+        "Built": "R 4.4.0; ; 2025-04-29 05:36:25 UTC; unix"
       }
     },
     "commonmark": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "commonmark",
         "Type": "Package",
@@ -263,15 +300,20 @@
         "Packaged": "2025-07-07 13:20:39 UTC; jeroen",
         "Author": "Jeroen Ooms [aut, cre] (ORCID: <https://orcid.org/0000-0002-4035-0289>),\n  John MacFarlane [cph] (Author of cmark)",
         "Maintainer": "Jeroen Ooms <jeroenooms@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-07-07 13:40:02 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-07-07 15:18:49 UTC; unix",
-        "Archs": "commonmark.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-07-08 04:21:23 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "commonmark",
+        "RemoteRef": "commonmark",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "2.0.0"
       }
     },
     "data.table": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "data.table",
         "Version": "1.18.4",
@@ -291,15 +333,20 @@
         "Packaged": "2026-05-05 05:46:53 UTC; a00932230",
         "Author": "Tyson Barrett [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-2137-1391>),\n  Matt Dowle [aut],\n  Arun Srinivasan [aut],\n  Jan Gorecki [aut],\n  Michael Chirico [aut] (ORCID: <https://orcid.org/0000-0003-0787-087X>),\n  Toby Hocking [aut] (ORCID: <https://orcid.org/0000-0002-3146-0865>),\n  Benjamin Schwendinger [aut] (ORCID:\n    <https://orcid.org/0000-0003-3315-8114>),\n  Ivan Krylov [aut] (ORCID: <https://orcid.org/0000-0002-0172-3812>),\n  Pasha Stetsenko [ctb],\n  Tom Short [ctb],\n  Steve Lianoglou [ctb],\n  Eduard Antonyan [ctb],\n  Markus Bonsch [ctb],\n  Hugh Parsonage [ctb],\n  Scott Ritchie [ctb],\n  Kun Ren [ctb],\n  Xianying Tan [ctb],\n  Rick Saporta [ctb],\n  Otto Seiskari [ctb],\n  Xianghui Dong [ctb],\n  Michel Lang [ctb],\n  Watal Iwasaki [ctb],\n  Seth Wenchel [ctb],\n  Karl Broman [ctb],\n  Tobias Schmidt [ctb],\n  David Arenburg [ctb],\n  Ethan Smith [ctb],\n  Francois Cocquemas [ctb],\n  Matthieu Gomez [ctb],\n  Philippe Chataignon [ctb],\n  Nello Blaser [ctb],\n  Dmitry Selivanov [ctb],\n  Andrey Riabushenko [ctb],\n  Cheng Lee [ctb],\n  Declan Groves [ctb],\n  Daniel Possenriede [ctb],\n  Felipe Parages [ctb],\n  Denes Toth [ctb],\n  Mus Yaramaz-David [ctb],\n  Ayappan Perumal [ctb],\n  James Sams [ctb],\n  Martin Morgan [ctb],\n  Michael Quinn [ctb],\n  @javrucebo [ctb] (GitHub user),\n  Marc Halperin [ctb],\n  Roy Storey [ctb],\n  Manish Saraswat [ctb],\n  Morgan Jacob [ctb],\n  Michael Schubmehl [ctb],\n  Davis Vaughan [ctb],\n  Leonardo Silvestri [ctb],\n  Jim Hester [ctb],\n  Anthony Damico [ctb],\n  Sebastian Freundt [ctb],\n  David Simons [ctb],\n  Elliott Sales de Andrade [ctb],\n  Cole Miller [ctb],\n  Jens Peder Meldgaard [ctb],\n  Vaclav Tlapak [ctb],\n  Kevin Ushey [ctb],\n  Dirk Eddelbuettel [ctb],\n  Tony Fischetti [ctb],\n  Ofek Shilon [ctb],\n  Vadim Khotilovich [ctb],\n  Hadley Wickham [ctb],\n  Bennet Becker [ctb],\n  Kyle Haynes [ctb],\n  Boniface Christian Kamgang [ctb],\n  Olivier Delmarcell [ctb],\n  Josh O'Brien [ctb],\n  Dereck de Mezquita [ctb],\n  Michael Czekanski [ctb],\n  Dmitry Shemetov [ctb],\n  Nitish Jha [ctb],\n  Joshua Wu [ctb],\n  Iago Giné-Vázquez [ctb],\n  Anirban Chetia [ctb],\n  Doris Amoakohene [ctb],\n  Angel Feliz [ctb],\n  Michael Young [ctb],\n  Mark Seeto [ctb],\n  Philippe Grosjean [ctb],\n  Vincent Runge [ctb],\n  Christian Wia [ctb],\n  Elise Maigné [ctb],\n  Vincent Rocher [ctb],\n  Vijay Lulla [ctb],\n  Aljaž Sluga [ctb],\n  Bill Evans [ctb],\n  Reino Bruner [ctb],\n  @badasahog [ctb] (GitHub user),\n  Vinit Thakur [ctb],\n  Mukul Kumar [ctb],\n  Ildikó Czeller [ctb],\n  Manmita Das [ctb],\n  Tarun Thammisetty [ctb]",
         "Maintainer": "Tyson Barrett <t.barrett88@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-05-06 05:10:20 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-05-06 06:39:38 UTC; unix",
-        "Archs": "data_table.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-05-07 05:19:54 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "data.table",
+        "RemoteRef": "data.table",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.18.4"
       }
     },
     "digest": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "digest",
         "Authors@R": "c(person(\"Dirk\", \"Eddelbuettel\", role = c(\"aut\", \"cre\"), email = \"edd@debian.org\",\n                    comment = c(ORCID = \"0000-0001-6419-907X\")),\n             person(\"Antoine\", \"Lucas\", role=\"ctb\", comment = c(ORCID = \"0000-0002-8059-9767\")),\n             person(\"Jarek\", \"Tuszynski\", role=\"ctb\"),\n             person(\"Henrik\", \"Bengtsson\", role=\"ctb\", comment = c(ORCID = \"0000-0002-7579-5165\")),\n             person(\"Simon\", \"Urbanek\", role=\"ctb\", comment = c(ORCID = \"0000-0003-2297-1732\")),\n             person(\"Mario\", \"Frasca\", role=\"ctb\"),\n             person(\"Bryan\", \"Lewis\", role=\"ctb\"),\n             person(\"Murray\", \"Stokely\", role=\"ctb\"),\n             person(\"Hannes\", \"Muehleisen\", role=\"ctb\", comment = c(ORCID = \"0000-0001-8552-0029\")),\n             person(\"Duncan\", \"Murdoch\", role=\"ctb\"),\n             person(\"Jim\", \"Hester\", role=\"ctb\", comment = c(ORCID = \"0000-0002-2739-7082\")),\n             person(\"Wush\", \"Wu\", role=\"ctb\", comment = c(ORCID = \"0000-0001-5180-0567\")),\n             person(\"Qiang\", \"Kou\", role=\"ctb\", comment = c(ORCID = \"0000-0001-6786-5453\")),\n             person(\"Thierry\", \"Onkelinx\", role=\"ctb\", comment = c(ORCID = \"0000-0001-8804-4216\")),\n             person(\"Michel\", \"Lang\", role=\"ctb\", comment = c(ORCID = \"0000-0001-9754-0393\")),\n             person(\"Viliam\", \"Simko\", role=\"ctb\"),\n             person(\"Kurt\", \"Hornik\", role=\"ctb\", comment = c(ORCID = \"0000-0003-4198-9911\")),\n             person(\"Radford\", \"Neal\", role=\"ctb\", comment = c(ORCID = \"0000-0002-2473-3407\")),\n             person(\"Kendon\", \"Bell\", role=\"ctb\", comment = c(ORCID = \"0000-0002-9093-8312\")),\n             person(\"Matthew\", \"de Queljoe\", role=\"ctb\"),\n             person(\"Dmitry\", \"Selivanov\", role=\"ctb\", comment = c(ORCID = \"0000-0003-0492-6647\")),\n             person(\"Ion\", \"Suruceanu\", role=\"ctb\", comment = c(ORCID = \"0009-0005-6446-4909\")),\n             person(\"Bill\", \"Denney\", role=\"ctb\", comment = c(ORCID = \"0000-0002-5759-428X\")),\n             person(\"Dirk\", \"Schumacher\", role=\"ctb\"),\n             person(\"András\", \"Svraka\", role=\"ctb\", comment = c(ORCID = \"0009-0008-8480-1329\")),\n             person(\"Sergey\", \"Fedorov\", role=\"ctb\", comment = c(ORCID = \"0000-0002-5970-7233\")),\n             person(\"Will\", \"Landau\", role=\"ctb\", comment = c(ORCID = \"0000-0003-1878-3253\")),\n             person(\"Floris\", \"Vanderhaeghe\", role=\"ctb\", comment = c(ORCID = \"0000-0002-6378-6229\")),\n             person(\"Kevin\", \"Tappe\", role=\"ctb\"),\n             person(\"Harris\", \"McGehee\", role=\"ctb\"),\n             person(\"Tim\", \"Mastny\", role=\"ctb\"),\n             person(\"Aaron\", \"Peikert\", role=\"ctb\", comment = c(ORCID = \"0000-0001-7813-818X\")),\n             person(\"Mark\", \"van der Loo\", role=\"ctb\", comment = c(ORCID = \"0000-0002-9807-4686\")),\n             person(\"Chris\", \"Muir\", role=\"ctb\", comment = c(ORCID = \"0000-0003-2555-3878\")),\n             person(\"Moritz\", \"Beller\", role=\"ctb\", comment = c(ORCID = \"0000-0003-4852-0526\")),\n             person(\"Sebastian\", \"Campbell\", role=\"ctb\", comment = c(ORCID = \"0009-0000-5948-4503\")),\n             person(\"Winston\", \"Chang\", role=\"ctb\", comment = c(ORCID = \"0000-0002-1576-2126\")),\n             person(\"Dean\", \"Attali\", role=\"ctb\", comment = c(ORCID = \"0000-0002-5645-3493\")),\n             person(\"Michael\", \"Chirico\", role=\"ctb\", comment = c(ORCID = \"0000-0003-0787-087X\")),\n             person(\"Kevin\", \"Ushey\", role=\"ctb\", comment = c(ORCID = \"0000-0003-2880-7407\")),\n             person(\"Carl\", \"Pearson\", role=\"ctb\", comment = c(ORCID = \"0000-0003-0701-7860\")))",
@@ -319,15 +366,20 @@
         "Packaged": "2025-11-19 11:55:09 UTC; edd",
         "Author": "Dirk Eddelbuettel [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-6419-907X>),\n  Antoine Lucas [ctb] (ORCID: <https://orcid.org/0000-0002-8059-9767>),\n  Jarek Tuszynski [ctb],\n  Henrik Bengtsson [ctb] (ORCID: <https://orcid.org/0000-0002-7579-5165>),\n  Simon Urbanek [ctb] (ORCID: <https://orcid.org/0000-0003-2297-1732>),\n  Mario Frasca [ctb],\n  Bryan Lewis [ctb],\n  Murray Stokely [ctb],\n  Hannes Muehleisen [ctb] (ORCID:\n    <https://orcid.org/0000-0001-8552-0029>),\n  Duncan Murdoch [ctb],\n  Jim Hester [ctb] (ORCID: <https://orcid.org/0000-0002-2739-7082>),\n  Wush Wu [ctb] (ORCID: <https://orcid.org/0000-0001-5180-0567>),\n  Qiang Kou [ctb] (ORCID: <https://orcid.org/0000-0001-6786-5453>),\n  Thierry Onkelinx [ctb] (ORCID: <https://orcid.org/0000-0001-8804-4216>),\n  Michel Lang [ctb] (ORCID: <https://orcid.org/0000-0001-9754-0393>),\n  Viliam Simko [ctb],\n  Kurt Hornik [ctb] (ORCID: <https://orcid.org/0000-0003-4198-9911>),\n  Radford Neal [ctb] (ORCID: <https://orcid.org/0000-0002-2473-3407>),\n  Kendon Bell [ctb] (ORCID: <https://orcid.org/0000-0002-9093-8312>),\n  Matthew de Queljoe [ctb],\n  Dmitry Selivanov [ctb] (ORCID: <https://orcid.org/0000-0003-0492-6647>),\n  Ion Suruceanu [ctb] (ORCID: <https://orcid.org/0009-0005-6446-4909>),\n  Bill Denney [ctb] (ORCID: <https://orcid.org/0000-0002-5759-428X>),\n  Dirk Schumacher [ctb],\n  András Svraka [ctb] (ORCID: <https://orcid.org/0009-0008-8480-1329>),\n  Sergey Fedorov [ctb] (ORCID: <https://orcid.org/0000-0002-5970-7233>),\n  Will Landau [ctb] (ORCID: <https://orcid.org/0000-0003-1878-3253>),\n  Floris Vanderhaeghe [ctb] (ORCID:\n    <https://orcid.org/0000-0002-6378-6229>),\n  Kevin Tappe [ctb],\n  Harris McGehee [ctb],\n  Tim Mastny [ctb],\n  Aaron Peikert [ctb] (ORCID: <https://orcid.org/0000-0001-7813-818X>),\n  Mark van der Loo [ctb] (ORCID: <https://orcid.org/0000-0002-9807-4686>),\n  Chris Muir [ctb] (ORCID: <https://orcid.org/0000-0003-2555-3878>),\n  Moritz Beller [ctb] (ORCID: <https://orcid.org/0000-0003-4852-0526>),\n  Sebastian Campbell [ctb] (ORCID:\n    <https://orcid.org/0009-0000-5948-4503>),\n  Winston Chang [ctb] (ORCID: <https://orcid.org/0000-0002-1576-2126>),\n  Dean Attali [ctb] (ORCID: <https://orcid.org/0000-0002-5645-3493>),\n  Michael Chirico [ctb] (ORCID: <https://orcid.org/0000-0003-0787-087X>),\n  Kevin Ushey [ctb] (ORCID: <https://orcid.org/0000-0003-2880-7407>),\n  Carl Pearson [ctb] (ORCID: <https://orcid.org/0000-0003-0701-7860>)",
         "Maintainer": "Dirk Eddelbuettel <edd@debian.org>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-11-19 13:20:08 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2025-11-22 19:17:48 UTC; unix",
-        "Archs": "digest.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-11-20 14:15:52 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "digest",
+        "RemoteRef": "digest",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.6.39"
       }
     },
     "evaluate": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "evaluate",
@@ -348,14 +400,20 @@
         "Packaged": "2025-08-27 16:20:56 UTC; hadleywickham",
         "Author": "Hadley Wickham [aut, cre],\n  Yihui Xie [aut] (ORCID: <https://orcid.org/0000-0003-0645-5666>),\n  Michael Lawrence [ctb],\n  Thomas Kluyver [ctb],\n  Jeroen Ooms [ctb],\n  Barret Schloerke [ctb],\n  Adam Ryczkowski [ctb],\n  Hiroaki Yutani [ctb],\n  Michel Lang [ctb],\n  Karolis Koncevičius [ctb],\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-08-27 16:40:02 UTC",
-        "Built": "R 4.5.0; ; 2025-09-01 01:31:01 UTC; unix"
+        "Built": "R 4.4.0; ; 2025-08-28 05:25:54 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "evaluate",
+        "RemoteRef": "evaluate",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.0.5"
       }
     },
     "fastmap": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "fastmap",
         "Title": "Fast Data Structures",
@@ -372,15 +430,20 @@
         "Packaged": "2024-05-14 17:54:13 UTC; winston",
         "Author": "Winston Chang [aut, cre],\n  Posit Software, PBC [cph, fnd],\n  Tessil [cph] (hopscotch_map library)",
         "Maintainer": "Winston Chang <winston@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2024-05-15 09:00:07 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-03-31 21:43:00 UTC; unix",
-        "Archs": "fastmap.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2024-05-16 04:18:25 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "fastmap",
+        "RemoteRef": "fastmap",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.2.0"
       }
     },
     "fontawesome": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "fontawesome",
@@ -402,14 +465,20 @@
         "Packaged": "2024-11-16 17:06:16 UTC; riannone",
         "Author": "Richard Iannone [aut, cre] (<https://orcid.org/0000-0003-3925-190X>),\n  Christophe Dervieux [ctb] (<https://orcid.org/0000-0003-4474-2498>),\n  Winston Chang [ctb],\n  Dave Gandy [ctb, cph] (Font-Awesome font),\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Richard Iannone <rich@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2024-11-16 17:30:02 UTC",
-        "Built": "R 4.5.0; ; 2025-04-01 11:50:29 UTC; unix"
+        "Built": "R 4.4.0; ; 2024-11-17 04:15:22 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "fontawesome",
+        "RemoteRef": "fontawesome",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.5.3"
       }
     },
     "fs": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "fs",
         "Title": "Cross-Platform File System Operations Based on 'libuv'",
@@ -435,15 +504,20 @@
         "Packaged": "2026-04-18 13:56:26 UTC; jeroen",
         "Author": "Jim Hester [aut],\n  Hadley Wickham [aut],\n  Gábor Csárdi [aut],\n  Jeroen Ooms [cre],\n  libuv project contributors [cph] (libuv library),\n  Joyent, Inc. and other Node contributors [cph] (libuv library),\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
         "Maintainer": "Jeroen Ooms <jeroenooms@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-04-18 15:10:02 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-04-20 23:19:48 UTC; unix",
-        "Archs": "fs.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-04-19 04:35:02 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "fs",
+        "RemoteRef": "fs",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "2.1.0"
       }
     },
     "future": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "future",
         "Version": "1.75.0",
@@ -467,14 +541,20 @@
         "Packaged": "2026-07-19 23:19:44 UTC; hb",
         "Author": "Henrik Bengtsson [aut, cre, cph] (ORCID:\n    <https://orcid.org/0000-0002-7579-5165>)",
         "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-07-20 15:10:11 UTC",
-        "Built": "R 4.5.2; ; 2026-07-20 17:23:04 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-07-21 04:44:21 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "future",
+        "RemoteRef": "future",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.75.0"
       }
     },
     "globals": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "globals",
         "Version": "0.19.1",
@@ -495,14 +575,20 @@
         "Packaged": "2026-03-12 23:06:06 UTC; hb",
         "Author": "Henrik Bengtsson [aut, cre, cph],\n  Davis Vaughan [ctb]",
         "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-03-13 07:30:09 UTC",
-        "Built": "R 4.5.2; ; 2026-03-13 13:19:19 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-03-14 04:32:32 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "globals",
+        "RemoteRef": "globals",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.19.1"
       }
     },
     "glue": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "glue",
         "Title": "Interpreted String Literals",
@@ -526,15 +612,20 @@
         "Packaged": "2026-04-16 22:53:02 UTC; jenny",
         "Author": "Jim Hester [aut] (ORCID: <https://orcid.org/0000-0002-2739-7082>),\n  Jennifer Bryan [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-6983-2759>),\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
         "Maintainer": "Jennifer Bryan <jenny@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-04-17 05:11:01 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-04-20 23:19:49 UTC; unix",
-        "Archs": "glue.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-04-18 04:33:03 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "glue",
+        "RemoteRef": "glue",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.8.1"
       }
     },
     "gmp": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "gmp",
         "Version": "0.7-5.1",
@@ -554,15 +645,21 @@
         "URL": "https://forgemia.inra.fr/sylvain.jasson/gmp",
         "Packaged": "2026-02-09 09:14:53 UTC; ripley",
         "Author": "Antoine Lucas [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-8059-9767>),\n  Immanuel Scholz [aut],\n  Rainer Boehme [ctb],\n  Sylvain Jasson [ctb],\n  Martin Maechler [ctb]",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-02-09 09:19:08 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-02-09 11:55:20 UTC; unix",
-        "Archs": "gmp.so.dSYM"
+        "Encoding": "UTF-8",
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-02-10 04:32:14 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "gmp",
+        "RemoteRef": "gmp",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.7-5.1"
       }
     },
     "highr": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "highr",
         "Type": "Package",
@@ -583,14 +680,20 @@
         "Packaged": "2026-03-05 19:48:41 UTC; yihui",
         "Author": "Yihui Xie [aut, cre] (ORCID: <https://orcid.org/0000-0003-0645-5666>),\n  Yixuan Qiu [aut],\n  Christopher Gandrud [ctb],\n  Qiang Li [ctb]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-03-06 06:30:47 UTC",
-        "Built": "R 4.5.2; ; 2026-03-06 09:27:47 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-03-07 04:42:19 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "highr",
+        "RemoteRef": "highr",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.12"
       }
     },
     "htmltools": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "htmltools",
@@ -614,15 +717,20 @@
         "Packaged": "2025-12-02 23:32:55 UTC; cpsievert",
         "Author": "Joe Cheng [aut],\n  Carson Sievert [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-4958-2844>),\n  Barret Schloerke [aut] (ORCID: <https://orcid.org/0000-0001-9986-114X>),\n  Winston Chang [aut] (ORCID: <https://orcid.org/0000-0002-1576-2126>),\n  Yihui Xie [aut],\n  Jeff Allen [aut],\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Carson Sievert <carson@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-12-04 11:50:09 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2025-12-04 12:12:04 UTC; unix",
-        "Archs": "htmltools.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-12-04 16:31:14 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "htmltools",
+        "RemoteRef": "htmltools",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.5.9"
       }
     },
     "htmlwidgets": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "htmlwidgets",
@@ -643,14 +751,20 @@
         "Packaged": "2023-12-06 00:11:16 UTC; cpsievert",
         "Author": "Ramnath Vaidyanathan [aut, cph],\n  Yihui Xie [aut],\n  JJ Allaire [aut],\n  Joe Cheng [aut],\n  Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>),\n  Kenton Russell [aut, cph],\n  Ellis Hughes [ctb],\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Carson Sievert <carson@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2023-12-06 06:00:06 UTC",
-        "Built": "R 4.5.0; ; 2025-04-01 23:26:28 UTC; unix"
+        "Built": "R 4.4.0; ; 2024-04-25 19:55:56 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "htmlwidgets",
+        "RemoteRef": "htmlwidgets",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.6.4"
       }
     },
     "httpuv": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "httpuv",
@@ -676,15 +790,20 @@
         "Packaged": "2026-03-17 17:55:04 UTC; cpsievert",
         "Author": "Joe Cheng [aut],\n  Winston Chang [aut, cre],\n  Posit, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>),\n  Hector Corrada Bravo [ctb],\n  Jeroen Ooms [ctb],\n  Andrzej Krzemienski [cph] (optional.hpp),\n  libuv project contributors [cph] (libuv library, see src/libuv/AUTHORS\n    file),\n  Joyent, Inc. and other Node contributors [cph] (libuv library, see\n    src/libuv/AUTHORS file; and http-parser library, see\n    src/http-parser/AUTHORS file),\n  Niels Provos [cph] (libuv subcomponent: tree.h),\n  Internet Systems Consortium, Inc. [cph] (libuv subcomponent: inet_pton\n    and inet_ntop, contained in src/libuv/src/inet.c),\n  Alexander Chemeris [cph] (libuv subcomponent: stdint-msvc2008.h (from\n    msinttypes)),\n  Google, Inc. [cph] (libuv subcomponent: pthread-fixes.c),\n  Sony Mobile Communcations AB [cph] (libuv subcomponent:\n    pthread-fixes.c),\n  Berkeley Software Design Inc. [cph] (libuv subcomponent:\n    android-ifaddrs.h, android-ifaddrs.c),\n  Kenneth MacKay [cph] (libuv subcomponent: android-ifaddrs.h,\n    android-ifaddrs.c),\n  Emergya (Cloud4all, FP7/2007-2013, grant agreement no 289016) [cph]\n    (libuv subcomponent: android-ifaddrs.h, android-ifaddrs.c),\n  Steve Reid [aut] (SHA-1 implementation),\n  James Brown [aut] (SHA-1 implementation),\n  Bob Trower [aut] (base64 implementation),\n  Alexander Peslyak [aut] (MD5 implementation),\n  Trantor Standard Systems [cph] (base64 implementation),\n  Igor Sysoev [cph] (http-parser)",
         "Maintainer": "Winston Chang <winston@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-03-18 06:12:59 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-03-22 21:00:02 UTC; unix",
-        "Archs": "httpuv.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-07-06 08:38:35 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "httpuv",
+        "RemoteRef": "httpuv",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.6.17"
       }
     },
     "jquerylib": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "jquerylib",
         "Title": "Obtain 'jQuery' as an HTML Dependency Object",
@@ -701,14 +820,20 @@
         "Packaged": "2021-04-26 16:40:21 UTC; cpsievert",
         "Author": "Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>),\n  Joe Cheng [aut],\n  RStudio [cph],\n  jQuery Foundation [cph] (jQuery library and jQuery UI library),\n  jQuery contributors [ctb, cph] (jQuery library; authors listed in\n    inst/lib/jquery-AUTHORS.txt)",
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2021-04-26 17:10:02 UTC",
-        "Built": "R 4.5.0; ; 2025-04-01 11:50:17 UTC; unix"
+        "Built": "R 4.4.0; ; 2024-04-25 19:47:59 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "jquerylib",
+        "RemoteRef": "jquerylib",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.1.4"
       }
     },
     "jsonlite": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "jsonlite",
         "Version": "2.0.0",
@@ -727,15 +852,20 @@
         "NeedsCompilation": "yes",
         "Packaged": "2025-03-26 11:36:10 UTC; jeroen",
         "Author": "Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),\n  Duncan Temple Lang [ctb],\n  Lloyd Hilaiel [cph] (author of bundled libyajl)",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-03-27 06:40:02 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-03-27 07:33:55 UTC; unix",
-        "Archs": "jsonlite.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-03-28 04:21:05 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "jsonlite",
+        "RemoteRef": "jsonlite",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "2.0.0"
       }
     },
     "knitr": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "knitr",
         "Type": "Package",
@@ -758,14 +888,20 @@
         "Packaged": "2025-12-19 15:19:25 UTC; yihui",
         "Author": "Yihui Xie [aut, cre] (ORCID: <https://orcid.org/0000-0003-0645-5666>,\n    URL: https://yihui.org),\n  Abhraneel Sarma [ctb],\n  Adam Vogt [ctb],\n  Alastair Andrew [ctb],\n  Alex Zvoleff [ctb],\n  Amar Al-Zubaidi [ctb],\n  Andre Simon [ctb] (the CSS files under inst/themes/ were derived from\n    the Highlight package http://www.andre-simon.de),\n  Aron Atkins [ctb],\n  Aaron Wolen [ctb],\n  Ashley Manton [ctb],\n  Atsushi Yasumoto [ctb] (ORCID: <https://orcid.org/0000-0002-8335-495X>),\n  Ben Baumer [ctb],\n  Brian Diggs [ctb],\n  Brian Zhang [ctb],\n  Bulat Yapparov [ctb],\n  Cassio Pereira [ctb],\n  Christophe Dervieux [ctb],\n  David Hall [ctb],\n  David Hugh-Jones [ctb],\n  David Robinson [ctb],\n  Doug Hemken [ctb],\n  Duncan Murdoch [ctb],\n  Elio Campitelli [ctb],\n  Ellis Hughes [ctb],\n  Emily Riederer [ctb],\n  Fabian Hirschmann [ctb],\n  Fitch Simeon [ctb],\n  Forest Fang [ctb],\n  Frank E Harrell Jr [ctb] (the Sweavel package at inst/misc/Sweavel.sty),\n  Garrick Aden-Buie [ctb],\n  Gregoire Detrez [ctb],\n  Hadley Wickham [ctb],\n  Hao Zhu [ctb],\n  Heewon Jeon [ctb],\n  Henrik Bengtsson [ctb],\n  Hiroaki Yutani [ctb],\n  Ian Lyttle [ctb],\n  Hodges Daniel [ctb],\n  Jacob Bien [ctb],\n  Jake Burkhead [ctb],\n  James Manton [ctb],\n  Jared Lander [ctb],\n  Jason Punyon [ctb],\n  Javier Luraschi [ctb],\n  Jeff Arnold [ctb],\n  Jenny Bryan [ctb],\n  Jeremy Ashkenas [ctb, cph] (the CSS file at\n    inst/misc/docco-classic.css),\n  Jeremy Stephens [ctb],\n  Jim Hester [ctb],\n  Joe Cheng [ctb],\n  Johannes Ranke [ctb],\n  John Honaker [ctb],\n  John Muschelli [ctb],\n  Jonathan Keane [ctb],\n  JJ Allaire [ctb],\n  Johan Toloe [ctb],\n  Jonathan Sidi [ctb],\n  Joseph Larmarange [ctb],\n  Julien Barnier [ctb],\n  Kaiyin Zhong [ctb],\n  Kamil Slowikowski [ctb],\n  Karl Forner [ctb],\n  Kevin K. Smith [ctb],\n  Kirill Mueller [ctb],\n  Kohske Takahashi [ctb],\n  Lorenz Walthert [ctb],\n  Lucas Gallindo [ctb],\n  Marius Hofert [ctb],\n  Martin Modrák [ctb],\n  Michael Chirico [ctb],\n  Michael Friendly [ctb],\n  Michal Bojanowski [ctb],\n  Michel Kuhlmann [ctb],\n  Miller Patrick [ctb],\n  Nacho Caballero [ctb],\n  Nick Salkowski [ctb],\n  Niels Richard Hansen [ctb],\n  Noam Ross [ctb],\n  Obada Mahdi [ctb],\n  Pavel N. Krivitsky [ctb] (ORCID:\n    <https://orcid.org/0000-0002-9101-3362>),\n  Pedro Faria [ctb],\n  Qiang Li [ctb],\n  Ramnath Vaidyanathan [ctb],\n  Richard Cotton [ctb],\n  Robert Krzyzanowski [ctb],\n  Rodrigo Copetti [ctb],\n  Romain Francois [ctb],\n  Ruaridh Williamson [ctb],\n  Sagiru Mati [ctb] (ORCID: <https://orcid.org/0000-0003-1413-3974>),\n  Scott Kostyshak [ctb],\n  Sebastian Meyer [ctb],\n  Sietse Brouwer [ctb],\n  Simon de Bernard [ctb],\n  Sylvain Rousseau [ctb],\n  Taiyun Wei [ctb],\n  Thibaut Assus [ctb],\n  Thibaut Lamadon [ctb],\n  Thomas Leeper [ctb],\n  Tim Mastny [ctb],\n  Tom Torsney-Weir [ctb],\n  Trevor Davis [ctb],\n  Viktoras Veitas [ctb],\n  Weicheng Zhu [ctb],\n  Wush Wu [ctb],\n  Zachary Foster [ctb],\n  Zhian N. Kamvar [ctb] (ORCID: <https://orcid.org/0000-0003-1458-7108>),\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-12-20 14:30:02 UTC",
-        "Built": "R 4.5.2; ; 2025-12-21 22:52:57 UTC; unix"
+        "Built": "R 4.4.0; ; 2025-12-21 04:21:01 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "knitr",
+        "RemoteRef": "knitr",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.51"
       }
     },
     "later": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "later",
@@ -791,15 +927,20 @@
         "Packaged": "2026-03-03 21:55:53 UTC; cg334",
         "Author": "Winston Chang [aut] (ORCID: <https://orcid.org/0000-0002-1576-2126>),\n  Joe Cheng [aut],\n  Charlie Gao [aut, cre] (ORCID: <https://orcid.org/0000-0002-0750-061X>),\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>),\n  Marcus Geelnard [ctb, cph] (TinyCThread library,\n    https://tinycthread.github.io/),\n  Evan Nemerson [ctb, cph] (TinyCThread library,\n    https://tinycthread.github.io/)",
         "Maintainer": "Charlie Gao <charlie.gao@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-03-05 07:50:02 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-03-05 08:43:57 UTC; unix",
-        "Archs": "later.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-07-06 08:31:40 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "later",
+        "RemoteRef": "later",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.4.8"
       }
     },
     "lifecycle": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "lifecycle",
         "Title": "Manage the Life Cycle of your Package Functions",
@@ -821,14 +962,20 @@
         "Packaged": "2026-01-07 15:00:49 UTC; lionel",
         "Author": "Lionel Henry [aut, cre],\n  Hadley Wickham [aut] (ORCID: <https://orcid.org/0000-0003-4757-117X>),\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Lionel Henry <lionel@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-01-08 08:00:02 UTC",
-        "Built": "R 4.5.2; ; 2026-01-08 12:03:10 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-01-09 04:38:09 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "lifecycle",
+        "RemoteRef": "lifecycle",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.0.5"
       }
     },
     "listenv": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "listenv",
         "Version": "1.0.0",
@@ -849,14 +996,20 @@
         "Packaged": "2026-06-21 17:27:51 UTC; hb",
         "Author": "Henrik Bengtsson [aut, cre, cph] (ORCID:\n    <https://orcid.org/0000-0002-7579-5165>)",
         "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-06-22 05:20:02 UTC",
-        "Built": "R 4.5.2; ; 2026-06-22 11:43:03 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-06-23 04:53:26 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "listenv",
+        "RemoteRef": "listenv",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.0.0"
       }
     },
     "magrittr": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "magrittr",
@@ -878,15 +1031,20 @@
         "Packaged": "2026-04-03 08:09:48 UTC; lionel",
         "Author": "Stefan Milton Bache [aut, cph] (Original author and creator of\n    magrittr),\n  Hadley Wickham [aut],\n  Lionel Henry [cre],\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
         "Maintainer": "Lionel Henry <lionel@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-04-04 08:00:02 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-04-04 10:13:02 UTC; unix",
-        "Archs": "magrittr.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-04-05 04:46:32 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "magrittr",
+        "RemoteRef": "magrittr",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "2.0.5"
       }
     },
     "memoise": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "memoise",
         "Title": "'Memoisation' of Functions",
@@ -904,14 +1062,20 @@
         "Packaged": "2021-11-24 21:24:50 UTC; jhester",
         "Author": "Hadley Wickham [aut],\n  Jim Hester [aut],\n  Winston Chang [aut, cre],\n  Kirill Müller [aut],\n  Daniel Cook [aut],\n  Mark Edmondson [ctb]",
         "Maintainer": "Winston Chang <winston@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2021-11-26 16:11:10 UTC",
-        "Built": "R 4.5.0; ; 2025-04-01 06:31:57 UTC; unix"
+        "Built": "R 4.4.0; ; 2024-04-25 19:45:48 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "memoise",
+        "RemoteRef": "memoise",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "2.0.1"
       }
     },
     "mime": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "mime",
         "Type": "Package",
@@ -929,15 +1093,20 @@
         "Packaged": "2025-03-17 19:54:24 UTC; runner",
         "Author": "Yihui Xie [aut, cre] (<https://orcid.org/0000-0003-0645-5666>,\n    https://yihui.org),\n  Jeffrey Horner [ctb],\n  Beilei Bian [ctb]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-03-17 20:20:02 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-03-31 21:43:02 UTC; unix",
-        "Archs": "mime.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-03-18 05:31:26 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "mime",
+        "RemoteRef": "mime",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.13"
       }
     },
     "openxlsx": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "openxlsx",
@@ -963,15 +1132,20 @@
         "Packaged": "2025-10-30 20:28:52 UTC; janmarvingarbuszus",
         "Author": "Philipp Schauberger [aut],\n  Alexander Walker [aut],\n  Luca Braglia [ctb],\n  Joshua Sturm [ctb],\n  Jan Marvin Garbuszus [ctb, cre],\n  Jordan Mark Barbone [ctb] (ORCID:\n    <https://orcid.org/0000-0001-9788-3628>),\n  David Zimmermann [ctb],\n  Reinhold Kainhofer [ctb]",
         "Maintainer": "Jan Marvin Garbuszus <jan.garbuszus@ruhr-uni-bochum.de>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-10-31 06:10:51 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-10-31 08:24:20 UTC; unix",
-        "Archs": "openxlsx.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-07-06 08:56:23 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "openxlsx",
+        "RemoteRef": "openxlsx",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "4.2.8.1"
       }
     },
     "otel": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "otel",
         "Title": "OpenTelemetry R API",
@@ -992,14 +1166,20 @@
         "Packaged": "2025-08-29 12:46:28 UTC; gaborcsardi",
         "Author": "Gábor Csárdi [aut, cre]",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-08-29 13:30:07 UTC",
-        "Built": "R 4.5.0; ; 2025-09-01 01:35:46 UTC; unix"
+        "Built": "R 4.4.0; ; 2025-08-30 04:38:30 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "otel",
+        "RemoteRef": "otel",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.2.0"
       }
     },
     "parallelly": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "parallelly",
         "Version": "1.48.0",
@@ -1022,15 +1202,20 @@
         "Packaged": "2026-06-29 13:09:02 UTC; hb",
         "Author": "Henrik Bengtsson [aut, cre, cph] (ORCID:\n    <https://orcid.org/0000-0002-7579-5165>),\n  Mike Cheng [ctb]",
         "Maintainer": "Henrik Bengtsson <henrikb@braju.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-06-29 15:40:02 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-06-29 16:50:08 UTC; unix",
-        "Archs": "parallelly.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-06-30 05:33:47 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "parallelly",
+        "RemoteRef": "parallelly",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.48.0"
       }
     },
     "promises": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "promises",
@@ -1055,14 +1240,20 @@
         "Packaged": "2025-10-31 20:26:43 UTC; barret",
         "Author": "Joe Cheng [aut],\n  Barret Schloerke [aut, cre] (ORCID:\n    <https://orcid.org/0000-0001-9986-114X>),\n  Winston Chang [aut] (ORCID: <https://orcid.org/0000-0002-1576-2126>),\n  Charlie Gao [aut] (ORCID: <https://orcid.org/0000-0002-0750-061X>),\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
         "Maintainer": "Barret Schloerke <barret@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-11-01 06:30:02 UTC",
-        "Built": "R 4.5.0; ; 2025-11-01 08:07:07 UTC; unix"
+        "Built": "R 4.4.0; ; 2025-11-02 04:16:16 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "promises",
+        "RemoteRef": "promises",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.5.0"
       }
     },
     "rappdirs": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "rappdirs",
@@ -1085,15 +1276,20 @@
         "Packaged": "2026-01-16 22:03:30 UTC; hadleywickham",
         "Author": "Hadley Wickham [trl, cre, cph],\n  Sridhar Ratnakumar [aut],\n  Trent Mick [aut],\n  ActiveState [cph] (R/appdir.r, R/cache.r, R/data.r, R/log.r translated\n    from appdirs),\n  Eddy Petrisor [ctb],\n  Trevor Davis [trl, aut] (ORCID:\n    <https://orcid.org/0000-0001-6341-4639>),\n  Gabor Csardi [ctb],\n  Gregory Jefferis [ctb],\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-01-17 08:40:02 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-01-17 11:42:54 UTC; unix",
-        "Archs": "rappdirs.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-01-18 04:27:56 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "rappdirs",
+        "RemoteRef": "rappdirs",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.3.4"
       }
     },
     "rlang": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "rlang",
         "Version": "1.3.0",
@@ -1119,15 +1315,20 @@
         "Packaged": "2026-07-01 15:54:09 UTC; lionel",
         "Author": "Lionel Henry [aut, cre],\n  Hadley Wickham [aut],\n  mikefc [cph] (Hash implementation based on Mike's xxhashlite),\n  Yann Collet [cph] (Author of the embedded xxHash library),\n  Posit, PBC [cph, fnd]",
         "Maintainer": "Lionel Henry <lionel@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-07-05 08:40:02 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-07-05 10:20:23 UTC; unix",
-        "Archs": "rlang.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-07-06 08:24:36 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "rlang",
+        "RemoteRef": "rlang",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.3.0"
       }
     },
     "rmarkdown": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "rmarkdown",
@@ -1151,14 +1352,20 @@
         "Packaged": "2026-03-25 18:23:38 UTC; yihui",
         "Author": "JJ Allaire [aut],\n  Yihui Xie [aut, cre] (ORCID: <https://orcid.org/0000-0003-0645-5666>),\n  Christophe Dervieux [aut] (ORCID:\n    <https://orcid.org/0000-0003-4474-2498>),\n  Jonathan McPherson [aut],\n  Javier Luraschi [aut],\n  Kevin Ushey [aut],\n  Aron Atkins [aut],\n  Hadley Wickham [aut],\n  Joe Cheng [aut],\n  Winston Chang [aut],\n  Richard Iannone [aut] (ORCID: <https://orcid.org/0000-0003-3925-190X>),\n  Andrew Dunning [ctb] (ORCID: <https://orcid.org/0000-0003-0464-5036>),\n  Atsushi Yasumoto [ctb, cph] (ORCID:\n    <https://orcid.org/0000-0002-8335-495X>, cph: Number sections Lua\n    filter),\n  Barret Schloerke [ctb],\n  Carson Sievert [ctb] (ORCID: <https://orcid.org/0000-0002-4958-2844>),\n  Devon Ryan [ctb] (ORCID: <https://orcid.org/0000-0002-8549-0971>),\n  Frederik Aust [ctb] (ORCID: <https://orcid.org/0000-0003-4900-788X>),\n  Jeff Allen [ctb],\n  JooYoung Seo [ctb] (ORCID: <https://orcid.org/0000-0002-4064-6012>),\n  Malcolm Barrett [ctb],\n  Rob Hyndman [ctb],\n  Romain Lesur [ctb],\n  Roy Storey [ctb],\n  Ruben Arslan [ctb],\n  Sergio Oller [ctb],\n  Posit Software, PBC [cph, fnd],\n  jQuery UI contributors [ctb, cph] (jQuery UI library; authors listed in\n    inst/rmd/h/jqueryui/AUTHORS.txt),\n  Mark Otto [ctb] (Bootstrap library),\n  Jacob Thornton [ctb] (Bootstrap library),\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Alexander Farkas [ctb, cph] (html5shiv library),\n  Scott Jehl [ctb, cph] (Respond.js library),\n  Ivan Sagalaev [ctb, cph] (highlight.js library),\n  Greg Franko [ctb, cph] (tocify library),\n  John MacFarlane [ctb, cph] (Pandoc templates),\n  Google, Inc. [ctb, cph] (ioslides library),\n  Dave Raggett [ctb] (slidy library),\n  W3C [cph] (slidy library),\n  Dave Gandy [ctb, cph] (Font-Awesome),\n  Ben Sperry [ctb] (Ionicons),\n  Drifty [cph] (Ionicons),\n  Aidan Lister [ctb, cph] (jQuery StickyTabs),\n  Benct Philip Jonsson [ctb, cph] (pagebreak Lua filter),\n  Albert Krewinkel [ctb, cph] (pagebreak Lua filter)",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-03-26 16:30:02 UTC",
-        "Built": "R 4.5.2; ; 2026-03-26 17:17:50 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-03-27 05:15:21 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "rmarkdown",
+        "RemoteRef": "rmarkdown",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "2.31"
       }
     },
     "sass": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "sass",
@@ -1180,15 +1387,20 @@
         "Packaged": "2025-04-11 18:34:19 UTC; cpsievert",
         "Author": "Joe Cheng [aut],\n  Timothy Mastny [aut],\n  Richard Iannone [aut] (<https://orcid.org/0000-0003-3925-190X>),\n  Barret Schloerke [aut] (<https://orcid.org/0000-0001-9986-114X>),\n  Carson Sievert [aut, cre] (<https://orcid.org/0000-0002-4958-2844>),\n  Christophe Dervieux [ctb] (<https://orcid.org/0000-0003-4474-2498>),\n  RStudio [cph, fnd],\n  Sass Open Source Foundation [ctb, cph] (LibSass library),\n  Greter Marcel [ctb, cph] (LibSass library),\n  Mifsud Michael [ctb, cph] (LibSass library),\n  Hampton Catlin [ctb, cph] (LibSass library),\n  Natalie Weizenbaum [ctb, cph] (LibSass library),\n  Chris Eppstein [ctb, cph] (LibSass library),\n  Adams Joseph [ctb, cph] (json.cpp),\n  Trifunovic Nemanja [ctb, cph] (utf8.h)",
         "Maintainer": "Carson Sievert <carson@rstudio.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-04-11 19:50:02 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-04-11 21:17:02 UTC; unix",
-        "Archs": "sass.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-04-14 16:54:18 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "sass",
+        "RemoteRef": "sass",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.4.10"
       }
     },
     "shiny": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "shiny",
@@ -1211,14 +1423,20 @@
         "Packaged": "2026-06-18 18:59:37 UTC; cpsievert",
         "Author": "Winston Chang [aut] (ORCID: <https://orcid.org/0000-0002-1576-2126>),\n  Joe Cheng [aut],\n  JJ Allaire [aut],\n  Carson Sievert [aut, cre] (ORCID:\n    <https://orcid.org/0000-0002-4958-2844>),\n  Barret Schloerke [aut] (ORCID: <https://orcid.org/0000-0001-9986-114X>),\n  Garrick Aden-Buie [aut] (ORCID:\n    <https://orcid.org/0000-0002-7111-0077>),\n  Yihui Xie [aut],\n  Jeff Allen [aut],\n  Jonathan McPherson [aut],\n  Alan Dipert [aut],\n  Barbara Borges [aut],\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>),\n  jQuery Foundation [cph] (jQuery library and jQuery UI library),\n  jQuery contributors [ctb, cph] (jQuery library; authors listed in\n    inst/www/shared/jquery-AUTHORS.txt),\n  jQuery UI contributors [ctb, cph] (jQuery UI library; authors listed in\n    inst/www/shared/jqueryui/AUTHORS.txt),\n  Mark Otto [ctb] (Bootstrap library),\n  Jacob Thornton [ctb] (Bootstrap library),\n  Bootstrap contributors [ctb] (Bootstrap library),\n  Twitter, Inc [cph] (Bootstrap library),\n  Prem Nawaz Khan [ctb] (Bootstrap accessibility plugin),\n  Victor Tsaran [ctb] (Bootstrap accessibility plugin),\n  Dennis Lembree [ctb] (Bootstrap accessibility plugin),\n  Srinivasu Chakravarthula [ctb] (Bootstrap accessibility plugin),\n  Cathy O'Connor [ctb] (Bootstrap accessibility plugin),\n  PayPal, Inc [cph] (Bootstrap accessibility plugin),\n  Stefan Petre [ctb, cph] (Bootstrap-datepicker library),\n  Andrew Rowls [ctb, cph] (Bootstrap-datepicker library),\n  Brian Reavis [ctb, cph] (selectize.js library),\n  Salmen Bejaoui [ctb, cph] (selectize-plugin-a11y library),\n  Denis Ineshin [ctb, cph] (ion.rangeSlider library),\n  Sami Samhuri [ctb, cph] (Javascript strftime library),\n  SpryMedia Limited [ctb, cph] (DataTables library),\n  Ivan Sagalaev [ctb, cph] (highlight.js library),\n  R Core Team [ctb, cph] (tar implementation from R)",
         "Maintainer": "Carson Sievert <carson@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-06-21 14:10:08 UTC",
-        "Built": "R 4.5.2; ; 2026-06-21 15:26:39 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-06-22 05:05:56 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "shiny",
+        "RemoteRef": "shiny",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.14.0"
       }
     },
     "shinybusy": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "any",
+      "Repository": "RSPM",
       "description": {
         "Package": "shinybusy",
         "Title": "Busy Indicators and Notifications for 'Shiny' Applications",
@@ -1237,14 +1455,20 @@
         "Packaged": "2024-03-09 10:44:38 UTC; perri",
         "Author": "Fanny Meyer [aut],\n  Victor Perrier [aut, cre],\n  Silex Technologies [fnd] (https://www.silex-ip.com)",
         "Maintainer": "Victor Perrier <victor.perrier@dreamrs.fr>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2024-03-09 11:20:02 UTC",
-        "Built": "R 4.5.0; ; 2025-04-01 23:43:09 UTC; unix"
+        "Built": "R 4.4.0; ; 2024-04-26 05:22:11 UTC; unix",
+        "RemoteType": "any",
+        "RemotePkgRef": "any::shinybusy",
+        "RemoteRef": "any::shinybusy",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.3.3"
       }
     },
     "sourcetools": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "sourcetools",
         "Type": "Package",
@@ -1262,15 +1486,20 @@
         "NeedsCompilation": "yes",
         "Packaged": "2026-03-27 21:33:04 UTC; kevin",
         "Author": "Kevin Ushey [aut, cre]",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-03-28 06:10:35 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-03-29 10:04:03 UTC; unix",
-        "Archs": "sourcetools.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-03-30 17:16:16 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "sourcetools",
+        "RemoteRef": "sourcetools",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.1.7-2"
       }
     },
     "stringi": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "stringi",
         "Version": "1.8.7",
@@ -1293,14 +1522,20 @@
         "Author": "Marek Gagolewski [aut, cre, cph]\n    (<https://orcid.org/0000-0003-0637-6028>),\n  Bartek Tartanus [ctb],\n  Unicode, Inc. and others [ctb] (ICU4C source code, Unicode Character\n    Database)",
         "Maintainer": "Marek Gagolewski <marek@gagolewski.com>",
         "License_is_FOSS": "yes",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-03-27 13:10:02 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-03-31 21:46:23 UTC; unix"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-03-28 04:21:18 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "stringi",
+        "RemoteRef": "stringi",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.8.7"
       }
     },
     "tinytex": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "tinytex",
         "Type": "Package",
@@ -1319,14 +1554,20 @@
         "Packaged": "2026-06-15 22:44:20 UTC; yihui",
         "Author": "Yihui Xie [aut, cre, cph] (ORCID:\n    <https://orcid.org/0000-0003-0645-5666>),\n  Posit Software, PBC [cph, fnd],\n  Christophe Dervieux [ctb] (ORCID:\n    <https://orcid.org/0000-0003-4474-2498>),\n  Devon Ryan [ctb] (ORCID: <https://orcid.org/0000-0002-8549-0971>),\n  Ethan Heinzen [ctb],\n  Fernando Cagua [ctb]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-06-16 05:10:02 UTC",
-        "Built": "R 4.5.2; ; 2026-06-16 05:51:33 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-06-17 05:06:44 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "tinytex",
+        "RemoteRef": "tinytex",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.60"
       }
     },
     "withr": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "withr",
         "Title": "Run Code 'With' Temporarily Modified Global State",
@@ -1349,14 +1590,20 @@
         "Packaged": "2026-06-17 11:51:00 UTC; lionel",
         "Author": "Jim Hester [aut],\n  Lionel Henry [aut, cre],\n  Kirill Müller [aut],\n  Kevin Ushey [aut],\n  Hadley Wickham [aut],\n  Winston Chang [aut],\n  Jennifer Bryan [ctb],\n  Richard Cotton [ctb],\n  Posit Software, PBC [cph, fnd]",
         "Maintainer": "Lionel Henry <lionel@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2026-06-19 05:30:02 UTC",
-        "Built": "R 4.5.2; ; 2026-06-19 05:48:48 UTC; unix"
+        "Built": "R 4.4.0; ; 2026-06-20 12:55:56 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "withr",
+        "RemoteRef": "withr",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "3.0.3"
       }
     },
     "writexl": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "writexl",
         "Type": "Package",
@@ -1376,20 +1623,25 @@
         "Packaged": "2025-04-15 13:34:41 UTC; jeroen",
         "Author": "Jeroen Ooms [aut, cre] (<https://orcid.org/0000-0002-4035-0289>),\n  John McNamara [cph] (Author of libxlsxwriter (see AUTHORS and COPYRIGHT\n    files for details))",
         "Maintainer": "Jeroen Ooms <jeroenooms@gmail.com>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-04-15 14:40:03 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-04-15 14:51:55 UTC; unix",
-        "Archs": "writexl.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-04-16 04:20:42 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "writexl",
+        "RemoteRef": "writexl",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.5.4"
       }
     },
     "xfun": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "xfun",
         "Type": "Package",
         "Title": "Supporting Functions for Packages Maintained by 'Yihui Xie'",
-        "Version": "0.59",
+        "Version": "0.60",
         "Authors@R": "c(\n  person(\"Yihui\", \"Xie\", role = c(\"aut\", \"cre\", \"cph\"), email = \"xie@yihui.name\", comment = c(ORCID = \"0000-0003-0645-5666\", URL = \"https://yihui.org\")),\n  person(\"Wush\", \"Wu\", role = \"ctb\"),\n  person(\"Daijiang\", \"Li\", role = \"ctb\"),\n  person(\"Xianying\", \"Tan\", role = \"ctb\"),\n  person(\"Salim\", \"Brüggemann\", role = \"ctb\", email = \"salim-b@pm.me\", comment = c(ORCID = \"0000-0002-5329-5987\")),\n  person(\"Christophe\", \"Dervieux\", role = \"ctb\"),\n  person()\n  )",
         "Description": "Miscellaneous functions commonly used in other packages maintained by 'Yihui Xie'.",
         "Depends": "R (>= 3.2.0)",
@@ -1402,18 +1654,23 @@
         "VignetteBuilder": "litedown",
         "Config/roxygen2/version": "8.0.0",
         "NeedsCompilation": "yes",
-        "Packaged": "2026-06-18 20:33:05 UTC; yihui",
+        "Packaged": "2026-07-09 05:04:56 UTC; yihui",
         "Author": "Yihui Xie [aut, cre, cph] (ORCID:\n    <https://orcid.org/0000-0003-0645-5666>, URL: https://yihui.org),\n  Wush Wu [ctb],\n  Daijiang Li [ctb],\n  Xianying Tan [ctb],\n  Salim Brüggemann [ctb] (ORCID: <https://orcid.org/0000-0002-5329-5987>),\n  Christophe Dervieux [ctb]",
         "Maintainer": "Yihui Xie <xie@yihui.name>",
-        "Repository": "CRAN",
-        "Date/Publication": "2026-06-19 05:10:02 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2026-06-19 05:48:50 UTC; unix",
-        "Archs": "xfun.so.dSYM"
+        "Repository": "RSPM",
+        "Date/Publication": "2026-07-09 10:50:02 UTC",
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-07-09 16:44:35 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "xfun",
+        "RemoteRef": "xfun",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "0.60"
       }
     },
     "xtable": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "xtable",
         "Version": "1.8-8",
@@ -1428,17 +1685,24 @@
         "URL": "http://xtable.r-forge.r-project.org/",
         "Depends": "R (>= 2.10.0)",
         "License": "GPL (>= 2)",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "NeedsCompilation": "no",
         "Packaged": "2026-02-20 02:51:53 UTC; dsco0",
         "Author": "David B. Dahl [aut],\n  David Scott [aut, cre],\n  Charles Roosen [aut],\n  Arni Magnusson [aut],\n  Jonathan Swinton [aut],\n  Ajay Shah [ctb],\n  Arne Henningsen [ctb],\n  Benno Puetz [ctb],\n  Bernhard Pfaff [ctb],\n  Claudio Agostinelli [ctb],\n  Claudius Loehnert [ctb],\n  David Mitchell [ctb],\n  David Whiting [ctb],\n  Fernando da Rosa [ctb],\n  Guido Gay [ctb],\n  Guido Schulz [ctb],\n  Ian Fellows [ctb],\n  Jeff Laake [ctb],\n  John Walker [ctb],\n  Jun Yan [ctb],\n  Liviu Andronic [ctb],\n  Markus Loecher [ctb],\n  Martin Gubri [ctb],\n  Matthieu Stigler [ctb],\n  Robert Castelo [ctb],\n  Seth Falcon [ctb],\n  Stefan Edwards [ctb],\n  Sven Garbade [ctb],\n  Uwe Ligges [ctb]",
         "Date/Publication": "2026-02-22 11:20:02 UTC",
-        "Built": "R 4.5.2; ; 2026-02-22 13:16:04 UTC; unix"
+        "Encoding": "UTF-8",
+        "Built": "R 4.4.0; ; 2026-02-23 04:31:55 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "xtable",
+        "RemoteRef": "xtable",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "1.8-8"
       }
     },
     "yaml": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Type": "Package",
         "Package": "yaml",
@@ -1459,2116 +1723,72 @@
         "Packaged": "2025-12-08 16:53:07 UTC; hadleywickham",
         "Author": "Hadley Wickham [cre] (ORCID: <https://orcid.org/0000-0003-4757-117X>),\n  Shawn Garbett [ctb] (ORCID: <https://orcid.org/0000-0003-4079-5621>),\n  Jeremy Stephens [aut, ctb],\n  Kirill Simonov [aut],\n  Yihui Xie [ctb] (ORCID: <https://orcid.org/0000-0003-0645-5666>),\n  Zhuoer Dong [ctb],\n  Jeffrey Horner [ctb],\n  reikoch [ctb],\n  Will Beasley [ctb] (ORCID: <https://orcid.org/0000-0002-5613-5006>),\n  Brendan O'Connor [ctb],\n  Michael Quinn [ctb],\n  Charlie Gao [ctb],\n  Gregory R. Warnes [ctb],\n  Zhian N. Kamvar [ctb]",
         "Maintainer": "Hadley Wickham <hadley@posit.co>",
-        "Repository": "CRAN",
+        "Repository": "RSPM",
         "Date/Publication": "2025-12-10 07:00:01 UTC",
-        "Built": "R 4.5.2; aarch64-apple-darwin20; 2025-12-10 09:31:17 UTC; unix",
-        "Archs": "yaml.so.dSYM"
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2025-12-10 19:40:02 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "yaml",
+        "RemoteRef": "yaml",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "2.3.12"
       }
     },
     "zip": {
-      "Source": "CRAN",
-      "Repository": "https://cloud.r-project.org",
+      "Source": "RSPM",
+      "Repository": "https://packagemanager.posit.co/cran/latest",
       "description": {
         "Package": "zip",
         "Title": "Cross-Platform 'zip' Compression",
-        "Version": "2.3.3",
-        "Authors@R": "c(\n    person(\"Gábor\", \"Csárdi\", , \"csardi.gabor@gmail.com\", role = c(\"aut\", \"cre\")),\n    person(\"Kuba\", \"Podgórski\", role = \"ctb\"),\n    person(\"Rich\", \"Geldreich\", role = \"ctb\"),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"),\n           comment = c(ROR = \"03wc8by49\"))\n  )",
+        "Version": "3.0.1",
+        "Authors@R": "c(\n    person(\"Gábor\", \"Csárdi\", , \"csardi.gabor@gmail.com\", role = c(\"aut\", \"cre\")),\n    person(\"Kuba\", \"Podgórski\", role = \"ctb\"),\n    person(\"Rich\", \"Geldreich\", role = \"ctb\"),\n    person(\"Arm Limited\", role = c(\"ctb\", \"cph\"),\n           comment = \"bundled Mbed TLS crypto subset in src/mbedtls/ (Apache-2.0)\"),\n    person(\"Posit Software, PBC\", role = c(\"cph\", \"fnd\"),\n           comment = c(ROR = \"03wc8by49\"))\n  )",
         "Description": "Cross-Platform 'zip' Compression Library. A replacement for\n    the 'zip' function, that does not require any additional external\n    tools on any platform.",
         "License": "MIT + file LICENSE",
         "URL": "https://github.com/r-lib/zip, https://r-lib.github.io/zip/",
         "BugReports": "https://github.com/r-lib/zip/issues",
-        "Suggests": "covr, pillar, processx, R6, testthat, withr",
+        "LinkingTo": "cli",
+        "Suggests": "callr, cli, curl, pillar, processx, R6, testthat, webfakes,\nwithr",
         "Config/Needs/website": "tidyverse/tidytemplate",
         "Config/testthat/edition": "3",
+        "Config/testthat/parallel": "true",
+        "Config/testthat/start-first": "large-files, http",
         "Config/usethis/last-upkeep": "2025-05-07",
         "Encoding": "UTF-8",
-        "RoxygenNote": "7.3.2.9000",
+        "Config/roxygen2/version": "8.0.0",
         "NeedsCompilation": "yes",
-        "Packaged": "2025-05-13 13:31:44 UTC; gaborcsardi",
-        "Author": "Gábor Csárdi [aut, cre],\n  Kuba Podgórski [ctb],\n  Rich Geldreich [ctb],\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
+        "Packaged": "2026-07-13 07:41:12 UTC; gaborcsardi",
+        "Author": "Gábor Csárdi [aut, cre],\n  Kuba Podgórski [ctb],\n  Rich Geldreich [ctb],\n  Arm Limited [ctb, cph] (bundled Mbed TLS crypto subset in src/mbedtls/\n    (Apache-2.0)),\n  Posit Software, PBC [cph, fnd] (ROR: <https://ror.org/03wc8by49>)",
         "Maintainer": "Gábor Csárdi <csardi.gabor@gmail.com>",
-        "Repository": "CRAN",
-        "Date/Publication": "2025-05-13 14:10:02 UTC",
-        "Built": "R 4.5.0; aarch64-apple-darwin20; 2025-05-13 15:17:31 UTC; unix"
+        "Repository": "RSPM",
+        "Date/Publication": "2026-07-13 10:00:02 UTC",
+        "Built": "R 4.4.0; x86_64-pc-linux-gnu; 2026-07-14 04:39:34 UTC; unix",
+        "RemoteType": "standard",
+        "RemotePkgRef": "zip",
+        "RemoteRef": "zip",
+        "RemoteRepos": "https://packagemanager.posit.co/cran/__linux__/noble/latest",
+        "RemotePkgPlatform": "x86_64-pc-linux-gnu-ubuntu-24.04",
+        "RemoteSha": "3.0.1"
       }
     }
   },
   "files": {
+    ".github/workflows/ci-cd.yml": {
+      "checksum": "80dd8da922712d142d5bff19112597ac"
+    },
+    ".github/workflows/r.yml": {
+      "checksum": "ba681363888259a357e47af382ee8b1c"
+    },
     ".lintr": {
       "checksum": "6a7cd2e7a1c530d93e8353bc0433ec8f"
     },
-    ".Rlib/future/CITATION": {
-      "checksum": "e95c71b9cdbeaaa9724b59704dfc3c5a"
-    },
-    ".Rlib/future/demo/fibonacci.R": {
-      "checksum": "928689b1a5725d8967e0a662d03edf6d"
-    },
-    ".Rlib/future/demo/mandelbrot.R": {
-      "checksum": "cac27c3cbd7f13e7a10991ab7d88251a"
-    },
-    ".Rlib/future/DESCRIPTION": {
-      "checksum": "70a175af6811d6bda88ce09c730298e4"
-    },
-    ".Rlib/future/doc/future-1-overview.html": {
-      "checksum": "332e3be6b15ffa7abcaddbd2785ce7d1"
-    },
-    ".Rlib/future/doc/future-1-overview.md.rsp": {
-      "checksum": "932f7e00c6e6a063ed63e6edcc471d1d"
-    },
-    ".Rlib/future/doc/future-2-output.html": {
-      "checksum": "9c3a62d049458ee362ef62421a02c110"
-    },
-    ".Rlib/future/doc/future-2-output.md.rsp": {
-      "checksum": "7c8ed904dcf66ef89c651dc8fe672c5d"
-    },
-    ".Rlib/future/doc/future-2b-backend.html": {
-      "checksum": "076c0bb272cb79986809c03e8113ea6c"
-    },
-    ".Rlib/future/doc/future-2b-backend.md.rsp": {
-      "checksum": "ffc59186afd470b29e1c778d1638793e"
-    },
-    ".Rlib/future/doc/future-3-topologies.html": {
-      "checksum": "754e2a7b11e4a148a438bd857e37ca9b"
-    },
-    ".Rlib/future/doc/future-3-topologies.md.rsp": {
-      "checksum": "68791cb9e626704f17202bb592c102a4"
-    },
-    ".Rlib/future/doc/future-4-issues.html": {
-      "checksum": "46e1599e277515b8af72558f0746d37b"
-    },
-    ".Rlib/future/doc/future-4-issues.md.rsp": {
-      "checksum": "96b6688b3f188fa4ee4426798f2f83df"
-    },
-    ".Rlib/future/doc/future-4-non-exportable-objects.html": {
-      "checksum": "54f46445601c07d2d41389e4354fbe95"
-    },
-    ".Rlib/future/doc/future-4-non-exportable-objects.md.rsp": {
-      "checksum": "8895d401043b2d8000fccf2c05c85ca7"
-    },
-    ".Rlib/future/doc/future-5-startup.html": {
-      "checksum": "b856aa87ccbf8668be310544603bb006"
-    },
-    ".Rlib/future/doc/future-5-startup.md.rsp": {
-      "checksum": "2d8487265fbf66893363fe9e475858fe"
-    },
-    ".Rlib/future/doc/future-6-future-api-backend-specification.html": {
-      "checksum": "cebb62ed2f219cb97523617ec7c66e9c"
-    },
-    ".Rlib/future/doc/future-6-future-api-backend-specification.md.rsp": {
-      "checksum": "c0d51a0ae93542b597cfa7a85d42243c"
-    },
-    ".Rlib/future/doc/future-7-for-package-developers.html": {
-      "checksum": "fd37220947422db4b2bad90968c1e63a"
-    },
-    ".Rlib/future/doc/future-7-for-package-developers.md.rsp": {
-      "checksum": "341f7e23699f27b90e51ec5c0a761268"
-    },
-    ".Rlib/future/doc/future-8-how-future-is-validated.html": {
-      "checksum": "867cb2f331bb2062a921313f9d4e565c"
-    },
-    ".Rlib/future/doc/future-8-how-future-is-validated.md.rsp": {
-      "checksum": "06ee6fc32832fd1cb53561185fc70714"
-    },
-    ".Rlib/future/doc/index.html": {
-      "checksum": "ef030ec7a7a734fe23be2eb9b115543e"
-    },
-    ".Rlib/future/help/aliases.rds": {
-      "checksum": "f803f25c1b4f20472dce6596ae8e5cd7"
-    },
-    ".Rlib/future/help/AnIndex": {
-      "checksum": "e87104a95b85e4573eec8364b3570187"
-    },
-    ".Rlib/future/help/figures/logo.png": {
-      "checksum": "c860c99a8eef35ef321faf033432235f"
-    },
-    ".Rlib/future/help/future.rdb": {
-      "checksum": "8f4d8a9ff2d3a12bb80891fef30c8177"
-    },
-    ".Rlib/future/help/future.rdx": {
-      "checksum": "0dde40abdd382e8277b18c422a280d86"
-    },
-    ".Rlib/future/help/paths.rds": {
-      "checksum": "33168f46ed5f6145b6645429c287e409"
-    },
-    ".Rlib/future/html/00Index.html": {
-      "checksum": "68e92c97e05132a0c6e490d585227b47"
-    },
-    ".Rlib/future/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/future/INDEX": {
-      "checksum": "d83d54015b9083a597a935b1e5af405e"
-    },
-    ".Rlib/future/Meta/demo.rds": {
-      "checksum": "b21b2f7912482ff38dfa4a1ef3324fa3"
-    },
-    ".Rlib/future/Meta/features.rds": {
-      "checksum": "6e936bdf4dfd14911ddf370dc8063ab9"
-    },
-    ".Rlib/future/Meta/hsearch.rds": {
-      "checksum": "74dd1b4b70a198306a2ac77fb3b3a7cf"
-    },
-    ".Rlib/future/Meta/links.rds": {
-      "checksum": "e6235fe07efba679120e7501e2764a8b"
-    },
-    ".Rlib/future/Meta/nsInfo.rds": {
-      "checksum": "d0e045cfcfc7896b83dba8476f507d1d"
-    },
-    ".Rlib/future/Meta/package.rds": {
-      "checksum": "e952712c4b77b080daee6e360699c034"
-    },
-    ".Rlib/future/Meta/Rd.rds": {
-      "checksum": "a5cc8e1e9a35d01d76337c25a8b39cf1"
-    },
-    ".Rlib/future/Meta/vignette.rds": {
-      "checksum": "e387e074b6c5a914bbda91b03eff4c2b"
-    },
-    ".Rlib/future/NAMESPACE": {
-      "checksum": "9b8448f2526804b37249a223f996e6ed"
-    },
-    ".Rlib/future/NEWS.md": {
-      "checksum": "523f06c86d085123a710c43b6f6b25cc"
-    },
-    ".Rlib/future/R/future": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/future/R/future.rdb": {
-      "checksum": "d8b6f8ceed4b8a653ffe8b092fb2d133"
-    },
-    ".Rlib/future/R/future.rdx": {
-      "checksum": "b85b2ca1d5311ebb741dc361ef429733"
-    },
-    ".Rlib/future/testme/_epilogue/001.undo-future.R": {
-      "checksum": "b8c82453c48af54b8900cad8ba7c4947"
-    },
-    ".Rlib/future/testme/_epilogue/002.undo-state.R": {
-      "checksum": "d507f874f1e7e3a02caf07fabeaa83bb"
-    },
-    ".Rlib/future/testme/_epilogue/090.gc.R": {
-      "checksum": "3573c72602ff98dc7224652fb1114010"
-    },
-    ".Rlib/future/testme/_epilogue/099.session_info.R": {
-      "checksum": "351d953a6347d4187a40fa5f99ae4501"
-    },
-    ".Rlib/future/testme/_epilogue/995.detritus-connections.R": {
-      "checksum": "c176ba0d2e915d0cb091f83b0f112d1e"
-    },
-    ".Rlib/future/testme/_epilogue/999.detritus-files.R": {
-      "checksum": "e8e91653a7f7ce9042b12d143bd1f672"
-    },
-    ".Rlib/future/testme/_prologue/001.load.R": {
-      "checksum": "8ffd0f57536aa50972e5988dfc57dab2"
-    },
-    ".Rlib/future/testme/_prologue/002.record-state.R": {
-      "checksum": "e154dfc8601570c94bd1eadf4e3e6015"
-    },
-    ".Rlib/future/testme/_prologue/030.imports.R": {
-      "checksum": "a3f60768e72632ce15beea5fc5b0e08a"
-    },
-    ".Rlib/future/testme/_prologue/050.utils.R": {
-      "checksum": "b2c16f8a88d3032af2fb609b085641a6"
-    },
-    ".Rlib/future/testme/_prologue/090.context.R": {
-      "checksum": "291380a4339d01ab0d8b0e97a7b15661"
-    },
-    ".Rlib/future/testme/_prologue/090.options.R": {
-      "checksum": "0be9b50d75b4ee6da361ca23c350f76d"
-    },
-    ".Rlib/future/testme/_prologue/091.envvars.R": {
-      "checksum": "7edb111665d86a61d26829e991655825"
-    },
-    ".Rlib/future/testme/_prologue/099.future-setup.R": {
-      "checksum": "95110f4ba6c1e267e8c2f2d46e2695f5"
-    },
-    ".Rlib/future/testme/_prologue/995.detrius-connections.R": {
-      "checksum": "b084169193945c304a02575ef52bb5f9"
-    },
-    ".Rlib/future/testme/deploy.R": {
-      "checksum": "c0c9bb550381bf01a4f6fa762229ee85"
-    },
-    ".Rlib/future/testme/run.R": {
-      "checksum": "d797b58d32d8ef955b7037910ab50a02"
-    },
-    ".Rlib/future/testme/test-000.R": {
-      "checksum": "32408a250921a9b7216e3be2e9079ffa"
-    },
-    ".Rlib/future/testme/test-adhoc_native_to_utf8.R": {
-      "checksum": "cab715eabfc1ffa012e7e4cc844fca11"
-    },
-    ".Rlib/future/testme/test-backtrace.R": {
-      "checksum": "bffa5872b796755097bc072b3745c232"
-    },
-    ".Rlib/future/testme/test-bquote.R": {
-      "checksum": "0d0403e721bfcd3a6901f91de4de8043"
-    },
-    ".Rlib/future/testme/test-cancel.R": {
-      "checksum": "89dd4016c5cf1306b53fea276c265918"
-    },
-    ".Rlib/future/testme/test-capture_journals.R": {
-      "checksum": "9624dbc61aee4226ea58ec9c5db551d6"
-    },
-    ".Rlib/future/testme/test-check_connection_details.R": {
-      "checksum": "6a520a0d50cf097b21a3400612e117ef"
-    },
-    ".Rlib/future/testme/test-cluster-connection-clashes.R": {
-      "checksum": "34506161bb6138e1aa79f71943130b39"
-    },
-    ".Rlib/future/testme/test-cluster-missing-future-pkg.R": {
-      "checksum": "ce5ad6aca91b55758cca2a68a2695886"
-    },
-    ".Rlib/future/testme/test-cluster,worker-termination.R": {
-      "checksum": "ea307d7ace8b179ea9a4abf0c1da6c31"
-    },
-    ".Rlib/future/testme/test-demo-fibonacci.R": {
-      "checksum": "b26a4229f5272a871901e3086fa53bbd"
-    },
-    ".Rlib/future/testme/test-demo-mandelbrot.R": {
-      "checksum": "69d69bf28fecffd0ecb85162bed51864"
-    },
-    ".Rlib/future/testme/test-deprecation.R": {
-      "checksum": "7be718ec9912332e652fb752731fe522"
-    },
-    ".Rlib/future/testme/test-dotdotdot.R": {
-      "checksum": "8e387160a4d0e7b31de93b1d116eb659"
-    },
-    ".Rlib/future/testme/test-early-signaling.R": {
-      "checksum": "5c27eee4b9ad75b39b1af8c6d2b3cbca"
-    },
-    ".Rlib/future/testme/test-error_on_warn_2.R": {
-      "checksum": "1281d7e1bb62b0aae1336edff6960db8"
-    },
-    ".Rlib/future/testme/test-future,labels.R": {
-      "checksum": "34dc0134e8443ffa9372f992090e368a"
-    },
-    ".Rlib/future/testme/test-future,optsenvvars.R": {
-      "checksum": "ca2f67e4d02770f18bbc28c0b46299c1"
-    },
-    ".Rlib/future/testme/test-future.R": {
-      "checksum": "c2e9cf38f85d506e908edbe556e65d88"
-    },
-    ".Rlib/future/testme/test-futureAssign_OP_with_environment.R": {
-      "checksum": "109ad47d344b440d1fda748a751981ae"
-    },
-    ".Rlib/future/testme/test-futureAssign_OP_with_listenv.R": {
-      "checksum": "cf607196b18bdbc3c50b5181e5a67077"
-    },
-    ".Rlib/future/testme/test-futureAssign_OP.R": {
-      "checksum": "4c82f856d10fa8e16633581d7afb0c1a"
-    },
-    ".Rlib/future/testme/test-futureAssign.R": {
-      "checksum": "b7f94c428296c2447124bfa04a12ee2a"
-    },
-    ".Rlib/future/testme/test-FutureBackend-factories.R": {
-      "checksum": "18ba228a33b7e9e68434bea7144e1693"
-    },
-    ".Rlib/future/testme/test-futureCall.R": {
-      "checksum": "ff0f95abd7e74e333ce0d780846a3cf4"
-    },
-    ".Rlib/future/testme/test-FutureCondition.R": {
-      "checksum": "2e088eb2bb77104d8804d7f9e38f1915"
-    },
-    ".Rlib/future/testme/test-FutureError.R": {
-      "checksum": "1c09c3407cbad50979f2c58162529c47"
-    },
-    ".Rlib/future/testme/test-FutureGlobals.R": {
-      "checksum": "2a435b0fcbdc2478d8e9b7df684df4ab"
-    },
-    ".Rlib/future/testme/test-futureOf_with_environment.R": {
-      "checksum": "baeffb555478754d9d81ea6539430ccd"
-    },
-    ".Rlib/future/testme/test-futureOf_with_listenv.R": {
-      "checksum": "e7f5e5647fa5e016e139ea527a4c1012"
-    },
-    ".Rlib/future/testme/test-futureOf.R": {
-      "checksum": "42a0f38ee2b816aff6c3cc87c961d16b"
-    },
-    ".Rlib/future/testme/test-FutureRegistry.R": {
-      "checksum": "147d9be3cb85576835fc92ba2ee9dcc0"
-    },
-    ".Rlib/future/testme/test-futures.R": {
-      "checksum": "3b93fc6a2eafb21643416ef6a10e3040"
-    },
-    ".Rlib/future/testme/test-futureSessionInfo.R": {
-      "checksum": "ab9389b19d558e5a178cd88900b9dd96"
-    },
-    ".Rlib/future/testme/test-globals,formulas.R": {
-      "checksum": "478d4abf69f7cf9edd646e6bbfc59272"
-    },
-    ".Rlib/future/testme/test-globals,locals.R": {
-      "checksum": "08d055f0bbec57a263d772d111620e85"
-    },
-    ".Rlib/future/testme/test-globals,manual.R": {
-      "checksum": "eab74258cdcb67bc0b39e899750ef63f"
-    },
-    ".Rlib/future/testme/test-globals,NSE.R": {
-      "checksum": "fb22896f8a38c53fd905c10c7033057f"
-    },
-    ".Rlib/future/testme/test-globals,packages.R": {
-      "checksum": "d94e954878ec1cc719334a180efd8442"
-    },
-    ".Rlib/future/testme/test-globals,resolve.R": {
-      "checksum": "b6593afcf3d8610bd20c121626f93206"
-    },
-    ".Rlib/future/testme/test-globals,S4methods.R": {
-      "checksum": "bd87602a7405d4e2927a9638ac7f2c7e"
-    },
-    ".Rlib/future/testme/test-globals,subassignment.R": {
-      "checksum": "dffc1bf1fe818d17b1db4c87d822bf46"
-    },
-    ".Rlib/future/testme/test-globals,toolarge.R": {
-      "checksum": "b4c7367aed8dd72d7a62fa83db17cce3"
-    },
-    ".Rlib/future/testme/test-globals,tricky_recursive.R": {
-      "checksum": "fed83ab246cceed53624987834c284f6"
-    },
-    ".Rlib/future/testme/test-globals,tricky.R": {
-      "checksum": "e73a19d6c084177a9db44664dcee1880"
-    },
-    ".Rlib/future/testme/test-globals,tricky2.R": {
-      "checksum": "22e36b0edefba835dbfb9bec056950ee"
-    },
-    ".Rlib/future/testme/test-globalsOf,tweaks.R": {
-      "checksum": "ec170e18618d6d12bb08357aab8c025c"
-    },
-    ".Rlib/future/testme/test-immediateCondition.R": {
-      "checksum": "77b17583d1b6ea5f36af07891751a7a2"
-    },
-    ".Rlib/future/testme/test-import_from.R": {
-      "checksum": "9ac0ed7cb8f003dcf63ccbc5f558f8f6"
-    },
-    ".Rlib/future/testme/test-interrupts-from-worker-itself.R": {
-      "checksum": "c0b4a5a8a4f6cbeafd0175ff427d1e64"
-    },
-    ".Rlib/future/testme/test-invalid-owner.R": {
-      "checksum": "019419ddfe3d3b2085882067ac0ef73c"
-    },
-    ".Rlib/future/testme/test-journal-methods.R": {
-      "checksum": "81aadd2ea6c0ec15a57247629d78ac8f"
-    },
-    ".Rlib/future/testme/test-make_rng_seeds.R": {
-      "checksum": "2a11758b3a3c8f67ed2aced40303083f"
-    },
-    ".Rlib/future/testme/test-makeClusterFuture.R": {
-      "checksum": "c54d414191966173c8ee52c464a1c26a"
-    },
-    ".Rlib/future/testme/test-makeClusterSequential.R": {
-      "checksum": "84b4ea5b9ee7d728f6724bb8f993ffcd"
-    },
-    ".Rlib/future/testme/test-mandelbrot.R": {
-      "checksum": "9548266d680f91f6428ebd26daea0493"
-    },
-    ".Rlib/future/testme/test-marshalling.R": {
-      "checksum": "ee5a00814389a26f4bd8a040ccd5764f"
-    },
-    ".Rlib/future/testme/test-minifuture.R": {
-      "checksum": "cb12445868d59fcacc1405b1cafb187a"
-    },
-    ".Rlib/future/testme/test-misuse-connections.R": {
-      "checksum": "a8d30a3848e7783e1404516fe9f27233"
-    },
-    ".Rlib/future/testme/test-mpi.R": {
-      "checksum": "7c457fcab7658cf0daa043adc13c10ff"
-    },
-    ".Rlib/future/testme/test-multicore,multithreading.R": {
-      "checksum": "7d56667cb295a1b7b74397442b5c1b1d"
-    },
-    ".Rlib/future/testme/test-multicore,worker-termination.R": {
-      "checksum": "6bf3ead715d5f54cce79a32d710ec027"
-    },
-    ".Rlib/future/testme/test-multisession-libpaths.R": {
-      "checksum": "8ad459b7d4ccb1c0fd208aeed0f8577c"
-    },
-    ".Rlib/future/testme/test-nbrOfWorkers-legacy.R": {
-      "checksum": "b72fa7665dc1a7e8bd0c13b3d0655e12"
-    },
-    ".Rlib/future/testme/test-nbrOfWorkers.R": {
-      "checksum": "3eb903755f92418dcdd09329672bdc8f"
-    },
-    ".Rlib/future/testme/test-nested_futures,mc.cores.R": {
-      "checksum": "6127f8d91009fa875a118831fefaa0c9"
-    },
-    ".Rlib/future/testme/test-nested_futures.R": {
-      "checksum": "11abc71fd620f7326f84bb3ab71a6f08"
-    },
-    ".Rlib/future/testme/test-non-exportable,connections.R": {
-      "checksum": "648ad79b076ca8ee5d8c6504b1ebf92d"
-    },
-    ".Rlib/future/testme/test-objectSize.R": {
-      "checksum": "3277864de06b5bea65992386aaf728d7"
-    },
-    ".Rlib/future/testme/test-plan.R": {
-      "checksum": "9980231d2a51b51209fbaab7b9a621cd"
-    },
-    ".Rlib/future/testme/test-protected-classes.R": {
-      "checksum": "be42c1a91dc9d5b08815ca6a45a203ff"
-    },
-    ".Rlib/future/testme/test-prune_pkg_code.R": {
-      "checksum": "806e8255ce66b247321e1cb68bdac5e9"
-    },
-    ".Rlib/future/testme/test-readImmediateConditions.R": {
-      "checksum": "b28e1a83967613ff1929ce6c91411a30"
-    },
-    ".Rlib/future/testme/test-registerClusterTypes.R": {
-      "checksum": "ea33532a37bd5fe8d314feec7b30276f"
-    },
-    ".Rlib/future/testme/test-relaying,muffle.R": {
-      "checksum": "0f8c8580b2ea24faf1494f3b81953c54"
-    },
-    ".Rlib/future/testme/test-relaying,split.R": {
-      "checksum": "b6d5b1f1dbac76f8533c9194e225222c"
-    },
-    ".Rlib/future/testme/test-relaying.R": {
-      "checksum": "40a8de2234cc367f406ab20074699f44"
-    },
-    ".Rlib/future/testme/test-requestCore.R": {
-      "checksum": "f227207f6bf6462fa1a536ea52ee6d7a"
-    },
-    ".Rlib/future/testme/test-requestNode.R": {
-      "checksum": "6ca07cf0ea9c768b7b8882477144d8ac"
-    },
-    ".Rlib/future/testme/test-reserved-keyword-functions.R": {
-      "checksum": "e7ffbbf8831deaa2359a31dd20f49f8e"
-    },
-    ".Rlib/future/testme/test-reset-methods.R": {
-      "checksum": "95b4c74274c19a51ac20314d4b83e6ee"
-    },
-    ".Rlib/future/testme/test-reset.R": {
-      "checksum": "c438210b3141d5372bae710d339fba34"
-    },
-    ".Rlib/future/testme/test-resolve.R": {
-      "checksum": "14d9406d35d4b578b978080628d9b208"
-    },
-    ".Rlib/future/testme/test-resolved-non-blocking-test.R": {
-      "checksum": "e592a7dcfe6c4e53b9332dc317ad5ef6"
-    },
-    ".Rlib/future/testme/test-result.R": {
-      "checksum": "234d5911526a421d940f8dde040da861"
-    },
-    ".Rlib/future/testme/test-rng_utils.R": {
-      "checksum": "d18a355a1e9857497e1bce7fcc1f066b"
-    },
-    ".Rlib/future/testme/test-rng.R": {
-      "checksum": "998019ffbbe6b85d4ee1bf856cb298af"
-    },
-    ".Rlib/future/testme/test-sequential.R": {
-      "checksum": "3db9382a1cfb39a14e330ed4b380ad45"
-    },
-    ".Rlib/future/testme/test-sessionDetails.R": {
-      "checksum": "59e454c0d6e590d56921d4dfd6fff67a"
-    },
-    ".Rlib/future/testme/test-signalEarly.R": {
-      "checksum": "e67b27b3da7b74e9d8cd30aac191bd9d"
-    },
-    ".Rlib/future/testme/test-sourceFutureStartupScript.R": {
-      "checksum": "e2c30ddff6a7086430ef858b12dc688d"
-    },
-    ".Rlib/future/testme/test-startup-onAttach.R": {
-      "checksum": "318a1d0266fa48219d993f22752c5597"
-    },
-    ".Rlib/future/testme/test-startup-onLoad.R": {
-      "checksum": "a6a6cc8628aac04e999342ed8cec9dd6"
-    },
-    ".Rlib/future/testme/test-startup-parseCmdArgs.R": {
-      "checksum": "c3f5f8e2dfad3b1d6d87b1a935078685"
-    },
-    ".Rlib/future/testme/test-stdout.R": {
-      "checksum": "7ad976119c9e81d31dcc147cffbe75ca"
-    },
-    ".Rlib/future/testme/test-stealth_sample.R": {
-      "checksum": "b7e1cc060f245e74cba8440fe49c8930"
-    },
-    ".Rlib/future/testme/test-sticky_globals.R": {
-      "checksum": "526ff5da30b99ca04213aafbbabf2f74"
-    },
-    ".Rlib/future/testme/test-timeouts.R": {
-      "checksum": "e5e9726db3bbc05b6bd5e8ce262db0fa"
-    },
-    ".Rlib/future/testme/test-tweak.R": {
-      "checksum": "53d18ec52def31e966adf2c6fc503a67"
-    },
-    ".Rlib/future/testme/test-tweakable.R": {
-      "checksum": "bfa7d5158b3f5139bde63fd55185c793"
-    },
-    ".Rlib/future/testme/test-UniprocessFuture.R": {
-      "checksum": "750620cdd2bde686542378eedaa54076"
-    },
-    ".Rlib/future/testme/test-update_package_option.R": {
-      "checksum": "772dc23410f657e3d28d8551180af332"
-    },
-    ".Rlib/future/testme/test-utils-basic.R": {
-      "checksum": "21ad59f7f98950051bba56bf37b74081"
-    },
-    ".Rlib/future/testme/test-utils.R": {
-      "checksum": "1281c517f87c3ac2b429b4f5d78f2edd"
-    },
-    ".Rlib/future/testme/test-uuid.R": {
-      "checksum": "0dbdff1ea1fdac9bd2a9919b43f757d5"
-    },
-    ".Rlib/future/testme/test-value-error-cancels-set.R": {
-      "checksum": "5681892e3119b98de2c3ddf87b7de078"
-    },
-    ".Rlib/future/testme/test-value-list-options.R": {
-      "checksum": "2b7ccc95b6380686f73bb34494ffa685"
-    },
-    ".Rlib/future/testme/test-value.R": {
-      "checksum": "b65d51b9bf7cf28a636e310f8ffbd1b6"
-    },
-    ".Rlib/future/testme/test-whichIndex.R": {
-      "checksum": "804acb94ed11a7994cc31007be15a3be"
-    },
-    ".Rlib/future/vignettes-static/future-1-overview.md.rsp.rsp": {
-      "checksum": "ff035af92b02ce2ca265a3ba9a163cc1"
-    },
-    ".Rlib/future/vignettes-static/incl/future-1-overview-example2.R": {
-      "checksum": "06146c680494f2342ccc1e790776d019"
-    },
-    ".Rlib/future/vignettes-static/incl/future-1-overview-example3.R": {
-      "checksum": "683bafe830fbc4238eed52677b58e166"
-    },
-    ".Rlib/future/WORDLIST": {
-      "checksum": "80f5da996a942396b8e2c2e6b14b5c05"
-    },
-    ".Rlib/globals/DESCRIPTION": {
-      "checksum": "3842821f4d0679ed38311d6a6a75e96b"
-    },
-    ".Rlib/globals/help/aliases.rds": {
-      "checksum": "3ee63cec4f48eab1b78f3057b19a10f3"
-    },
-    ".Rlib/globals/help/AnIndex": {
-      "checksum": "a5da3cfcd43bf0951e758f2b4da0f82c"
-    },
-    ".Rlib/globals/help/globals.rdb": {
-      "checksum": "383e55c05f876574cb20fa0b786b571d"
-    },
-    ".Rlib/globals/help/globals.rdx": {
-      "checksum": "9e2c401b1f1277dca92cc00d5c1dde43"
-    },
-    ".Rlib/globals/help/paths.rds": {
-      "checksum": "170dc1fc12017da9d4367bd726fe2a87"
-    },
-    ".Rlib/globals/html/00Index.html": {
-      "checksum": "1fa3db7168bf0dbcc2dde45bc0098066"
-    },
-    ".Rlib/globals/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/globals/INDEX": {
-      "checksum": "701b43a827bd89d8a823e989a3823370"
-    },
-    ".Rlib/globals/Meta/features.rds": {
-      "checksum": "6e936bdf4dfd14911ddf370dc8063ab9"
-    },
-    ".Rlib/globals/Meta/hsearch.rds": {
-      "checksum": "c3de53fb5fffa2fc075af7e0c8ce2f32"
-    },
-    ".Rlib/globals/Meta/links.rds": {
-      "checksum": "93abbd3fd60d1d09d41a92b75d91a2c1"
-    },
-    ".Rlib/globals/Meta/nsInfo.rds": {
-      "checksum": "796f4a8d8d2e97b5ac97b6b8a300e0a9"
-    },
-    ".Rlib/globals/Meta/package.rds": {
-      "checksum": "d392d28b6ca522dd704decc47e249fd0"
-    },
-    ".Rlib/globals/Meta/Rd.rds": {
-      "checksum": "d6744b68053d7be5a0ac032fba74883e"
-    },
-    ".Rlib/globals/NAMESPACE": {
-      "checksum": "fa11319ab7592ba06024b72027e6a29b"
-    },
-    ".Rlib/globals/NEWS.md": {
-      "checksum": "f2a271e0e3821b1f93b031d50c71f80f"
-    },
-    ".Rlib/globals/R/globals": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/globals/R/globals.rdb": {
-      "checksum": "fa1ae12383277900561bbf8c8947797f"
-    },
-    ".Rlib/globals/R/globals.rdx": {
-      "checksum": "98e4dddc6cb64d96bc4671e9ed5c714f"
-    },
-    ".Rlib/globals/testme/_epilogue/002.undo-state.R": {
-      "checksum": "7c8a020554782543b549163045b31d1c"
-    },
-    ".Rlib/globals/testme/_epilogue/090.gc.R": {
-      "checksum": "3573c72602ff98dc7224652fb1114010"
-    },
-    ".Rlib/globals/testme/_epilogue/099.session_info.R": {
-      "checksum": "351d953a6347d4187a40fa5f99ae4501"
-    },
-    ".Rlib/globals/testme/_epilogue/995.detritus-connections.R": {
-      "checksum": "26e3c1291e3360b94e8d6360193048d2"
-    },
-    ".Rlib/globals/testme/_epilogue/999.detritus-files.R": {
-      "checksum": "e8e91653a7f7ce9042b12d143bd1f672"
-    },
-    ".Rlib/globals/testme/_prologue/001.load.R": {
-      "checksum": "403f603bcdde48be3c914ba0eb047d7a"
-    },
-    ".Rlib/globals/testme/_prologue/005.globals.R": {
-      "checksum": "9fc3930b860f6cbe363a713986a14094"
-    },
-    ".Rlib/globals/testme/_prologue/010.record-state.R": {
-      "checksum": "e154dfc8601570c94bd1eadf4e3e6015"
-    },
-    ".Rlib/globals/testme/_prologue/030.imports.R": {
-      "checksum": "4af134d3a23279830a4f12578bdc5a1b"
-    },
-    ".Rlib/globals/testme/_prologue/050.utils.R": {
-      "checksum": "942a74966b29c8fb0ba9379745fa293f"
-    },
-    ".Rlib/globals/testme/_prologue/090.context.R": {
-      "checksum": "91edf3301dc1c86e9c9a2d5b425b168a"
-    },
-    ".Rlib/globals/testme/_prologue/090.options.R": {
-      "checksum": "0be9b50d75b4ee6da361ca23c350f76d"
-    },
-    ".Rlib/globals/testme/_prologue/091.envvars.R": {
-      "checksum": "7edb111665d86a61d26829e991655825"
-    },
-    ".Rlib/globals/testme/_prologue/995.detrius-connections.R": {
-      "checksum": "b084169193945c304a02575ef52bb5f9"
-    },
-    ".Rlib/globals/testme/deploy.R": {
-      "checksum": "23755d07e02bff6381888b5fd976394a"
-    },
-    ".Rlib/globals/testme/run.R": {
-      "checksum": "60b8c65a881c7b0e9118edab43fba2de"
-    },
-    ".Rlib/globals/testme/test-cleanup.R": {
-      "checksum": "efc5ada08aeed497e193dbe3f2b5d79d"
-    },
-    ".Rlib/globals/testme/test-codetools-bug16.R": {
-      "checksum": "22aa118e8e29f4e27daf6b39fe4c8ad6"
-    },
-    ".Rlib/globals/testme/test-conservative.R": {
-      "checksum": "9de3ded1b10d6944d9c464a52b9492b1"
-    },
-    ".Rlib/globals/testme/test-dotdotdot.R": {
-      "checksum": "0d70baaa212110714e8faf50f7ea0fbd"
-    },
-    ".Rlib/globals/testme/test-findGlobals,dfs.R": {
-      "checksum": "0697c5362e08d81de19d0dada151794b"
-    },
-    ".Rlib/globals/testme/test-findGlobals.R": {
-      "checksum": "1534fc8d2c6f8bc25d7684a440a52c07"
-    },
-    ".Rlib/globals/testme/test-formulas.R": {
-      "checksum": "7cdb459a351ba26ab4698855e1238618"
-    },
-    ".Rlib/globals/testme/test-Globals.R": {
-      "checksum": "8606b025052daaddb80e876056790b79"
-    },
-    ".Rlib/globals/testme/test-globalsByName.R": {
-      "checksum": "eb15502e11fe53aeda2cd899b0fd1542"
-    },
-    ".Rlib/globals/testme/test-globalsOf,locals.R": {
-      "checksum": "53555f695d48514251046e3117664029"
-    },
-    ".Rlib/globals/testme/test-globalsOf.R": {
-      "checksum": "447efa03c31951789076023c82f224a1"
-    },
-    ".Rlib/globals/testme/test-liberal.R": {
-      "checksum": "943b3d89175cd49e9116a22dc5560e69"
-    },
-    ".Rlib/globals/testme/test-utils.R": {
-      "checksum": "098f1cfccb1edac664841b54f85320c6"
-    },
-    ".Rlib/globals/testme/test-walkAST.R": {
-      "checksum": "2c5ca2b3c401520f39134861ff7d694a"
-    },
-    ".Rlib/globals/testme/test-zzz.R": {
-      "checksum": "ad6f3e6981878302d85cbba7e87fe1ab"
-    },
-    ".Rlib/globals/WORDLIST": {
-      "checksum": "19193315e2561b6ae105558833599968"
-    },
-    ".Rlib/httr2/DESCRIPTION": {
-      "checksum": "6362496d82dd777aa20a46da43b3eedd"
-    },
-    ".Rlib/httr2/doc/httr2.html": {
-      "checksum": "864c0acec3071613934666bbfab7e176"
-    },
-    ".Rlib/httr2/doc/httr2.R": {
-      "checksum": "62d1743a605c7aa827b5742a25950087"
-    },
-    ".Rlib/httr2/doc/httr2.Rmd": {
-      "checksum": "5fc3bdfe418e0ed0f391c7b38253cbd7"
-    },
-    ".Rlib/httr2/doc/index.html": {
-      "checksum": "ecc9e42cf23990299bac47836c53871f"
-    },
-    ".Rlib/httr2/help/aliases.rds": {
-      "checksum": "037bcd1edf72ca2a2a77b1c2bbdc4691"
-    },
-    ".Rlib/httr2/help/AnIndex": {
-      "checksum": "f9c7512de4ee5c3e5c38fd68afe083cd"
-    },
-    ".Rlib/httr2/help/figures/lifecycle-archived.svg": {
-      "checksum": "a1cbaf3f328e8d74e747faacf640c7fc"
-    },
-    ".Rlib/httr2/help/figures/lifecycle-defunct.svg": {
-      "checksum": "6f521fb1819410630e279d1abf88685a"
-    },
-    ".Rlib/httr2/help/figures/lifecycle-deprecated.svg": {
-      "checksum": "391f696f961e28914508628a7af31b74"
-    },
-    ".Rlib/httr2/help/figures/lifecycle-experimental.svg": {
-      "checksum": "691b1eb2aec9e1bec96b79d11ba5e631"
-    },
-    ".Rlib/httr2/help/figures/lifecycle-maturing.svg": {
-      "checksum": "405e252e54a79b33522e9699e4e9051c"
-    },
-    ".Rlib/httr2/help/figures/lifecycle-questioning.svg": {
-      "checksum": "f41ed996be135fb35afe00641621da61"
-    },
-    ".Rlib/httr2/help/figures/lifecycle-soft-deprecated.svg": {
-      "checksum": "306bef67d1c636f209024cf2403846fd"
-    },
-    ".Rlib/httr2/help/figures/lifecycle-stable.svg": {
-      "checksum": "ed42e3fbd7cc30bc6ca8fa9b658e24a8"
-    },
-    ".Rlib/httr2/help/figures/lifecycle-superseded.svg": {
-      "checksum": "bf2f1ad432ecccee3400afe533404113"
-    },
-    ".Rlib/httr2/help/figures/logo.png": {
-      "checksum": "5533c65601c00e2027a5b4f2f11d460c"
-    },
-    ".Rlib/httr2/help/httr2.rdb": {
-      "checksum": "6f965306a8139f3d833d34dda9a87283"
-    },
-    ".Rlib/httr2/help/httr2.rdx": {
-      "checksum": "8dca4c5ba4810bf425a7f1c61af5b1c2"
-    },
-    ".Rlib/httr2/help/paths.rds": {
-      "checksum": "2c16b41d09004fd05adc516f77dc8016"
-    },
-    ".Rlib/httr2/html/00Index.html": {
-      "checksum": "4c4bbd4bb03dc27ba1ec791b5e40716a"
-    },
-    ".Rlib/httr2/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/httr2/INDEX": {
-      "checksum": "3e558d5aec9b9ec92e0a003275992d3d"
-    },
-    ".Rlib/httr2/LICENSE": {
-      "checksum": "67c32986371e772e798cc5d9f2dcc504"
-    },
-    ".Rlib/httr2/Meta/features.rds": {
-      "checksum": "6e936bdf4dfd14911ddf370dc8063ab9"
-    },
-    ".Rlib/httr2/Meta/hsearch.rds": {
-      "checksum": "15ae0c492ba0935c48c31bec5f562019"
-    },
-    ".Rlib/httr2/Meta/links.rds": {
-      "checksum": "af8be5f92a126f79f0fa50193b6d781c"
-    },
-    ".Rlib/httr2/Meta/nsInfo.rds": {
-      "checksum": "28fbbedd61f1e5e540797f95612200f3"
-    },
-    ".Rlib/httr2/Meta/package.rds": {
-      "checksum": "3fa28a1d566d800ce3912db70109657c"
-    },
-    ".Rlib/httr2/Meta/Rd.rds": {
-      "checksum": "848b76764daa29edbc4bf8d00d5657e8"
-    },
-    ".Rlib/httr2/Meta/vignette.rds": {
-      "checksum": "d49609edcbbf094b2425d3d97d94d448"
-    },
-    ".Rlib/httr2/NAMESPACE": {
-      "checksum": "446ce24d3eb10dd0e7b72b247b6c5b38"
-    },
-    ".Rlib/httr2/NEWS.md": {
-      "checksum": "469b86d5b7f92bd26ef6fadd8edaeb95"
-    },
-    ".Rlib/httr2/R/httr2": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/httr2/R/httr2.rdb": {
-      "checksum": "07f32ca6dbca28e6edc098e22a2e2403"
-    },
-    ".Rlib/httr2/R/httr2.rdx": {
-      "checksum": "9f830e0621cc90d884f3db3a5442d67e"
-    },
-    ".Rlib/httr2/R/sysdata.rdb": {
-      "checksum": "abe152760035411ed0292dae0f3201c8"
-    },
-    ".Rlib/httr2/R/sysdata.rdx": {
-      "checksum": "f0510f5ec4b92a55b61833bc155429f5"
-    },
-    ".Rlib/jose/DESCRIPTION": {
-      "checksum": "f1514c468594b8c6424b7bc528d7e77a"
-    },
-    ".Rlib/jose/doc/index.html": {
-      "checksum": "01259beb05ce95ddaa02ce6d42d60532"
-    },
-    ".Rlib/jose/doc/jwk.html": {
-      "checksum": "c9559aad681be5da8904d4ec6a04667a"
-    },
-    ".Rlib/jose/doc/jwk.R": {
-      "checksum": "29e2aac147d92cf27fe1599384b4dc7b"
-    },
-    ".Rlib/jose/doc/jwk.Rmd": {
-      "checksum": "96627f6265db4bc01d91308be5b556a5"
-    },
-    ".Rlib/jose/doc/jwt.html": {
-      "checksum": "a5a26fc075176ca18c5fc2a1fe2cfb88"
-    },
-    ".Rlib/jose/doc/jwt.R": {
-      "checksum": "4f480d706b8274429a9d49fe0667bec9"
-    },
-    ".Rlib/jose/doc/jwt.Rmd": {
-      "checksum": "2c903be7d32ff6c10d5a32d401c02e2c"
-    },
-    ".Rlib/jose/help/aliases.rds": {
-      "checksum": "fc05899755aa5afcecc75bd10ee47cc3"
-    },
-    ".Rlib/jose/help/AnIndex": {
-      "checksum": "f555dfae4f7dc6751671527bc1b4a831"
-    },
-    ".Rlib/jose/help/jose.rdb": {
-      "checksum": "9978651d976fa72bf8c5fea841c74731"
-    },
-    ".Rlib/jose/help/jose.rdx": {
-      "checksum": "18e6013edb3012af761d24a480f6bd28"
-    },
-    ".Rlib/jose/help/paths.rds": {
-      "checksum": "1507d4a6ab6e8105794b4f493f7a2f7d"
-    },
-    ".Rlib/jose/html/00Index.html": {
-      "checksum": "a4190aac7a6d6e3101adad27e6eeef27"
-    },
-    ".Rlib/jose/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/jose/INDEX": {
-      "checksum": "0327d78e8825950e9e06825c8ae1e596"
-    },
-    ".Rlib/jose/LICENSE": {
-      "checksum": "f35c1dd7a6e913e967bd6e03dd8a3c18"
-    },
-    ".Rlib/jose/Meta/features.rds": {
-      "checksum": "6e936bdf4dfd14911ddf370dc8063ab9"
-    },
-    ".Rlib/jose/Meta/hsearch.rds": {
-      "checksum": "5f98f34ee0794aef776478b57b927417"
-    },
-    ".Rlib/jose/Meta/links.rds": {
-      "checksum": "836931eb0089f5550cc80e46ec997b70"
-    },
-    ".Rlib/jose/Meta/nsInfo.rds": {
-      "checksum": "2c5ac75be880da40a5d93915e065aaaf"
-    },
-    ".Rlib/jose/Meta/package.rds": {
-      "checksum": "922fa0db75a2bc7fab50bacd069bde8d"
-    },
-    ".Rlib/jose/Meta/Rd.rds": {
-      "checksum": "73ab6ac1f875a2f1ae11f47027f311db"
-    },
-    ".Rlib/jose/Meta/vignette.rds": {
-      "checksum": "8225dc9d4d1bc6bb8e26c59b7f20f2f6"
-    },
-    ".Rlib/jose/NAMESPACE": {
-      "checksum": "1f3570557011d59c876b870b9afff232"
-    },
-    ".Rlib/jose/NEWS": {
-      "checksum": "8a685488fe95320ebebddc9b775f4e30"
-    },
-    ".Rlib/jose/R/jose": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/jose/R/jose.rdb": {
-      "checksum": "a3547e20a1f74e97dda4b879bee39b84"
-    },
-    ".Rlib/jose/R/jose.rdx": {
-      "checksum": "09fec43e50a5a6de1c78cf8979aea71f"
-    },
-    ".Rlib/jose/WORDLIST": {
-      "checksum": "10b583ed1c6c81b1893db08afaa88170"
-    },
-    ".Rlib/listenv/DESCRIPTION": {
-      "checksum": "6ae640789f02ac6e94544bfc29df2cda"
-    },
-    ".Rlib/listenv/doc/index.html": {
-      "checksum": "73719ec27767c000efe70a779315ce51"
-    },
-    ".Rlib/listenv/doc/listenv.html": {
-      "checksum": "462a5f1971f6e452f8cb5f35729d9988"
-    },
-    ".Rlib/listenv/doc/listenv.md.rsp": {
-      "checksum": "c206b19b22c6ab5d0d4149ff8d6b3666"
-    },
-    ".Rlib/listenv/help/aliases.rds": {
-      "checksum": "646b021a636f13fbf21eb991ac0412f5"
-    },
-    ".Rlib/listenv/help/AnIndex": {
-      "checksum": "62affbb948a1d3d757945a8bfa607155"
-    },
-    ".Rlib/listenv/help/listenv.rdb": {
-      "checksum": "bebe2ef2d6d7b4ca966d7e07685b138e"
-    },
-    ".Rlib/listenv/help/listenv.rdx": {
-      "checksum": "c2aa75e0c98ef5415cdf6b4e7c8072f6"
-    },
-    ".Rlib/listenv/help/paths.rds": {
-      "checksum": "904d8a4084c36197281b96527c347829"
-    },
-    ".Rlib/listenv/html/00Index.html": {
-      "checksum": "604131863200958741ef21e8bf38a50e"
-    },
-    ".Rlib/listenv/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/listenv/INDEX": {
-      "checksum": "970c31be6fa233fc9b12decf06575f9a"
-    },
-    ".Rlib/listenv/Meta/features.rds": {
-      "checksum": "6e936bdf4dfd14911ddf370dc8063ab9"
-    },
-    ".Rlib/listenv/Meta/hsearch.rds": {
-      "checksum": "23f7f6cf753592974fe5471ef9aade80"
-    },
-    ".Rlib/listenv/Meta/links.rds": {
-      "checksum": "668222d99b86873ef418848f74ef0dfe"
-    },
-    ".Rlib/listenv/Meta/nsInfo.rds": {
-      "checksum": "8e62f9750b4bf5d8e6a405065591911a"
-    },
-    ".Rlib/listenv/Meta/package.rds": {
-      "checksum": "f46d745f3bdce3233ae5c2b15169208b"
-    },
-    ".Rlib/listenv/Meta/Rd.rds": {
-      "checksum": "91c151e069b0470926accae7ad144526"
-    },
-    ".Rlib/listenv/Meta/vignette.rds": {
-      "checksum": "b29226868d9e0772a7200d1be01bf2ec"
-    },
-    ".Rlib/listenv/NAMESPACE": {
-      "checksum": "f51e072cf0ba79129333899cc8e4a506"
-    },
-    ".Rlib/listenv/NEWS.md": {
-      "checksum": "01531900f3220ccc903e1a1548b7da21"
-    },
-    ".Rlib/listenv/R/listenv": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/listenv/R/listenv.rdb": {
-      "checksum": "12065cbf9c9af1f28771b90fedabc3c5"
-    },
-    ".Rlib/listenv/R/listenv.rdx": {
-      "checksum": "34c1110196cc32bc7467db9d754fd430"
-    },
-    ".Rlib/listenv/testme/_epilogue/002.undo-state.R": {
-      "checksum": "d507f874f1e7e3a02caf07fabeaa83bb"
-    },
-    ".Rlib/listenv/testme/_epilogue/090.gc.R": {
-      "checksum": "3573c72602ff98dc7224652fb1114010"
-    },
-    ".Rlib/listenv/testme/_epilogue/099.session_info.R": {
-      "checksum": "351d953a6347d4187a40fa5f99ae4501"
-    },
-    ".Rlib/listenv/testme/_epilogue/995.detritus-connections.R": {
-      "checksum": "c176ba0d2e915d0cb091f83b0f112d1e"
-    },
-    ".Rlib/listenv/testme/_epilogue/999.detritus-files.R": {
-      "checksum": "e8e91653a7f7ce9042b12d143bd1f672"
-    },
-    ".Rlib/listenv/testme/_prologue/001.load.R": {
-      "checksum": "38f4dd60f5ff3f8e27a6484cd5014a51"
-    },
-    ".Rlib/listenv/testme/_prologue/002.record-state.R": {
-      "checksum": "e154dfc8601570c94bd1eadf4e3e6015"
-    },
-    ".Rlib/listenv/testme/_prologue/030.imports.R": {
-      "checksum": "7801060a7ee4268b3193857a55798d39"
-    },
-    ".Rlib/listenv/testme/_prologue/050.utils.R": {
-      "checksum": "b2c16f8a88d3032af2fb609b085641a6"
-    },
-    ".Rlib/listenv/testme/_prologue/090.context.R": {
-      "checksum": "291380a4339d01ab0d8b0e97a7b15661"
-    },
-    ".Rlib/listenv/testme/_prologue/995.detrius-connections.R": {
-      "checksum": "b084169193945c304a02575ef52bb5f9"
-    },
-    ".Rlib/listenv/testme/deploy.R": {
-      "checksum": "c0c9bb550381bf01a4f6fa762229ee85"
-    },
-    ".Rlib/listenv/testme/run.R": {
-      "checksum": "5aa04621a9bd318949af7e5bb7b03434"
-    },
-    ".Rlib/listenv/testme/test-aperm.R": {
-      "checksum": "c491a0273679b154ea6f93ef837e5970"
-    },
-    ".Rlib/listenv/testme/test-as.listenv.R": {
-      "checksum": "72cc0e7ed2f3d1307974ff4ef27ff7d3"
-    },
-    ".Rlib/listenv/testme/test-as.vector.R": {
-      "checksum": "bdb6dad63097428284bd1c6a590f96c6"
-    },
-    ".Rlib/listenv/testme/test-get_variable,dimensions.R": {
-      "checksum": "d12b332f9aedcf872e64ce42f519c321"
-    },
-    ".Rlib/listenv/testme/test-get_variable.R": {
-      "checksum": "222b632568bef3a401635427036832b1"
-    },
-    ".Rlib/listenv/testme/test-lapply.R": {
-      "checksum": "46d2a686fd2df5c7221df82f195325b8"
-    },
-    ".Rlib/listenv/testme/test-listenv,dimensions.R": {
-      "checksum": "c42512f9f4faaada056373689648eaa1"
-    },
-    ".Rlib/listenv/testme/test-listenv.R": {
-      "checksum": "4994ee3a9fcc53001999f2ffc5c48ac3"
-    },
-    ".Rlib/listenv/testme/test-parse_env_subset,dimensions.R": {
-      "checksum": "5b867799b060a29bb30d2605cf5c0f79"
-    },
-    ".Rlib/listenv/testme/test-parse_env_subset.R": {
-      "checksum": "9b83f8467c19cb9058ba24146b7b80ae"
-    },
-    ".Rlib/listenv/testme/test-undim.R": {
-      "checksum": "284c81d6a49c1e6a1632b7b76316801c"
-    },
-    ".Rlib/listenv/testme/test-utils,conditions.R": {
-      "checksum": "db20fddfc2e6824b9aa7a4f8b4a85116"
-    },
-    ".Rlib/listenv/testme/test-utils.R": {
-      "checksum": "d98ae384d311f30d635abf5577a96fbb"
-    },
-    ".Rlib/listenv/WORDLIST": {
-      "checksum": "ac189a88d160a4a6b84a8e85eb545ed9"
-    },
-    ".Rlib/parallelly/DESCRIPTION": {
-      "checksum": "a983fae5bd82e2eeb475d3cd466241cc"
-    },
-    ".Rlib/parallelly/doc/index.html": {
-      "checksum": "7b35828f4aaefa3730c408b60fb376b9"
-    },
-    ".Rlib/parallelly/doc/parallelly-01-intro.html": {
-      "checksum": "f53b966e918f482db5f1247a707fc40e"
-    },
-    ".Rlib/parallelly/doc/parallelly-01-intro.md": {
-      "checksum": "055910377170e3c457abe2c1d05b1267"
-    },
-    ".Rlib/parallelly/doc/parallelly-10-local-workers.html": {
-      "checksum": "ba0dab171a6c5aee955b4588bddfa1a5"
-    },
-    ".Rlib/parallelly/doc/parallelly-10-local-workers.md": {
-      "checksum": "e9bb7082d18279108f13f486345724ff"
-    },
-    ".Rlib/parallelly/doc/parallelly-12-remote-workers.html": {
-      "checksum": "7bc7b6d9dc79386097b3fb0f40ae22db"
-    },
-    ".Rlib/parallelly/doc/parallelly-12-remote-workers.md": {
-      "checksum": "fb725e3967dbf3d80989d6cbd1799ca2"
-    },
-    ".Rlib/parallelly/doc/parallelly-15-cloud-workers.html": {
-      "checksum": "0f0781abe8b80f7e97920aa5ca3e4797"
-    },
-    ".Rlib/parallelly/doc/parallelly-15-cloud-workers.md": {
-      "checksum": "de74c189f9f6aab8427c37534502efc9"
-    },
-    ".Rlib/parallelly/doc/parallelly-17-hpc-workers.html": {
-      "checksum": "fc0dc3504f2ccb5900967ba25927c09b"
-    },
-    ".Rlib/parallelly/doc/parallelly-17-hpc-workers.md": {
-      "checksum": "4a4cebc50da34d3ca51fde99a9ee5bb7"
-    },
-    ".Rlib/parallelly/doc/parallelly-20-limit-workers.html": {
-      "checksum": "3aca138548508b1c0605202ed2027271"
-    },
-    ".Rlib/parallelly/doc/parallelly-20-limit-workers.md": {
-      "checksum": "0f21f6262f0f2ed1f7916da3f53955ff"
-    },
-    ".Rlib/parallelly/doc/parallelly-21-container-workers.html": {
-      "checksum": "916dfe93a70cf2a63d07502fd60cf76c"
-    },
-    ".Rlib/parallelly/doc/parallelly-21-container-workers.md": {
-      "checksum": "6befce3d29cd2c053771cd3aafbef2cd"
-    },
-    ".Rlib/parallelly/doc/parallelly-22-wine-workers.html": {
-      "checksum": "1e4e8f0ce0a8912f6f775875e0c3c29a"
-    },
-    ".Rlib/parallelly/doc/parallelly-22-wine-workers.md": {
-      "checksum": "a3f7030971b2e29f5d73eff93ea6d3d9"
-    },
-    ".Rlib/parallelly/doc/parallelly-25-sandbox-workers.html": {
-      "checksum": "8f092e0ef376e8af65f631d003f1b98c"
-    },
-    ".Rlib/parallelly/doc/parallelly-25-sandbox-workers.md": {
-      "checksum": "bc55d97019007173ac873679ccdae7c1"
-    },
-    ".Rlib/parallelly/help/aliases.rds": {
-      "checksum": "6ce7e8a46d722c69a94f8d5bbff3eaed"
-    },
-    ".Rlib/parallelly/help/AnIndex": {
-      "checksum": "e7506304cccf12f8b3fe86b34a4dde8d"
-    },
-    ".Rlib/parallelly/help/figures/lifecycle-maturing-blue.svg": {
-      "checksum": "952b59dc07b171b97d5d982924244f61"
-    },
-    ".Rlib/parallelly/help/figures/logo.png": {
-      "checksum": "33baa5f0547c1321394ca0dc6d422bba"
-    },
-    ".Rlib/parallelly/help/parallelly.rdb": {
-      "checksum": "7406bdd685150898e2df51b32c43dc4e"
-    },
-    ".Rlib/parallelly/help/parallelly.rdx": {
-      "checksum": "e1073fd984e9e142bc252316da878cb8"
-    },
-    ".Rlib/parallelly/help/paths.rds": {
-      "checksum": "73d2765f9c1458c972c31510dc4966e7"
-    },
-    ".Rlib/parallelly/html/00Index.html": {
-      "checksum": "ddf607e9829d24b325e6749af4f9a88f"
-    },
-    ".Rlib/parallelly/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/parallelly/INDEX": {
-      "checksum": "ea2a653ed70873bbb97f1054a035fe7d"
-    },
-    ".Rlib/parallelly/libs/parallelly.so": {
-      "checksum": "f860d3e87a9413604bd352a0fefb560d"
-    },
-    ".Rlib/parallelly/libs/parallelly.so.dSYM/Contents/Info.plist": {
-      "checksum": "95e17eaea3ac91b085cff219fa5fd528"
-    },
-    ".Rlib/parallelly/libs/parallelly.so.dSYM/Contents/Resources/DWARF/parallelly.so": {
-      "checksum": "ee55760ccbcb7d6ac9c4ecaec466e409"
-    },
-    ".Rlib/parallelly/Meta/features.rds": {
-      "checksum": "6e936bdf4dfd14911ddf370dc8063ab9"
-    },
-    ".Rlib/parallelly/Meta/hsearch.rds": {
-      "checksum": "ddb2a3c83b0a54401171a7a6be8bc438"
-    },
-    ".Rlib/parallelly/Meta/links.rds": {
-      "checksum": "f379d6bfe631f754fa0130e2d6da5013"
-    },
-    ".Rlib/parallelly/Meta/nsInfo.rds": {
-      "checksum": "0c28846a5e630b1f4c3e9cd1f3595a7d"
-    },
-    ".Rlib/parallelly/Meta/package.rds": {
-      "checksum": "9f64e092fb058495d4fcc12b79d24e67"
-    },
-    ".Rlib/parallelly/Meta/Rd.rds": {
-      "checksum": "edd0a98d5504653ab4e03ce4ebe48373"
-    },
-    ".Rlib/parallelly/Meta/vignette.rds": {
-      "checksum": "deceff3ba1c27de01ebd030be41efb93"
-    },
-    ".Rlib/parallelly/NAMESPACE": {
-      "checksum": "45c8f5f68466521afc7229bf9e292808"
-    },
-    ".Rlib/parallelly/NEWS.md": {
-      "checksum": "5a2c7859a2340f2864b83cec2625cea3"
-    },
-    ".Rlib/parallelly/R/parallelly": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/parallelly/R/parallelly.rdb": {
-      "checksum": "4148bf35ec008f1e830e22c40f26eb74"
-    },
-    ".Rlib/parallelly/R/parallelly.rdx": {
-      "checksum": "532608d3bc043f7c84460362b8cbd31f"
-    },
-    ".Rlib/parallelly/test-data/cgroups1/c4-dev3.R": {
-      "checksum": "e8a12518304067c13954230c9273fd2c"
-    },
-    ".Rlib/parallelly/test-data/cgroups1/c4-dev3.tar.gz": {
-      "checksum": "087ae9bd3120d8f72882946d5c155446"
-    },
-    ".Rlib/parallelly/test-data/cgroups1/c4-n39-4cores.tar.gz": {
-      "checksum": "b33d38553034e8e01db8f2949f2a9a31"
-    },
-    ".Rlib/parallelly/test-data/cgroups1/c4-n4-4cores.R": {
-      "checksum": "e614b7f94e816434445f4d9ce037f419"
-    },
-    ".Rlib/parallelly/test-data/cgroups1/posit-workbench.R": {
-      "checksum": "65e41a54269e335f04b5b4b3c38b6b7e"
-    },
-    ".Rlib/parallelly/test-data/cgroups1/posit-workbench.tar.gz": {
-      "checksum": "452bc5ad6ce7bec23147625c960329ce"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/dev1.R": {
-      "checksum": "9ecf7cd6f27fae16677d40bc54de6734"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/dev1.tar.gz": {
-      "checksum": "59f588a98f0d6c60629d8f86bafdeef3"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/dt1.R": {
-      "checksum": "effd289bdccec48679f1eb56ab7f69be"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/dt1.tar.gz": {
-      "checksum": "fc76629b36f3d028a9637d9c4ed4b86e"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/log1.R": {
-      "checksum": "a4812136417baa82e4dd364271168596"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/log1.tar.gz": {
-      "checksum": "8f7da5a950c8bb01a52f917985aece92"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/pi-2021.R": {
-      "checksum": "9ecf7cd6f27fae16677d40bc54de6734"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/pi-2021.tar.gz": {
-      "checksum": "e3dc2f0d1a7d34e9690c047b805b26ae"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/posit.cloud-free.R": {
-      "checksum": "a4812136417baa82e4dd364271168596"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/posit.cloud-free.tar.gz": {
-      "checksum": "76fd83c2c545474afad8a0f8c7bde056"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/x1.R": {
-      "checksum": "9ecf7cd6f27fae16677d40bc54de6734"
-    },
-    ".Rlib/parallelly/test-data/cgroups2/x1.tar.gz": {
-      "checksum": "3ea73c0f78eba72cd57c33d6418410f8"
-    },
-    ".Rlib/parallelly/test-data/mixed-cgroups/piavpn.R": {
-      "checksum": "1fc197a0ce107e7c9486cebb85986ac3"
-    },
-    ".Rlib/parallelly/test-data/mixed-cgroups/piavpn.tar.gz": {
-      "checksum": "755f1c820435fae736a76ea4b0769097"
-    },
-    ".Rlib/parallelly/test-data/mixed-cgroups/slurm.R": {
-      "checksum": "7a858c86b1df35612378350ad4ae5739"
-    },
-    ".Rlib/parallelly/test-data/mixed-cgroups/slurm.tar.gz": {
-      "checksum": "012126fa1a76903c8a61e0e86a418ffe"
-    },
-    ".Rlib/parallelly/test-data/mixed-cgroups/wsl2-invalid-mounts.R": {
-      "checksum": "8170be6c1cb363452a9cf6414cfceb20"
-    },
-    ".Rlib/parallelly/test-data/mixed-cgroups/wsl2-invalid-mounts.tar.gz": {
-      "checksum": "652f6c20b5230ecb3932c3e008f1fe26"
-    },
-    ".Rlib/parallelly/test-data/no-cgroups/no-cgroups.R": {
-      "checksum": "f7cc8e47dea450658a3c18e2cc4f4d3e"
-    },
-    ".Rlib/parallelly/test-data/no-cgroups/no-cgroups.tar.gz": {
-      "checksum": "eb308e25a506651f300eadff1980eeec"
-    },
-    ".Rlib/parallelly/testme/_epilogue/002.undo-state.R": {
-      "checksum": "af4e2a0d8dee4c94703c850e2d3e8f8f"
-    },
-    ".Rlib/parallelly/testme/_epilogue/090.gc.R": {
-      "checksum": "3573c72602ff98dc7224652fb1114010"
-    },
-    ".Rlib/parallelly/testme/_epilogue/099.session_info.R": {
-      "checksum": "351d953a6347d4187a40fa5f99ae4501"
-    },
-    ".Rlib/parallelly/testme/_epilogue/999.detritus.R": {
-      "checksum": "e955b2c58e4f787b148332a759ec2805"
-    },
-    ".Rlib/parallelly/testme/_prologue/001.load.R": {
-      "checksum": "3406260ed322d54fa65782d0453fa572"
-    },
-    ".Rlib/parallelly/testme/_prologue/002.record-state.R": {
-      "checksum": "e154dfc8601570c94bd1eadf4e3e6015"
-    },
-    ".Rlib/parallelly/testme/_prologue/030.imports.R": {
-      "checksum": "1edca04384ebf3b1a6a71123536dee0e"
-    },
-    ".Rlib/parallelly/testme/_prologue/050.utils.R": {
-      "checksum": "3533a69e22d1e39c2fbb40b88c389add"
-    },
-    ".Rlib/parallelly/testme/_prologue/090.context.R": {
-      "checksum": "f3661850b17ddf5503af24e5f120ab7b"
-    },
-    ".Rlib/parallelly/testme/_prologue/090.options.R": {
-      "checksum": "2edde2fff3047d15b12b2894c3c08f9d"
-    },
-    ".Rlib/parallelly/testme/_prologue/091.envvars.R": {
-      "checksum": "6b7476ca2690061740151b295ae07cd0"
-    },
-    ".Rlib/parallelly/testme/deploy.R": {
-      "checksum": "c0c9bb550381bf01a4f6fa762229ee85"
-    },
-    ".Rlib/parallelly/testme/run.R": {
-      "checksum": "21eb6b244b2fb6ef95f3bab7e0731317"
-    },
-    ".Rlib/parallelly/testme/test-all.equal.connection.R": {
-      "checksum": "2e1e7946d1015893082b70be20a7cf2d"
-    },
-    ".Rlib/parallelly/testme/test-as.cluster.R": {
-      "checksum": "8e5ee37b0dd757e4186626507202b18f"
-    },
-    ".Rlib/parallelly/testme/test-autoStopCluster.R": {
-      "checksum": "0c4cab0a1086a83f05025f7626245ebd"
-    },
-    ".Rlib/parallelly/testme/test-availableConnections.R": {
-      "checksum": "9d9fc14cf97d2293577d211c0a98cccf"
-    },
-    ".Rlib/parallelly/testme/test-availableCores.R": {
-      "checksum": "4b332219bd8facadad3c5e49726c7bd3"
-    },
-    ".Rlib/parallelly/testme/test-availableWorkers.R": {
-      "checksum": "f885875cb9d847fdcc2686308b8b8eb9"
-    },
-    ".Rlib/parallelly/testme/test-cgroups.R": {
-      "checksum": "9c857d23189d60305ab7773f4005e652"
-    },
-    ".Rlib/parallelly/testme/test-cli.R": {
-      "checksum": "ecaf73c0e4b48dc2b9019313b84f6f39"
-    },
-    ".Rlib/parallelly/testme/test-cloneNode.R": {
-      "checksum": "af1fa3f71da535b86615718f69ea088d"
-    },
-    ".Rlib/parallelly/testme/test-cpuLoad.R": {
-      "checksum": "97f1a4afd367a14f1a15bdfaeace80ab"
-    },
-    ".Rlib/parallelly/testme/test-freeCores.R": {
-      "checksum": "73e719b3a1fc2e381f9b9121a005c34c"
-    },
-    ".Rlib/parallelly/testme/test-freePort.R": {
-      "checksum": "bbd86455ef54d1431996690c82944ee9"
-    },
-    ".Rlib/parallelly/testme/test-isConnectionValid.R": {
-      "checksum": "a40911e8364f7a0a3f3f4b2c4a29b4c2"
-    },
-    ".Rlib/parallelly/testme/test-isForkedChild.R": {
-      "checksum": "9419f47bb9748531e6c7f4e714048276"
-    },
-    ".Rlib/parallelly/testme/test-isForkedNode.R": {
-      "checksum": "1c448272e01f38c3320cfc2664a726fd"
-    },
-    ".Rlib/parallelly/testme/test-isLocalhostNode.R": {
-      "checksum": "092b6ae34e99a0f9734438bb9fb661a3"
-    },
-    ".Rlib/parallelly/testme/test-isNodeAlive.R": {
-      "checksum": "7829e610cd96ce8f9623d7aaca45464e"
-    },
-    ".Rlib/parallelly/testme/test-killNode.R": {
-      "checksum": "f13295e2f460bd0a69e57f8ff99e9d44"
-    },
-    ".Rlib/parallelly/testme/test-makeClusterMPI.R": {
-      "checksum": "e6ab1a4835455aef95feaf8cbfdbc918"
-    },
-    ".Rlib/parallelly/testme/test-makeClusterPSOCK.R": {
-      "checksum": "abe6deb8757ee6be708bd01eafd1e312"
-    },
-    ".Rlib/parallelly/testme/test-makeClusterSequential.R": {
-      "checksum": "586611d8bd7ab5e353ac01c2fa2b6e44"
-    },
-    ".Rlib/parallelly/testme/test-makeNodePSOCK.R": {
-      "checksum": "28828fd536193caecabaa87212f2dcc1"
-    },
-    ".Rlib/parallelly/testme/test-options-and-envvars.R": {
-      "checksum": "5bdf541de85f1926367d18783ca98351"
-    },
-    ".Rlib/parallelly/testme/test-r_bug18119.R": {
-      "checksum": "5698ec78e2a305e392014fc066cbf4e3"
-    },
-    ".Rlib/parallelly/testme/test-registerClusterTypes.R": {
-      "checksum": "b29d2cf8e4d45e083f087f0f3e9b695a"
-    },
-    ".Rlib/parallelly/testme/test-serializedSize.R": {
-      "checksum": "28a171080a68f9841d0fc704e5d23fad"
-    },
-    ".Rlib/parallelly/testme/test-startup.R": {
-      "checksum": "319bf7e71832aac6b77ce844a6d0b5d9"
-    },
-    ".Rlib/parallelly/testme/test-stealth_sample.R": {
-      "checksum": "4bfc344b7004adc6848f345095c5083e"
-    },
-    ".Rlib/parallelly/testme/test-supportsMulticore.R": {
-      "checksum": "77eb0ab7c1a5c7100ed84f6dd28374ea"
-    },
-    ".Rlib/parallelly/testme/test-utils,cluster.R": {
-      "checksum": "f62e4b9d5b6ecd7420543269cf6992e7"
-    },
-    ".Rlib/parallelly/testme/test-utils,conditions.R": {
-      "checksum": "ff2cdad6162d99021af9a81553677b7f"
-    },
-    ".Rlib/parallelly/testme/test-utils,pid.R": {
-      "checksum": "d2ebd68c1cd825d208a317b6a99b16fc"
-    },
-    ".Rlib/parallelly/testme/test-utils.R": {
-      "checksum": "f49892b123045214c218ded42025c349"
-    },
-    ".Rlib/parallelly/WORDLIST": {
-      "checksum": "3a987507f66f90f5a627291d8b6f819d"
-    },
-    ".Rlib/RcppTOML/DESCRIPTION": {
-      "checksum": "09d5f09f5a71603063ff5619466eb738"
-    },
-    ".Rlib/RcppTOML/help/aliases.rds": {
-      "checksum": "7c877564d6bebd48f5c08e88eb4734ee"
-    },
-    ".Rlib/RcppTOML/help/AnIndex": {
-      "checksum": "7f4e765ef99fa0b2bf097d7d8cde054e"
-    },
-    ".Rlib/RcppTOML/help/paths.rds": {
-      "checksum": "4b67100ccef7d406ac8c2caa4453f4c5"
-    },
-    ".Rlib/RcppTOML/help/RcppTOML.rdb": {
-      "checksum": "00c43c073abbf1bb538ab0da31709e50"
-    },
-    ".Rlib/RcppTOML/help/RcppTOML.rdx": {
-      "checksum": "5d9cc012cd5e4998c54aede83ad2fc19"
-    },
-    ".Rlib/RcppTOML/html/00Index.html": {
-      "checksum": "56f7642fbe7287b05f3966f92ef8df1d"
-    },
-    ".Rlib/RcppTOML/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/array.h": {
-      "checksum": "3bac4e68873576296adcad5beccc063a"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/array.inl": {
-      "checksum": "e3dc422c50bb339040c536526296f9a9"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/at_path.h": {
-      "checksum": "640c2ebade62b88f6c024878e9f068fe"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/at_path.inl": {
-      "checksum": "ed9b2f200f7368638db12a11f4ca0172"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/date_time.h": {
-      "checksum": "e211175dddbd78322b6c92a0a80a687c"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/formatter.h": {
-      "checksum": "a58b715ba493d3cee3ab5cbb967a085c"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/formatter.inl": {
-      "checksum": "57adb4abe7326a0bebbaf7df4397f1b7"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/forward_declarations.h": {
-      "checksum": "d8ce21e978d998da550c806cd829ddd7"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/header_end.h": {
-      "checksum": "39ae8e1353b407d5a82c1ab69313bad5"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/header_start.h": {
-      "checksum": "34e48aafa62ae6baaea6fa5be8d1c23c"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/json_formatter.h": {
-      "checksum": "e7481602d1a9660a952e110bc8b1e403"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/json_formatter.inl": {
-      "checksum": "2579bdbb73d1b0d26e7bc5c7acaafaeb"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/key.h": {
-      "checksum": "9ab2db3af699f3a1bf2d98b5d60748d7"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/make_node.h": {
-      "checksum": "82e8f403804bc11b64a0e23e9e7d313d"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/node_view.h": {
-      "checksum": "2fa337ce05c4dd286b4ce5a691a7c7e6"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/node.h": {
-      "checksum": "b8c2de55bd9c19a3303118a216b2856c"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/node.inl": {
-      "checksum": "ae38427cc62a83c1a83ad0bcbedcbbf2"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/parse_error.h": {
-      "checksum": "19d21b846c8e4fdfdc35bc2be7ecacb5"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/parse_result.h": {
-      "checksum": "8fa56682ee180132ca222dbcbb05943f"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/parser.h": {
-      "checksum": "6f12dda294846cc0a3a57d6843ca1aaa"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/parser.inl": {
-      "checksum": "6c56233fd4471838fb3f2c7f09c23124"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/path.h": {
-      "checksum": "e53d70e5a330be5641d13f807815090f"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/path.inl": {
-      "checksum": "6386a5920a8980b297dd3a5ac91015d7"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/preprocessor.h": {
-      "checksum": "fb48c1a2ca927bce801c04db733a6c17"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/print_to_stream.h": {
-      "checksum": "5a7a5ecb7205a4c6cebef4eef9ff8048"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/print_to_stream.inl": {
-      "checksum": "21b304b1ff4a18f0bf5ead57ac463ef2"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/simd.h": {
-      "checksum": "2576973f024fdde89e970176e251be99"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/source_region.h": {
-      "checksum": "9ed05b697ad7b77595b0bd6f072c8f6d"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_except.h": {
-      "checksum": "6718ecd6848a68712337c6ca73e0f254"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_initializer_list.h": {
-      "checksum": "aca7d1619fc0c6c783386f5c1d6b25b2"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_map.h": {
-      "checksum": "2ceffdd6424a5d252654f184ac8df245"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_new.h": {
-      "checksum": "38d1f811f88f4605db0fb4e1deca067d"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_optional.h": {
-      "checksum": "00c7848aa6853d7be84b7469e9926481"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_string.h": {
-      "checksum": "bd0afaa2dde1681daf30053d30e52f06"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_string.inl": {
-      "checksum": "55a35ae7f36121319959b24878aa78df"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_utility.h": {
-      "checksum": "f08f8f0ba857aa9e4348b239d805478e"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_variant.h": {
-      "checksum": "c38c0f8cd12ad05ecaaa77ff4371f972"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/std_vector.h": {
-      "checksum": "1179630f196bacef3b2527b840a55a89"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/table.h": {
-      "checksum": "c0359d4a2fc38acee23d3e0bbd51d6ba"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/table.inl": {
-      "checksum": "358e0f37dff6506e3387a66ca07778ac"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/toml_formatter.h": {
-      "checksum": "d310cf97430ffb00244e2eec327e220d"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/toml_formatter.inl": {
-      "checksum": "f22f839e5e373262e08f5dd171d93b5a"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/unicode_autogenerated.h": {
-      "checksum": "18f46205fd2f8d12871e92f64edb2998"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/unicode.h": {
-      "checksum": "d8bbbf3d8ade25fcfd570fdbba358470"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/unicode.inl": {
-      "checksum": "477d6556f765fd404873499930ad1d06"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/value.h": {
-      "checksum": "adaceb5e455c7b836656f53998058701"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/version.h": {
-      "checksum": "e8f90929284e50ed0c4d29b9ae49fc35"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/yaml_formatter.h": {
-      "checksum": "f95b71a799d35255915a40a433b7344b"
-    },
-    ".Rlib/RcppTOML/include/toml++/impl/yaml_formatter.inl": {
-      "checksum": "1885f2f0ba10da65e3f7617fc53e04c0"
-    },
-    ".Rlib/RcppTOML/include/toml++/toml.h": {
-      "checksum": "536ac9e503c560affedbed9a4acd78b5"
-    },
-    ".Rlib/RcppTOML/INDEX": {
-      "checksum": "e92638e0a364486ada50ffc34761a63e"
-    },
-    ".Rlib/RcppTOML/libs/RcppTOML.so": {
-      "checksum": "5f0dda3f432780750b9365effc7b000d"
-    },
-    ".Rlib/RcppTOML/libs/RcppTOML.so.dSYM/Contents/Info.plist": {
-      "checksum": "e1b62d52ed9c1bfb39eb1e7bbc47817e"
-    },
-    ".Rlib/RcppTOML/libs/RcppTOML.so.dSYM/Contents/Resources/DWARF/RcppTOML.so": {
-      "checksum": "2ece810203910afa542468faf5e145d7"
-    },
-    ".Rlib/RcppTOML/Meta/features.rds": {
-      "checksum": "b9fcde1f86ac1657344ebc9dd7bb52af"
-    },
-    ".Rlib/RcppTOML/Meta/hsearch.rds": {
-      "checksum": "ec5163854cfdb60031e7382c2971acb4"
-    },
-    ".Rlib/RcppTOML/Meta/links.rds": {
-      "checksum": "a40c9e5f840e6ecbc2fecc5c39c79646"
-    },
-    ".Rlib/RcppTOML/Meta/nsInfo.rds": {
-      "checksum": "843ed4848fee1014f000bd99aea62379"
-    },
-    ".Rlib/RcppTOML/Meta/package.rds": {
-      "checksum": "cee23fa59cbe417c14a2d94be9b33cf8"
-    },
-    ".Rlib/RcppTOML/Meta/Rd.rds": {
-      "checksum": "3070248e44424427b62832471f0bf80e"
-    },
-    ".Rlib/RcppTOML/NAMESPACE": {
-      "checksum": "8695c7fd3ad2d90aca32137a3da7c0f1"
-    },
-    ".Rlib/RcppTOML/NEWS.Rd": {
-      "checksum": "8ffe0d2715716ba299f10d59dc172fbe"
-    },
-    ".Rlib/RcppTOML/R/RcppTOML": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/RcppTOML/R/RcppTOML.rdb": {
-      "checksum": "3b9628950a57cfa041a38e0974181746"
-    },
-    ".Rlib/RcppTOML/R/RcppTOML.rdx": {
-      "checksum": "b9cd4915a3f2e36bb0b4886fbc05b7e9"
-    },
-    ".Rlib/RcppTOML/tinytest/arrays.toml": {
-      "checksum": "4c0ba4af235fa244e3d888dc3153a392"
-    },
-    ".Rlib/RcppTOML/tinytest/bool_datetime.toml": {
-      "checksum": "4ff784d414d9d649529ad14737e1279d"
-    },
-    ".Rlib/RcppTOML/tinytest/dates_and_times.toml": {
-      "checksum": "5747cdac9b493a928d5125cc7da481b4"
-    },
-    ".Rlib/RcppTOML/tinytest/float.toml": {
-      "checksum": "98c15766ffcfd93f81fcbba3e6fdb1f2"
-    },
-    ".Rlib/RcppTOML/tinytest/integer.toml": {
-      "checksum": "edbf0dd24dae72644d2e0a73c10e1acb"
-    },
-    ".Rlib/RcppTOML/tinytest/strings.toml": {
-      "checksum": "8ff7997c82e35bda88ff8f33354b5b3a"
-    },
-    ".Rlib/RcppTOML/tinytest/tables.toml": {
-      "checksum": "5072b4d7309d7e7e4129dd78f6b6aab4"
-    },
-    ".Rlib/RcppTOML/tinytest/test_arrays.R": {
-      "checksum": "c6d9e29d5382633665e03b3114d6e62a"
-    },
-    ".Rlib/RcppTOML/tinytest/test_bool_datetime.R": {
-      "checksum": "ee7d3967579354ccf1948f217524975c"
-    },
-    ".Rlib/RcppTOML/tinytest/test_dates_times.R": {
-      "checksum": "5ab7808d55516e8a8b19012487b5e79b"
-    },
-    ".Rlib/RcppTOML/tinytest/test_examples.R": {
-      "checksum": "8bf020278b87d31c66b5e22b3304cb64"
-    },
-    ".Rlib/RcppTOML/tinytest/test_float.R": {
-      "checksum": "855cc8bd6b5595d862c5388e19475246"
-    },
-    ".Rlib/RcppTOML/tinytest/test_integer.R": {
-      "checksum": "8a188b4f4d40b43425f3398081368495"
-    },
-    ".Rlib/RcppTOML/tinytest/test_misc.R": {
-      "checksum": "6d56b25e217f030bff6c968b029fa15d"
-    },
-    ".Rlib/RcppTOML/tinytest/test_strings.R": {
-      "checksum": "10177b21356907e2458a4c98ba71dd12"
-    },
-    ".Rlib/RcppTOML/tinytest/test_tables.R": {
-      "checksum": "d9c95b12e5f2cf286308c0a4eb1b34fd"
-    },
-    ".Rlib/RcppTOML/tinytest/toml_example-v0.4.0.toml": {
-      "checksum": "1258c54536c3ac3b109ac6838a6a1ee7"
-    },
-    ".Rlib/RcppTOML/tinytest/toml_example.toml": {
-      "checksum": "7ac85a8fc59c76ee1a3cf2e31968435e"
-    },
-    ".Rlib/RcppTOML/tinytest/toml_hard_example.toml": {
-      "checksum": "a771cda2fd660a0725c6491f6de8eb70"
-    },
-    ".Rlib/RcppTOML/toml/ex1.toml": {
-      "checksum": "2f404e57fbf1e01e8c5da012b9fd7dd2"
-    },
-    ".Rlib/RcppTOML/toml/ex2.toml": {
-      "checksum": "2edae36993ce3b693fe0af875dfa70b7"
-    },
-    ".Rlib/RcppTOML/toml/ex3.toml": {
-      "checksum": "8ba4380f4291ebe34e854796c235a065"
-    },
-    ".Rlib/RcppTOML/toml/ex4.toml": {
-      "checksum": "a13dbf43f65e66db58d19a295d4b4035"
-    },
-    ".Rlib/RcppTOML/toml/example.toml": {
-      "checksum": "5a81a94db8bb8a98e76dd6a6f574ddb6"
-    },
-    ".Rlib/RcppTOML/toml/strings.toml": {
-      "checksum": "ab88821b38f109c60f8ee59919891348"
-    },
-    ".Rlib/RcppTOML/toml/tablearray.toml": {
-      "checksum": "525cecb569e337e4d4f173c4b37e097f"
-    },
-    ".Rlib/rlang/backtrace-ver": {
-      "checksum": "ee7ab3e7e15d1e00ec001ca33b4571f1"
-    },
-    ".Rlib/rlang/DESCRIPTION": {
-      "checksum": "edb58c89cdf4d8197f6ab82368cd179c"
-    },
-    ".Rlib/rlang/help/aliases.rds": {
-      "checksum": "df00b297a2c1677061256336411404a6"
-    },
-    ".Rlib/rlang/help/AnIndex": {
-      "checksum": "66475a7219c489bf5c1447fe37462401"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-archived.svg": {
-      "checksum": "cb1e46f469cfbbbde29c8b5113e1d789"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-defunct.svg": {
-      "checksum": "c0d2e5a54f1fa4ff02bf9533079dd1f7"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-deprecated.svg": {
-      "checksum": "a1b8c987c676c16af790f563f96cbb1f"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-experimental.svg": {
-      "checksum": "c3978703d8f40f2679795335715e98f4"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-maturing.svg": {
-      "checksum": "952b59dc07b171b97d5d982924244f61"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-questioning.svg": {
-      "checksum": "27b879bf3677ea76e3991d56ab324081"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-retired.svg": {
-      "checksum": "46de21252239c5a23d400eae83ec6b2d"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-soft-deprecated.svg": {
-      "checksum": "6902bbfaf963fbc4ed98b86bda80caa2"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-stable.svg": {
-      "checksum": "53b3f893324260b737b3c46ed2a0e643"
-    },
-    ".Rlib/rlang/help/figures/lifecycle-superseded.svg": {
-      "checksum": "1c1fe7a759b86dc6dbcbe7797ab8246c"
-    },
-    ".Rlib/rlang/help/figures/logo.png": {
-      "checksum": "42e90e0813fee26f77866a2f8025b3ba"
-    },
-    ".Rlib/rlang/help/paths.rds": {
-      "checksum": "d32e1c75c9381a7cef63871ad122d77b"
-    },
-    ".Rlib/rlang/help/rlang.rdb": {
-      "checksum": "adef5726d35b5d4aff43f5a41ab193cb"
-    },
-    ".Rlib/rlang/help/rlang.rdx": {
-      "checksum": "d25a1d9e92ea95de801746a487a2ff4f"
-    },
-    ".Rlib/rlang/html/00Index.html": {
-      "checksum": "93e1b527ad21d691fa593e55cb50cfc9"
-    },
-    ".Rlib/rlang/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/rlang/INDEX": {
-      "checksum": "8dfbf5fc3dace871f42e80fb3fd1eb7f"
-    },
-    ".Rlib/rlang/libs/rlang.so": {
-      "checksum": "58902eebe89355f6c9753d65d28a6509"
-    },
-    ".Rlib/rlang/libs/rlang.so.dSYM/Contents/Info.plist": {
-      "checksum": "d1e9b15097867b4729063635ed1813d5"
-    },
-    ".Rlib/rlang/libs/rlang.so.dSYM/Contents/Resources/DWARF/rlang.so": {
-      "checksum": "140432d5ccbccb440c9885d4705902d3"
-    },
-    ".Rlib/rlang/LICENSE": {
-      "checksum": "e6f43178fbfc71c5d0c6586954b66df1"
-    },
-    ".Rlib/rlang/Meta/features.rds": {
-      "checksum": "6e936bdf4dfd14911ddf370dc8063ab9"
-    },
-    ".Rlib/rlang/Meta/hsearch.rds": {
-      "checksum": "9465de47960b5e02c2fc24c304503fb3"
-    },
-    ".Rlib/rlang/Meta/links.rds": {
-      "checksum": "2e61a86b323ab8b691b0d58b2927eee7"
-    },
-    ".Rlib/rlang/Meta/nsInfo.rds": {
-      "checksum": "ecb6c3fd023fdc82626642eb9550141a"
-    },
-    ".Rlib/rlang/Meta/package.rds": {
-      "checksum": "2bc2893b4c4293ebd17901ece73cfbf2"
-    },
-    ".Rlib/rlang/Meta/Rd.rds": {
-      "checksum": "9b7a995ed622b4991436b6b51f3e9e52"
-    },
-    ".Rlib/rlang/NAMESPACE": {
-      "checksum": "aee4485d7866884894016981c7b2f517"
-    },
-    ".Rlib/rlang/NEWS.md": {
-      "checksum": "74b0ebbb28029c1fc6e64410b881fa40"
-    },
-    ".Rlib/rlang/R/rlang": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/rlang/R/rlang.rdb": {
-      "checksum": "8a4a3542ff317eb492c31a0a9f122ee7"
-    },
-    ".Rlib/rlang/R/rlang.rdx": {
-      "checksum": "ad018b202ee723c02060606942ff861c"
-    },
-    ".Rlib/shinybusy/assets/css/autospin.css": {
-      "checksum": "4be28cd8e445490e0eeb6f00f705c151"
-    },
-    ".Rlib/shinybusy/assets/css/shinybusy.css": {
-      "checksum": "710964ca9f73847347307cfff551cb7e"
-    },
-    ".Rlib/shinybusy/assets/epic-spinners/epic-spinners.css": {
-      "checksum": "489c1ac464ec031c7bd7b7f647b5a54d"
-    },
-    ".Rlib/shinybusy/assets/epic-spinners/epic-spinners.min.css": {
-      "checksum": "c03d22f89666620e04702416865b28dd"
-    },
-    ".Rlib/shinybusy/assets/epic-spinners/LICENSE": {
-      "checksum": "819ff1f38c145722a96f52254c567c9f"
-    },
-    ".Rlib/shinybusy/assets/freezeframe/freezeframe_styles.min.css": {
-      "checksum": "536ed60b5c2c61ad9d3bb156ed3ca3ac"
-    },
-    ".Rlib/shinybusy/assets/freezeframe/freezeframe.pkgd.min.js": {
-      "checksum": "9536c1aa95bc66810b396df3a3cc1f0e"
-    },
-    ".Rlib/shinybusy/assets/freezeframe/LICENSE": {
-      "checksum": "ff88d0ac4debd145eaa65e0e4ee5a1a9"
-    },
-    ".Rlib/shinybusy/assets/js/shinybusy.js": {
-      "checksum": "828fe0274a10f84c081fc1301c599326"
-    },
-    ".Rlib/shinybusy/assets/nanobar/LICENSE": {
-      "checksum": "bf195d6b71ec9339502c0e85f21bb04e"
-    },
-    ".Rlib/shinybusy/assets/nanobar/nanobar-styles.css": {
-      "checksum": "d9f375963243985b600c7552c223eb74"
-    },
-    ".Rlib/shinybusy/assets/nanobar/nanobar.min.js": {
-      "checksum": "e65fb172373d8aab2377f84b0ef2f824"
-    },
-    ".Rlib/shinybusy/assets/notiflix/LICENSE": {
-      "checksum": "3273e15b5175004cbde8e93f8faf4bf4"
-    },
-    ".Rlib/shinybusy/assets/notiflix/notiflix-2.3.3.min.css": {
-      "checksum": "91574d44fee52091326f4eb35707c78b"
-    },
-    ".Rlib/shinybusy/assets/notiflix/notiflix-2.3.3.min.js": {
-      "checksum": "cb66ec213ddfe63b86a87ae35867c87b"
-    },
-    ".Rlib/shinybusy/assets/notiflix/notiflix-2.4.0.min.css": {
-      "checksum": "862d66178a68cbd3a9df602bfa79c8fb"
-    },
-    ".Rlib/shinybusy/assets/notiflix/notiflix-2.4.0.min.js": {
-      "checksum": "947c013575f87c14e77416b97fd0d197"
-    },
-    ".Rlib/shinybusy/assets/notiflix/notiflix-2.7.0.min.css": {
-      "checksum": "1db919934b038bd6d5fa0d54b89c270c"
-    },
-    ".Rlib/shinybusy/assets/notiflix/notiflix-2.7.0.min.js": {
-      "checksum": "37949aac929fecb1f7b3b26857b2d104"
-    },
-    ".Rlib/shinybusy/assets/silex/logo_rouge_fond_blanc.gif": {
-      "checksum": "aba60fca9ef52c224d1d3407f07ebb8a"
-    },
-    ".Rlib/shinybusy/assets/silex/logo_rouge.gif": {
-      "checksum": "9ed5082986d51bdfb4efc7f3554e2da6"
-    },
-    ".Rlib/shinybusy/assets/spinkit/LICENSE": {
-      "checksum": "893941f8cbe0e40ead2d8107a804a17a"
-    },
-    ".Rlib/shinybusy/assets/spinkit/spin.css": {
-      "checksum": "094b46ded45859be3496ae69931eb0c6"
-    },
-    ".Rlib/shinybusy/assets/spinkit/spin.min.css": {
-      "checksum": "7bc0a78804687383107e671db0631adb"
-    },
-    ".Rlib/shinybusy/DESCRIPTION": {
-      "checksum": "7648c2520787419bc78b194f22d35e2b"
-    },
-    ".Rlib/shinybusy/doc/index.html": {
-      "checksum": "ec25282a179e0be095da5076dbf331fe"
-    },
-    ".Rlib/shinybusy/doc/shinybusy.html": {
-      "checksum": "9a1ab039e35b895b44332471786f5c10"
-    },
-    ".Rlib/shinybusy/doc/shinybusy.R": {
-      "checksum": "9c0e4a2f5b5915b946b2424f06458112"
-    },
-    ".Rlib/shinybusy/doc/shinybusy.Rmd": {
-      "checksum": "68e2e1266310efe2fc294dae7db5df9f"
-    },
-    ".Rlib/shinybusy/doc/spinners.html": {
-      "checksum": "a0101ce9a7af187865532a2934c942fc"
-    },
-    ".Rlib/shinybusy/doc/spinners.R": {
-      "checksum": "b90a5225ba0f74b9092c649d9e97b3d1"
-    },
-    ".Rlib/shinybusy/doc/spinners.Rmd": {
-      "checksum": "06e43e7d5cc11782d11651fc00b2e79d"
-    },
-    ".Rlib/shinybusy/help/aliases.rds": {
-      "checksum": "3318e5693a090e3a99c3cb7d21cbef7b"
-    },
-    ".Rlib/shinybusy/help/AnIndex": {
-      "checksum": "cad3f0313c26ca3c480dbad7cecc2597"
-    },
-    ".Rlib/shinybusy/help/figures/logo-silex.png": {
-      "checksum": "b7a7cce0fd4bbb7e09a01c01fa0ac0e3"
-    },
-    ".Rlib/shinybusy/help/figures/spin-classic.png": {
-      "checksum": "e7bf4938faf0be2883bfd7bacfed957f"
-    },
-    ".Rlib/shinybusy/help/figures/spin-dash.png": {
-      "checksum": "5b52fea55385e4422679ed0c8e85a031"
-    },
-    ".Rlib/shinybusy/help/figures/spin-theme.png": {
-      "checksum": "06beacf7a4d49023c4f8e3b98a3cae0d"
-    },
-    ".Rlib/shinybusy/help/paths.rds": {
-      "checksum": "026e3bbea20520864e863bd6954ad90d"
-    },
-    ".Rlib/shinybusy/help/shinybusy.rdb": {
-      "checksum": "1c70aed8792519f99b37b513a0b5c5a0"
-    },
-    ".Rlib/shinybusy/help/shinybusy.rdx": {
-      "checksum": "028301fadd882b078cc4e6d7d6675e0f"
-    },
-    ".Rlib/shinybusy/html/00Index.html": {
-      "checksum": "2af95c9731a8ffb5637b21595ba69f05"
-    },
-    ".Rlib/shinybusy/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/shinybusy/htmlwidgets/lib/LICENSE": {
-      "checksum": "cb172e38d25301231f02ad5698cb2777"
-    },
-    ".Rlib/shinybusy/htmlwidgets/lib/progressbar.min.js": {
-      "checksum": "fb52652b763459b1b33b1e0efa95c2e0"
-    },
-    ".Rlib/shinybusy/htmlwidgets/progressbar.js": {
-      "checksum": "344d1d8528ccbea8b3405585cc13aa6c"
-    },
-    ".Rlib/shinybusy/htmlwidgets/progressbar.yaml": {
-      "checksum": "33e217b2e04f10c64448dce3d585c790"
-    },
-    ".Rlib/shinybusy/INDEX": {
-      "checksum": "87f788a7c3961e077b5d8728dc6fcd30"
-    },
-    ".Rlib/shinybusy/Meta/features.rds": {
-      "checksum": "b9fcde1f86ac1657344ebc9dd7bb52af"
-    },
-    ".Rlib/shinybusy/Meta/hsearch.rds": {
-      "checksum": "ea3a22618ab2431ba8ef1a735cc090d7"
-    },
-    ".Rlib/shinybusy/Meta/links.rds": {
-      "checksum": "49d9f972570170fd624d1f29878b9e7e"
-    },
-    ".Rlib/shinybusy/Meta/nsInfo.rds": {
-      "checksum": "05d08db40e5b24e470ec334ed4ce38f1"
-    },
-    ".Rlib/shinybusy/Meta/package.rds": {
-      "checksum": "e054f4673dfee563ab0904212a618090"
-    },
-    ".Rlib/shinybusy/Meta/Rd.rds": {
-      "checksum": "c5d8b4355400094c6e4074914462f175"
-    },
-    ".Rlib/shinybusy/Meta/vignette.rds": {
-      "checksum": "c6045caab99fe2d155e4e6d813ce2ed4"
-    },
-    ".Rlib/shinybusy/NAMESPACE": {
-      "checksum": "abe6b52096d8d7a6e869484df2c377aa"
-    },
-    ".Rlib/shinybusy/NEWS.md": {
-      "checksum": "f5bad4fb88448b0b0ca0a5c5a62b091e"
-    },
-    ".Rlib/shinybusy/packer/block.js": {
-      "checksum": "4af291229eb2db01d9a6114d7a062b87"
-    },
-    ".Rlib/shinybusy/packer/busy.js": {
-      "checksum": "0a4c3f5c75ec7f8c8896dff178cb04ac"
-    },
-    ".Rlib/shinybusy/packer/loading.js": {
-      "checksum": "e85f9d12fe75fac3f0a9620fc14f8dcc"
-    },
-    ".Rlib/shinybusy/packer/notify.js": {
-      "checksum": "31ed7055c5ff675da13ad6d60372d9dc"
-    },
-    ".Rlib/shinybusy/packer/report.js": {
-      "checksum": "fe8dccb184ac28242b8eb1f62adb3ab5"
-    },
-    ".Rlib/shinybusy/packer/startup.js": {
-      "checksum": "46634ebdbb3d18bb2a05a35251b8cc8b"
-    },
-    ".Rlib/shinybusy/R/shinybusy": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/shinybusy/R/shinybusy.rdb": {
-      "checksum": "4106f920b485475a76dbe4ccc606c3c6"
-    },
-    ".Rlib/shinybusy/R/shinybusy.rdx": {
-      "checksum": "9b6cc7c756dcee97cf30f4c368e176e1"
-    },
-    ".Rlib/snowflakeauth/DESCRIPTION": {
-      "checksum": "17e8a1a64ea4a7d2a60b16751b61ce93"
-    },
-    ".Rlib/snowflakeauth/help/aliases.rds": {
-      "checksum": "5369ae3f16c49deb08af316435ec7c9e"
-    },
-    ".Rlib/snowflakeauth/help/AnIndex": {
-      "checksum": "0c210e7770ecb60b3db459f060b67741"
-    },
-    ".Rlib/snowflakeauth/help/paths.rds": {
-      "checksum": "19e077417ac328c519d390a3f30d59f8"
-    },
-    ".Rlib/snowflakeauth/help/snowflakeauth.rdb": {
-      "checksum": "a12fd9790754383bcb2412188e7adc59"
-    },
-    ".Rlib/snowflakeauth/help/snowflakeauth.rdx": {
-      "checksum": "be3b91dea2a9aa9a1deeda2404feb9e5"
-    },
-    ".Rlib/snowflakeauth/html/00Index.html": {
-      "checksum": "8b90e4da4a00b3cdc3ccf0f7ee7a30f2"
-    },
-    ".Rlib/snowflakeauth/html/R.css": {
-      "checksum": "8b9362669af13540a86a3ac6cf22f99d"
-    },
-    ".Rlib/snowflakeauth/INDEX": {
-      "checksum": "a39f93c7cff1163470f4099914d2d1d2"
-    },
-    ".Rlib/snowflakeauth/LICENSE": {
-      "checksum": "217386c596203e57351de188b0437835"
-    },
-    ".Rlib/snowflakeauth/Meta/features.rds": {
-      "checksum": "6e936bdf4dfd14911ddf370dc8063ab9"
-    },
-    ".Rlib/snowflakeauth/Meta/hsearch.rds": {
-      "checksum": "2a7b706854755c65f23e26b4e5238d02"
-    },
-    ".Rlib/snowflakeauth/Meta/links.rds": {
-      "checksum": "07cbd135ffe3710af14829eb80ddd8a2"
-    },
-    ".Rlib/snowflakeauth/Meta/nsInfo.rds": {
-      "checksum": "dad101f7c082d79fb6567a85ee5bdaf5"
-    },
-    ".Rlib/snowflakeauth/Meta/package.rds": {
-      "checksum": "f96785c011be1b5cf88a23f31c5a241e"
-    },
-    ".Rlib/snowflakeauth/Meta/Rd.rds": {
-      "checksum": "787e1ea7e894b6af35ddf1bc5ea519bb"
-    },
-    ".Rlib/snowflakeauth/NAMESPACE": {
-      "checksum": "471d4e5bd6d27b61669a3280cc95e036"
-    },
-    ".Rlib/snowflakeauth/NEWS.md": {
-      "checksum": "b012225c6c5304d48dfb04ae7aa3eec3"
-    },
-    ".Rlib/snowflakeauth/R/snowflakeauth": {
-      "checksum": "d6c68f1fe41ced6e98a766a3757313da"
-    },
-    ".Rlib/snowflakeauth/R/snowflakeauth.rdb": {
-      "checksum": "2a874cb4361cf529e66310d3c1666a8a"
-    },
-    ".Rlib/snowflakeauth/R/snowflakeauth.rdx": {
-      "checksum": "a9c24d7449e58d660cae66d55a300d62"
-    },
     "app.R": {
-      "checksum": "e04fd45cdc9edbeea918c4c95ca0e9fe"
+      "checksum": "befcd7574961faea3316b1097538a269"
     },
     "DESCRIPTION": {
       "checksum": "a96c604d0c2a3dac7c14f47e5eb9e4f4"
     },
     "install_dependencies.R": {
-      "checksum": "62cf03589082ee9ba745c7b0f3bb648d"
+      "checksum": "fdd1383521e2fc649898a135cc28c9e7"
     },
     "LICENSE": {
       "checksum": "c3402c2a642b13fb6492fa805af910fb"
@@ -3626,6 +1846,9 @@
     },
     "scripts/build_example_files.R": {
       "checksum": "daacd826e97b8e291e5a0c936acfd095"
+    },
+    "SECURITY.md": {
+      "checksum": "b1060e70aaff0e2baed6fc1d91ebe9b3"
     },
     "tests/create_fixture.R": {
       "checksum": "e8088fd1bcffbb7335f71930a17b2613"
