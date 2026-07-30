@@ -1,0 +1,74 @@
+name: SAAA-itemAnalysis CI/CD
+
+on:
+  push:
+    branches: [ master, main ]
+  pull_request:
+    branches: [ master, main ]
+
+jobs:
+  test:
+    name: Run Automated R Tests & Validate Shiny App
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.0'
+          use-public-rspm: true
+
+      - name: Install Linux System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libgmp-dev libmpfr-dev
+
+      - name: Install R Package Dependencies
+        run: |
+          Rscript -e "install.packages(c('bslib', 'data.table', 'future', 'openxlsx', 'promises', 'Rmpfr', 'shiny', 'shinybusy', 'writexl', 'zip', 'rsconnect'), repos = 'https://cloud.r-project.org')"
+
+      - name: Run Smoke Test
+        run: |
+          Rscript tests/smoke_test.R
+
+      - name: Run Shiny Module Test
+        run: |
+          Rscript tests/module_test.R
+
+  update-manifest:
+    name: Auto-update manifest.json for Posit Connect Cloud
+    needs: test
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up R
+        uses: r-lib/actions/setup-r@v2
+        with:
+          r-version: '4.4.0'
+          use-public-rspm: true
+
+      - name: Install Linux System Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libcurl4-openssl-dev libssl-dev libxml2-dev libgmp-dev libmpfr-dev
+
+      - name: Install R Package Dependencies
+        run: |
+          Rscript -e "install.packages(c('bslib', 'data.table', 'future', 'openxlsx', 'promises', 'Rmpfr', 'shiny', 'shinybusy', 'writexl', 'zip', 'rsconnect'), repos = 'https://cloud.r-project.org')"
+
+      - name: Update manifest.json
+        run: |
+          Rscript -e "rsconnect::writeManifest('.')"
+
+      - name: Commit manifest.json if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(ci): auto-update manifest.json for Posit Connect Cloud [skip ci]"
+          file_pattern: "manifest.json"
