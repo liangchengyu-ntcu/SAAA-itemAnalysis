@@ -1,0 +1,452 @@
+/*
+ * 檔案：www/styles.css
+ * 用途：管理 Shiny 全站視覺樣式；結構與文字仍由 app.R 及 R/mod_*.R 控制。
+ * 修改提示：
+ *   - 全站色彩先改 :root 變數，避免逐一尋找相同色碼。
+ *   - 元件 class 名稱必須與 R 程式中的 class 屬性一致。
+ *   - 最下方 media query 負責手機版；調整桌面欄數時要同步檢查手機。
+ */
+
+/* 全站可重用色彩。 */
+:root {
+  --ink: #0f172a;
+  --muted: #64748b;
+  --line: #dbe4e8;
+  --paper: #ffffff;
+  --wash: #f3f7f6;
+  --teal: #0f766e;
+  --teal-dark: #115e59;
+  --amber: #d97706;
+  --red: #b91c1c;
+}
+
+/* 頁面底色與左上柔和漸層。 */
+body {
+  color: var(--ink);
+  background:
+    radial-gradient(circle at 12% 8%, rgba(15, 118, 110, 0.08), transparent 34rem),
+    var(--wash);
+}
+
+/* -------------------------------------------------------------------------
+ * 導覽列與品牌
+ * ---------------------------------------------------------------------- */
+.navbar {
+  padding-top: 0.35rem;
+  /* 2px 內距加 1px 邊框，Logo 到導覽列下緣約為 3px。 */
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.98) !important;
+  box-shadow: 0 8px 28px rgba(15, 23, 42, 0.09);
+}
+
+.brand-lockup {
+  display: flex;
+  align-items: center;
+  width: clamp(14rem, 26vw, 23rem);
+  max-width: 100%;
+}
+
+.brand-logo {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.navbar .navbar-brand {
+  display: flex;
+  flex: 0 1 auto;
+  align-items: center;
+  min-width: 0;
+  height: auto;
+  padding: 0;
+  margin-right: 1.5rem;
+  line-height: 1;
+}
+
+.navbar .navbar-nav {
+  align-items: center;
+  gap: 0.2rem;
+}
+
+.navbar .nav-link {
+  padding: 0.58rem 0.9rem !important;
+  border-radius: 0.65rem;
+  color: #475569 !important;
+  font-weight: 750;
+  transition:
+    color 150ms ease,
+    background-color 150ms ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link:focus-visible {
+  color: var(--teal-dark) !important;
+  background: #ecf8f6;
+}
+
+.navbar .nav-link.active {
+  color: #fff !important;
+  background: var(--teal);
+}
+
+.navbar .navbar-toggle,
+.navbar .navbar-toggler {
+  padding: 0.55rem 0.65rem;
+  border-color: #cbd5e1;
+  border-radius: 0.6rem;
+  color: var(--ink);
+  background: #f8fafc;
+}
+
+.navbar .navbar-toggle:hover,
+.navbar .navbar-toggle:focus,
+.navbar .navbar-toggler:hover,
+.navbar .navbar-toggler:focus {
+  background: #ecf8f6;
+  box-shadow: 0 0 0 0.2rem rgba(15, 118, 110, 0.2);
+}
+
+.navbar .navbar-toggle .icon-bar {
+  display: block;
+  width: 1.35rem;
+  height: 0.13rem;
+  border-radius: 999px;
+  background: #334155;
+}
+
+.navbar .navbar-toggle .icon-bar + .icon-bar {
+  margin-top: 0.25rem;
+}
+
+.navbar .navbar-toggler-icon {
+  filter: invert(72%);
+}
+
+/* -------------------------------------------------------------------------
+ * 全頁容器與首頁工作階段提示
+ * ---------------------------------------------------------------------- */
+.page-shell {
+  width: min(1180px, calc(100% - 2rem));
+  margin: 0 auto;
+  padding: 2rem 0 3rem;
+}
+
+/* 成績分析頁不再顯示額外標籤，縮短導覽列與第一張操作卡的距離。 */
+.analysis-page {
+  padding-top: 1rem;
+}
+
+/* -------------------------------------------------------------------------
+ * 共用卡片、區段標題與操作按鈕
+ * ---------------------------------------------------------------------- */
+.card {
+  border: 1px solid rgba(148, 163, 184, 0.34);
+  border-radius: 1rem;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 14px 38px rgba(15, 23, 42, 0.06);
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 1rem 1.1rem;
+  border-bottom-color: var(--line);
+  background: #fff;
+  font-weight: 750;
+}
+
+.card-body {
+  padding: 1.1rem;
+}
+
+.section-heading {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.step-badge {
+  display: grid;
+  place-items: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 0.55rem;
+  color: #fff;
+  background: var(--teal);
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.button-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+  margin-top: 1.15rem;
+}
+
+.button-row .btn {
+  min-width: 8.5rem;
+}
+
+/* -------------------------------------------------------------------------
+ * 檔案檢查／背景工作狀態
+ * ---------------------------------------------------------------------- */
+.status-banner {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.55rem;
+  margin-bottom: 0.9rem;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid;
+  border-radius: 0.7rem;
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+
+.status-info {
+  color: #0c4a6e;
+  border-color: #bae6fd;
+  background: #f0f9ff;
+}
+
+.status-success {
+  color: #14532d;
+  border-color: #bbf7d0;
+  background: #f0fdf4;
+}
+
+.status-running,
+.status-warning {
+  color: #7c2d12;
+  border-color: #fed7aa;
+  background: #fff7ed;
+}
+
+.status-danger {
+  color: #7f1d1d;
+  border-color: #fecaca;
+  background: #fef2f2;
+}
+
+/* 背景工作執行時讓 spinner 圖示持續旋轉。 */
+.status-running .fa-spinner {
+  animation: spin 0.9s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* 上傳檔僅存於 session 的隱私提示。 */
+.privacy-note {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding-top: 1rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+/* -------------------------------------------------------------------------
+ * 表格：寬表保留單行，超出卡片時改用水平捲動
+ * ---------------------------------------------------------------------- */
+.table-scroll {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.table {
+  margin-bottom: 0;
+  white-space: nowrap;
+}
+
+.table > :not(caption) > * > * {
+  padding: 0.62rem 0.7rem;
+  border-bottom-color: #e8eef0;
+}
+
+.table thead th {
+  color: #334155;
+  background: #f8fafc;
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+
+/* -------------------------------------------------------------------------
+ * 結果頁：標題、四張人數卡、預覽提示
+ * ---------------------------------------------------------------------- */
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.metric-grid {
+  display: grid;
+  /* 四張卡在桌面以 2 x 2 排列；手機再改為單欄。 */
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.preview-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.45rem;
+  margin: 0.25rem 0 1rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.metric-tile {
+  display: flex;
+  flex-direction: column;
+  padding: 0.75rem;
+  border: 1px solid #d7e5e3;
+  border-radius: 0.7rem;
+  background: #f5fbfa;
+}
+
+.metric-value {
+  color: var(--teal-dark);
+  font-size: 1.45rem;
+  font-weight: 800;
+}
+
+.metric-label {
+  color: var(--muted);
+  font-size: 0.75rem;
+}
+
+/* 尚未完成分析時的置中空狀態。 */
+.empty-state {
+  display: grid;
+  min-height: 28rem;
+  place-items: center;
+  align-content: center;
+  padding: 2rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+.empty-state > .svg-inline--fa {
+  margin-bottom: 1rem;
+  color: #90aaa7;
+  font-size: 3.5rem;
+}
+
+.empty-state h3 {
+  color: var(--ink);
+  font-weight: 800;
+}
+
+/* -------------------------------------------------------------------------
+ * 使用說明與匿名範例下載
+ * ---------------------------------------------------------------------- */
+.guide-page {
+  padding-top: 2.5rem;
+}
+
+.guide-card {
+  min-height: 15rem;
+}
+
+.guide-number {
+  display: grid;
+  place-items: center;
+  width: 2.3rem;
+  height: 2.3rem;
+  margin-bottom: 1rem;
+  border-radius: 0.7rem;
+  color: #fff;
+  background: var(--teal);
+  font-weight: 800;
+}
+
+.guide-card h3 {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+
+.guide-card li {
+  margin-bottom: 0.5rem;
+  color: #475569;
+}
+
+.example-card {
+  margin-top: 1rem;
+}
+
+.example-card p {
+  color: var(--muted);
+}
+
+.example-downloads {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.example-downloads .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+/* 全站頁尾。 */
+.app-footer {
+  padding: 1.4rem 1rem 2.2rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+  text-align: center;
+}
+
+/* -------------------------------------------------------------------------
+ * 手機與窄螢幕（寬度 <= 768px）
+ * ---------------------------------------------------------------------- */
+@media (max-width: 768px) {
+  .navbar {
+    padding-top: 0.3rem;
+    padding-bottom: 2px;
+  }
+
+  .brand-lockup {
+    width: clamp(10.5rem, 60vw, 14.5rem);
+  }
+
+  .navbar .navbar-brand {
+    margin-right: 0.35rem;
+  }
+
+  .navbar .navbar-collapse {
+    padding-top: 0.65rem;
+  }
+
+  .navbar .navbar-nav {
+    align-items: stretch;
+  }
+
+  .page-shell {
+    width: min(100% - 1rem, 1180px);
+    padding-top: 1.2rem;
+  }
+
+  .analysis-page {
+    padding-top: 0.75rem;
+  }
+
+  .result-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .metric-grid {
+    grid-template-columns: 1fr;
+  }
+}

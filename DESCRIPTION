@@ -1,0 +1,26 @@
+Package: scoreShiny115
+Type: Project
+Title: 115 學力測驗成績分析 Shiny 應用
+Version: 0.4.1
+Authors@R: person("Project", "Maintainer", role = c("aut", "cre"),
+    email = "maintainer@example.invalid")
+Description: 本機優先的學力測驗成績計算與報表應用，支援單科及批次模式。
+License: file LICENSE
+Encoding: UTF-8
+Depends:
+    R (>= 4.3.0)
+Imports:
+    bslib (>= 0.8.0),
+    data.table,
+    future,
+    openxlsx,
+    promises,
+    Rmpfr,
+    shiny (>= 1.8.1),
+    writexl,
+    zip
+Suggests:
+    later,
+    lintr,
+    shinytest2,
+    testthat
