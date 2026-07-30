@@ -1,4 +1,4 @@
-name: SAAA-itemAnalysis CI/CD
+name: SAAA-itemAnalysis CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ master, main ]
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   test:
@@ -26,10 +26,6 @@ jobs:
 
       - name: Install R Dependencies
         uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: |
-            any::shinybusy
-            any::rsconnect
 
       - name: Run Smoke Test
         run: |
@@ -38,36 +34,3 @@ jobs:
       - name: Run Shiny Module Test
         run: |
           Rscript tests/module_test.R
-
-  update-manifest:
-    name: Auto-update manifest.json for Posit Connect Cloud
-    needs: test
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/master' || github.ref == 'refs/heads/main')
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up R
-        uses: r-lib/actions/setup-r@v2
-        with:
-          r-version: '4.4.0'
-          use-public-rspm: true
-
-      - name: Install R Dependencies
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: |
-            any::shinybusy
-            any::rsconnect
-
-      - name: Update manifest.json
-        run: |
-          Rscript -e "rsconnect::writeManifest('.')"
-
-      - name: Commit manifest.json if changed
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "chore(ci): auto-update manifest.json for Posit Connect Cloud [skip ci]"
-          file_pattern: "manifest.json"

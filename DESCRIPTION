@@ -16,7 +16,9 @@ Imports:
     openxlsx,
     promises,
     Rmpfr,
+    rsconnect,
     shiny (>= 1.8.1),
+    shinybusy,
     writexl,
     zip
 Suggests:
