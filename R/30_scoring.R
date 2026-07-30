@@ -112,27 +112,13 @@ prepare_job_input <- function(job) {
   # 部分漏答不算缺考；答錯也不算缺考。
   absent_flag <- rowSums(is.na(item_matrix)) == n_items
 
-  # 各科答案檔的向度欄命名不同，在這裡集中轉成欲讀取的欄名。
-  if (job$subject_code == "M") {
-    # 數學有兩組向度定義，最後會並排合併。
-    dimension_columns <- c(
-      paste0(answer_column, "1_向度"),
-      paste0(answer_column, "2_向度")
-    )
-  } else if (job$subject_code == "S") {
-    dimension_columns <- paste0(answer_column, "向度")
-  } else if (job$subject_code == "C") {
-    # 國語向度欄使用「三年級」等中文年級，而不是 C3。
-    chinese_grade <- unname(
-      GRADE_TO_CHINESE[as.character(job$grade)]
-    )
-    if (is.na(chinese_grade)) {
-      abort_score("國語向度沒有年級對照：", job$grade)
-    }
-    dimension_columns <- chinese_grade
-  } else {
-    dimension_columns <- answer_column
-  }
+  # 各科答案檔的向度欄命名不同，動態解析包含聽力/閱讀劃分與多重向度之欄名。
+  dim_colnames <- colnames(answer_tables$dimensions)
+  dimension_columns <- resolve_dimension_columns(
+    dim_colnames,
+    job$subject_code,
+    job$grade
+  )
 
   # 每組標籤都只保留有效題目，與 item_matrix、key_vector 完全對齊。
   dimension_labels <- lapply(dimension_columns, function(column_name) {
