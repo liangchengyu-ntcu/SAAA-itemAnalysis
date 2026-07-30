@@ -394,3 +394,24 @@ build_student_score_table <- function(
     family_type = family_type
   )
 }
+
+# 依據每位學生答對題數與輸入的門檻判定「精熟」「基礎」「待加強」等級。
+calculate_student_levels <- function(
+  correct_counts,
+  absent_flag,
+  calc_level,
+  mastery_cutoff,
+  basic_cutoff
+) {
+  if (!isTRUE(calc_level) || is.na(mastery_cutoff) || is.na(basic_cutoff)) {
+    return(NULL)
+  }
+
+  levels <- rep("待加強", length(correct_counts))
+  levels[correct_counts >= basic_cutoff] <- "基礎"
+  levels[correct_counts >= mastery_cutoff] <- "精熟"
+  levels[absent_flag] <- NA_character_
+
+  levels
+}
+

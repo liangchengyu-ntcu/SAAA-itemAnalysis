@@ -86,6 +86,32 @@ mod_run_ui <- function(id) {
               accept = c(".zip", "application/zip")
             )
           ),
+          shiny::tags$hr(),
+          shiny::checkboxInput(
+            ns("calc_level"),
+            "計算精熟等級（等級描述：精熟 / 基礎 / 待加強）",
+            value = FALSE
+          ),
+          shiny::conditionalPanel(
+            condition = sprintf("input['%s'] === true", ns("calc_level")),
+            shiny::div(
+              style = "margin-bottom: 15px; padding: 12px; background-color: #f8f9fa; border-radius: 6px; border: 1px solid #dee2e6;",
+              shiny::numericInput(
+                ns("mastery_cutoff"),
+                "精熟門檻題數（答對題數 ≥）",
+                value = NA,
+                min = 1,
+                step = 1
+              ),
+              shiny::numericInput(
+                ns("basic_cutoff"),
+                "基礎門檻題數（答對題數 ≥）",
+                value = NA,
+                min = 1,
+                step = 1
+              )
+            )
+          ),
           # 先檢查再計算；run_analysis 使用 task button 顯示忙碌狀態。
           shiny::div(
             class = "button-row",
@@ -159,7 +185,9 @@ mod_run_server <- function(id) {
     # staged_jobs 只有在全部工作通過驗證後才會存入可執行 job。
     staged_jobs <- shiny::reactiveVal(NULL)
     staged_preview <- shiny::reactiveVal(empty_job_table())
-    # 使用者重新檢查檔案時，優先顯示檢查訊息而非上一次工作結果。
+    # 控管狀態訊息顯示，避免重新上傳時畫面仍殘留上一次成功／失敗訊息。
+    # 這裡的關鍵是在使用者按「檢查檔案」時切回 TRUE，讓使用者明確看到最新
+    # 訊息而非上一次工作結果。
     show_staging_status <- shiny::reactiveVal(TRUE)
     stage_message <- shiny::reactiveVal(
       list(type = "info", text = "請先選擇檔案並按「檢查檔案」。")
@@ -196,6 +224,23 @@ mod_run_server <- function(id) {
       tryCatch(
         {
           year <- validate_year_input(input$year)
+
+          calc_level <- isTRUE(input$calc_level)
+          mastery_cutoff <- if (calc_level) as.numeric(input$mastery_cutoff) else NA_real_
+          basic_cutoff <- if (calc_level) as.numeric(input$basic_cutoff) else NA_real_
+
+          if (calc_level) {
+            if (is.na(mastery_cutoff) || is.na(basic_cutoff)) {
+              abort_score("勾選「計算精熟等級」時，必須輸入「精熟門檻題數」與「基礎門檻題數」。")
+            }
+            if (mastery_cutoff <= basic_cutoff) {
+              abort_score("精熟門檻題數（", mastery_cutoff, "）必須大於基礎門檻題數（", basic_cutoff, "）。")
+            }
+            if (basic_cutoff <= 0) {
+              abort_score("基礎門檻題數必須大於 0。")
+            }
+          }
+
           # 一次檢查使用一個新子目錄，避免新舊上傳同名時互相干擾。
           staging_directory <- tempfile(
             "input-",
@@ -224,7 +269,10 @@ mod_run_server <- function(id) {
               answer_path = answer_paths[[1L]],
               response_paths = response_paths,
               year = year,
-              subject_code = input$subject_code
+              subject_code = input$subject_code,
+              calc_level = calc_level,
+              mastery_cutoff = mastery_cutoff,
+              basic_cutoff = basic_cutoff
             )
           } else {
             # 批次 ZIP 先安全解壓，再掃描所有子資料夾自動配對。

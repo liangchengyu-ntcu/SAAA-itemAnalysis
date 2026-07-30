@@ -149,7 +149,10 @@ make_job <- function(
   subject_code,
   grade,
   answer_path,
-  response_path
+  response_path,
+  calc_level = FALSE,
+  mastery_cutoff = NA,
+  basic_cutoff = NA
 ) {
   list(
     key = job_key(year, subject_code, grade),
@@ -166,7 +169,10 @@ make_job <- function(
       response_path,
       winslash = "/",
       mustWork = TRUE
-    )
+    ),
+    calc_level = isTRUE(calc_level),
+    mastery_cutoff = if (isTRUE(calc_level)) as.numeric(mastery_cutoff) else NA_real_,
+    basic_cutoff = if (isTRUE(calc_level)) as.numeric(basic_cutoff) else NA_real_
   )
 }
 
@@ -180,7 +186,10 @@ discover_single_jobs <- function(
   answer_path,
   response_paths,
   year,
-  subject_code
+  subject_code,
+  calc_level = FALSE,
+  mastery_cutoff = NA,
+  basic_cutoff = NA
 ) {
   # 先逐檔解析；任何檔名無法辨識都整批退回，避免算錯科目。
   parsed <- lapply(response_paths, parse_response_filename)
@@ -226,7 +235,10 @@ discover_single_jobs <- function(
       subject_code = subject_code,
       grade = item$grade,
       answer_path = answer_path,
-      response_path = item$path
+      response_path = item$path,
+      calc_level = calc_level,
+      mastery_cutoff = mastery_cutoff,
+      basic_cutoff = basic_cutoff
     )
   })
   jobs[order(grades)]
@@ -237,7 +249,13 @@ discover_single_jobs <- function(
 # root：已安全解壓的根目錄，可包含子資料夾。
 # year：只建立指定年度的工作。
 # 回傳值：依科目代號、年級排序的 job 清單。
-discover_batch_jobs <- function(root, year) {
+discover_batch_jobs <- function(
+  root,
+  year,
+  calc_level = FALSE,
+  mastery_cutoff = NA,
+  basic_cutoff = NA
+) {
   # 只掃描 .xlsx；其他文件即使存在 ZIP 內也不參與配對。
   files <- list.files(
     root,
@@ -309,7 +327,10 @@ discover_batch_jobs <- function(root, year) {
       subject_code = item$subject_code,
       grade = item$grade,
       answer_path = answer_path,
-      response_path = item$path
+      response_path = item$path,
+      calc_level = calc_level,
+      mastery_cutoff = mastery_cutoff,
+      basic_cutoff = basic_cutoff
     )
   })
 

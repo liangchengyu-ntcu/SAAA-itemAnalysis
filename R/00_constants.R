@@ -17,6 +17,59 @@ SUBJECT_NAMES <- c(
   S = "自然"
 )
 
+# 成績等級定義
+LEVEL_NAMES <- c("精熟", "基礎", "待加強")
+
+# 縣市名稱轉縣市英文代碼對照表（用於生成「縣市流水號」）
+CITY_CODE_MAP <- c(
+  "基隆市" = "C",
+  "台北市" = "A",
+  "臺北市" = "A",
+  "臺北縣" = "F",
+  "台北縣" = "F",
+  "新北市" = "F",
+  "桃園市" = "H",
+  "桃園縣" = "H",
+  "新竹市" = "O",
+  "新竹縣" = "J",
+  "苗栗縣" = "K",
+  "台中市" = "B",
+  "臺中市" = "B",
+  "台中縣" = "L",
+  "臺中縣" = "L",
+  "彰化縣" = "N",
+  "南投縣" = "M",
+  "雲林縣" = "P",
+  "嘉義市" = "I",
+  "嘉義縣" = "Q",
+  "台南市" = "D",
+  "臺南市" = "D",
+  "台南縣" = "R",
+  "臺南縣" = "R",
+  "高雄市" = "E",
+  "高雄縣" = "S",
+  "屏東縣" = "T",
+  "台東縣" = "V",
+  "臺東縣" = "V",
+  "花蓮縣" = "U",
+  "宜蘭縣" = "G",
+  "澎湖縣" = "X",
+  "金門縣" = "W",
+  "陽明山" = "Y",
+  "連江縣" = "Z"
+)
+
+# 依據年度、縣市名稱、科目與年級產生「縣市流水號」（例如：115_B_C4_000001）
+generate_county_id <- function(year, city_name, volume, serial_number) {
+  city_code <- unname(CITY_CODE_MAP[as.character(city_name)])
+  if (any(is.na(city_code))) {
+    city_code[is.na(city_code)] <- "X"
+  }
+  serial_formatted <- sprintf("%06d", as.integer(serial_number))
+  paste(year, city_code, volume, serial_formatted, sep = "_")
+}
+
+
 # 年級數字轉成答案檔「向度」工作表使用的中文欄名。
 GRADE_TO_CHINESE <- c(
   "3" = "三年級",

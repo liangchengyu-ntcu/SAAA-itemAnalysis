@@ -277,6 +277,34 @@ stopifnot(sum(colnames(personal_detail) == "第1題") == 2L)
 stopifnot(sum(colnames(personal_detail) == "第4題") == 2L)
 
 # ---------------------------------------------------------------------------
+# 成績等級：勾選「計算精熟等級」時產生「等級」欄位，劃分精熟、基礎、待加強
+# ---------------------------------------------------------------------------
+level_jobs <- discover_single_jobs(
+  answer_path = fixture$answer_path,
+  response_paths = fixture$response_path,
+  year = "115",
+  subject_code = "C",
+  calc_level = TRUE,
+  mastery_cutoff = 3,
+  basic_cutoff = 2
+)
+level_run <- run_job_batch(
+  level_jobs,
+  file.path(test_root, "level-output")
+)
+level_result <- level_run$results[["115_C4"]]
+level_personal <- openxlsx::read.xlsx(
+  unname(level_result$exported_files[["personal_detail"]]),
+  check.names = FALSE
+)
+stopifnot("等級" %in% colnames(level_personal))
+stopifnot(identical(
+  match("等級", colnames(level_personal)),
+  match("PR值(全部參與縣市)", colnames(level_personal)) + 1L
+))
+
+
+# ---------------------------------------------------------------------------
 # 下載 ZIP：11 份 Excel 都應包含，包含恢復的三份個人／缺考報表
 # ---------------------------------------------------------------------------
 archive_path <- create_result_archive(

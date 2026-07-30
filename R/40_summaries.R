@@ -240,6 +240,17 @@ calculate_ranked_outputs <- function(
     match(personal_all$總流水號, prepared$student_ids)
   ]
 
+  if (isTRUE(prepared$job$calc_level)) {
+    levels <- calculate_student_levels(
+      correct_counts = score_data$total_correct_count,
+      absent_flag = prepared$absent_flag,
+      calc_level = prepared$job$calc_level,
+      mastery_cutoff = prepared$job$mastery_cutoff,
+      basic_cutoff = prepared$job$basic_cutoff
+    )
+    personal_all$等級 <- levels[match(personal_all$總流水號, prepared$student_ids)]
+  }
+
   # 「個人成績含題數」沿用舊版欄位契約：
   # 保留全體排名／PR，但不放縣市排名／PR，最後一欄為答對題數。
   personal_with_count <- personal_all
@@ -314,7 +325,7 @@ calculate_ranked_outputs <- function(
   # 排名與分數則取自同一份 personal_all，避免另外重算。
   info <- prepared$info_data
   columns <- prepared$info_columns
-  personal_output <- data.frame(
+  personal_fields <- list(
     年度 = prepared$job$year,
     總流水號 = personal_all$總流水號,
     縣市流水號 = personal_all$縣市流水號,
@@ -340,7 +351,13 @@ calculate_ranked_outputs <- function(
     `排名(該縣市)` = personal_all$縣市排名,
     `排名(總參與)` = personal_all$全體排名,
     `PR值(所屬縣市)` = personal_all$縣市PR,
-    `PR值(全部參與縣市)` = personal_all$全體PR,
+    `PR值(全部參與縣市)` = personal_all$全體PR
+  )
+  if (isTRUE(prepared$job$calc_level)) {
+    personal_fields[["等級"]] <- personal_all$等級
+  }
+  personal_output <- as.data.frame(
+    personal_fields,
     check.names = FALSE,
     stringsAsFactors = FALSE
   )

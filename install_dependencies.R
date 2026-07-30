@@ -6,6 +6,10 @@
 # 注意：正常啟動 app.R 不會安裝套件，只有本維護腳本會改動 R library。
 # =============================================================================
 
+if (dir.exists(".Rlib")) {
+  .libPaths(c(".Rlib", .libPaths()))
+}
+
 # 應用執行時必須可用的套件。
 packages <- c(
   "bslib",
@@ -15,6 +19,7 @@ packages <- c(
   "promises",
   "Rmpfr",
   "shiny",
+  "shinybusy",
   "writexl",
   "zip"
 )
@@ -29,8 +34,16 @@ missing <- packages[
   )
 ]
 if (length(missing) > 0L) {
-  # 只安裝缺少項目，已安裝套件不會被強制更新。
-  install.packages(missing)
+  # 若無權限寫入預設庫，建立並安裝至 .Rlib
+  target_dir <- tryCatch({
+    install.packages(missing, repos = "https://cloud.r-project.org")
+    NULL
+  }, error = function(e) {
+    if (!dir.exists(".Rlib")) dir.create(".Rlib", showWarnings = FALSE)
+    .libPaths(c(".Rlib", .libPaths()))
+    install.packages(missing, lib = ".Rlib", repos = "https://cloud.r-project.org")
+    ".Rlib"
+  })
 }
 
 # 即使原本沒有缺件，也提供明確完成訊息。

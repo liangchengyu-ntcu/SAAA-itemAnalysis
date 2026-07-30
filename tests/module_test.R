@@ -152,6 +152,24 @@ shiny::testServer(
   }
 )
 
+# ---------------------------------------------------------------------------
+# 資料清洗模組：驗證上傳檔案、觸發清洗、修復診斷卡片與表格預覽。
+# ---------------------------------------------------------------------------
+shiny::testServer(mod_cleansing_server, {
+  session$setInputs(
+    raw_file = response_upload,
+    opt_fix_gender = TRUE,
+    opt_consolidate_special = TRUE,
+    opt_match_school = TRUE,
+    run_cleansing = 1
+  )
+  session$flushReact()
+
+  stopifnot(!is.null(cleaned_result()))
+  stopifnot(!is.null(output$diagnostic_ui))
+  stopifnot(!is.null(output$preview_table))
+})
+
 cat(
   paste(
     "Module test passed:",

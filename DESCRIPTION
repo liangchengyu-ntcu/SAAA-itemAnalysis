@@ -1,10 +1,10 @@
-Package: scoreShiny115
+Package: SAAAitemAnalysis
 Type: Project
-Title: 115 學力測驗成績分析 Shiny 應用
-Version: 0.4.1
+Title: SAAA-itemAnalysis 試題與學力分析系統
+Version: 0.5.0
 Authors@R: person("Project", "Maintainer", role = c("aut", "cre"),
     email = "maintainer@example.invalid")
-Description: 本機優先的學力測驗成績計算與報表應用，支援單科及批次模式。
+Description: 本機與雲端通用之學力測驗試題與成績分析 Shiny 應用。
 License: file LICENSE
 Encoding: UTF-8
 Depends:

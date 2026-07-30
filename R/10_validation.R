@@ -208,6 +208,17 @@ validate_job_metadata <- function(job) {
   if (length(job$grade) != 1L || is.na(job$grade)) {
     abort_score("年級必須是單一有效值。")
   }
+  if (isTRUE(job$calc_level)) {
+    if (is.na(job$mastery_cutoff) || is.na(job$basic_cutoff)) {
+      abort_score("勾選「計算精熟等級」時，必須輸入「精熟門檻題數」與「基礎門檻題數」。")
+    }
+    if (job$mastery_cutoff <= job$basic_cutoff) {
+      abort_score("精熟門檻題數（", job$mastery_cutoff, "）必須大於基礎門檻題數（", job$basic_cutoff, "）。")
+    }
+    if (job$basic_cutoff <= 0) {
+      abort_score("基礎門檻題數必須大於 0。")
+    }
+  }
   if (!file.exists(job$answer_path)) {
     abort_score("答案檔不存在：", job$answer_path)
   }

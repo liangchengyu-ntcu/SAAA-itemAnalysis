@@ -12,6 +12,10 @@
 # =============================================================================
 
 # 啟動時只檢查套件，不自動安裝；部署時也能明確暴露缺件問題。
+if (dir.exists(".Rlib")) {
+  .libPaths(c(".Rlib", .libPaths()))
+}
+
 required_packages <- c(
   "bslib",
   "data.table",
@@ -20,6 +24,7 @@ required_packages <- c(
   "promises",
   "Rmpfr",
   "shiny",
+  "shinybusy",
   "writexl",
   "zip"
 )
@@ -177,10 +182,20 @@ app_ui <- bslib::page_navbar(
   fillable = FALSE,
   theme = app_theme,
   header = shiny::tagList(
+    shinybusy::add_busy_spinner(
+      spin = "fading-circle",
+      position = "top-right",
+      color = "#0f766e",
+      margin = c(15, 15)
+    ),
+    shinybusy::add_busy_bar(
+      color = "#0f766e",
+      height = "3px"
+    ),
     shiny::tags$head(
       # 導覽列改用圖片後，另設可讀的瀏覽器頁籤標題。
       shiny::tags$title(
-        "縣市學生學習能力檢測｜成績分析"
+        "縣市學生學習能力檢測｜SAAA-itemAnalysis"
       ),
       # 本機工具不需要被搜尋引擎索引。
       shiny::tags$meta(
@@ -194,25 +209,36 @@ app_ui <- bslib::page_navbar(
       )
     )
   ),
-  # 第一頁：上傳、檢查與開始計算。
+  # 第一頁：獨立資料清洗前置頁。
   bslib::nav_panel(
-    "成績分析",
+    "資料清洗",
+    value = "cleansing",
+    shiny::div(
+      class = "page-shell",
+      mod_cleansing_ui("cleansing")
+    )
+  ),
+  # 第二頁：檔案整併與分卷頁。
+  bslib::nav_panel(
+    "檔案整併與分卷",
+    value = "merge",
+    shiny::div(
+      class = "page-shell",
+      mod_merge_ui("merge")
+    )
+  ),
+  # 第三頁：成績分析與報表（結合設定輸入、背景計算與即時結果預覽下載）
+  bslib::nav_panel(
+    "成績分析與報表",
     value = "analysis",
     shiny::div(
       class = "page-shell analysis-page",
-      mod_run_ui("run")
-    )
-  ),
-  # 第二頁：工作結果、預覽、圖表與 ZIP 下載。
-  bslib::nav_panel(
-    "結果",
-    value = "results",
-    shiny::div(
-      class = "page-shell",
+      mod_run_ui("run"),
+      shiny::tags$hr(style = "margin: 35px 0; border-top: 2px solid #cbd5e1;"),
       mod_results_ui("results")
     )
   ),
-  # 第三頁：操作、檔名、統計規則、隱私與匿名範例。
+  # 第四頁：操作、檔名、統計規則、隱私與匿名範例。
   bslib::nav_panel(
     "使用說明",
     value = "guide",
@@ -234,12 +260,11 @@ app_ui <- bslib::page_navbar(
           "2",
           c(
             "將答案檔與所有作答檔放進同一個 ZIP。",
-            "可使用子資料夾，系統會依檔名自動配對。",
-            "單一工作失敗不會中止其他工作。"
+            "自動解壓並配對科目與年級。"
           )
         ),
         guide_card(
-          "檔名規則",
+          "資料清洗",
           "3",
           c(
             "單科答案檔名稱不限，內容通過驗證即可。",
@@ -264,23 +289,19 @@ app_ui <- bslib::page_navbar(
   ),
   footer = shiny::div(
     class = "app-footer",
-    "115 學力測驗成績分析 · 本機優先"
+    "SAAA-itemAnalysis · 縣市學生學習能力檢測 · 本機與雲端通用版"
   )
 )
 
 # ---------------------------------------------------------------------------
 # 全站 Server
 # ---------------------------------------------------------------------------
-# 串接執行模組與結果模組；計算完成後自動切換到「結果」頁。
+# 串接執行模組與結果模組；計算完成後即時傳遞結果至下方報表區。
 app_server <- function(input, output, session) {
+  mod_cleansing_server("cleansing")
+  mod_merge_server("merge")
   run_state <- mod_run_server("run")
   mod_results_server("results", run_state$result)
-
-  shiny::observeEvent(run_state$result(), {
-    if (!is.null(run_state$result())) {
-      bslib::nav_select("main_nav", "results", session = session)
-    }
-  })
 }
 
 # 建立可由 runApp() 啟動的 Shiny app 物件。
