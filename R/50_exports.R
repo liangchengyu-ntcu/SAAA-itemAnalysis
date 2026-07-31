@@ -91,6 +91,31 @@ job_export_definitions <- function() {
       suffix = "_不同家庭背景平均",
       preview = TRUE
     ),
+    county_level = list(
+      label = "縣市平均（等級描述）",
+      suffix = "_縣市平均(等級描述)",
+      preview = TRUE
+    ),
+    school_level = list(
+      label = "各校平均（等級描述）",
+      suffix = "_各校平均(等級描述)",
+      preview = TRUE
+    ),
+    class_level = list(
+      label = "各班平均（等級描述）",
+      suffix = "_各班平均(等級描述)",
+      preview = TRUE
+    ),
+    region_level = list(
+      label = "縣市區域平均（等級描述）",
+      suffix = "_縣市區域平均(等級描述)",
+      preview = TRUE
+    ),
+    family_level = list(
+      label = "不同家庭背景平均（等級描述）",
+      suffix = "_不同家庭背景平均(等級描述)",
+      preview = TRUE
+    ),
     absent = list(
       label = "缺考名單",
       suffix = "_缺考名單",
@@ -115,14 +140,16 @@ job_export_definitions <- function() {
       label = "總平均",
       suffix = "_總平均",
       preview = TRUE
+    ),
+    total_level = list(
+      label = "總平均（等級描述）",
+      suffix = "_總平均(等級描述)",
+      preview = TRUE
     )
   )
 }
 
-# 將 analyze_job() 的巢狀結果整理成 11 張正式輸出表。
-#
-# 這是 Excel 與 Shiny 預覽的共同來源；調整報表內容應優先在此映射，
-# 若涉及統計算法，則回到 R/40_summaries.R 修改來源。
+# 將 analyze_job() 的巢狀結果整理成正式輸出表。
 build_export_tables <- function(analysis) {
   summaries <- analysis$summaries
   ranked <- analysis$ranked_outputs
@@ -137,11 +164,17 @@ build_export_tables <- function(analysis) {
     class = summaries$class_means,
     region = summaries$region_means,
     family = summaries$family_means,
+    county_level = summaries$county_level_means,
+    school_level = summaries$school_level_means,
+    class_level = summaries$class_level_means,
+    region_level = summaries$region_level_means,
+    family_level = summaries$family_level_means,
     absent = summaries$absent_list,
     personal_with_count = ranked$personal_with_count,
     all_students = ranked$personal_all,
     personal_detail = ranked$personal_output,
-    total = ranked$total_output
+    total = ranked$total_output,
+    total_level = ranked$total_level_output
   )
 }
 
