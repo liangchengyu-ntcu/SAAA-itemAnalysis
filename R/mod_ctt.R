@@ -1,30 +1,42 @@
 # =============================================================================
 # 檔案：R/mod_ctt.R
 # 用途：獨立「試題分析 (CTT)」頁籤模組
-# 功能：提供 CTT 試題品質診斷卡、試題分析總表、誘答力明細矩陣與 CTT Excel 專屬下載。
+# 功能：包含檔案上傳區 (mod_run_ui)、試題品質診斷卡、試題分析總表、誘答力明細矩陣與 CTT Excel 專屬下載。
 # =============================================================================
 
 mod_ctt_ui <- function(id) {
   ns <- shiny::NS(id)
 
   shiny::tagList(
+    mod_run_ui(ns("ctt_run")),
+    shiny::tags$hr(style = "margin: 35px 0; border-top: 2px solid #cbd5e1;"),
     shiny::uiOutput(ns("empty_state")),
     shiny::uiOutput(ns("ctt_content"))
   )
 }
 
-mod_ctt_server <- function(id, run_result) {
+mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
   shiny::moduleServer(id, function(input, output, session) {
     ns <- session$ns
 
+    ctt_run_state <- mod_run_server("ctt_run")
+
+    effective_run_result <- shiny::reactive({
+      ctt_res <- ctt_run_state$result()
+      if (!is.null(ctt_res)) return(ctt_res)
+      main_res <- main_run_result()
+      if (!is.null(main_res)) return(main_res)
+      NULL
+    })
+
     successful_keys <- shiny::reactive({
-      result <- run_result()
+      result <- effective_run_result()
       if (is.null(result)) return(character())
       names(Filter(function(item) identical(item$status, "完成"), result$results))
     })
 
-    shiny::observeEvent(run_result(), {
-      result <- run_result()
+    shiny::observeEvent(effective_run_result(), {
+      result <- effective_run_result()
       if (is.null(result)) return()
       keys <- successful_keys()
       choices <- stats::setNames(
@@ -40,7 +52,7 @@ mod_ctt_server <- function(id, run_result) {
     })
 
     selected_job_result <- shiny::reactive({
-      result <- run_result()
+      result <- effective_run_result()
       shiny::req(!is.null(result))
       shiny::req(input$selected_job)
       selected <- result$results[[input$selected_job]]
@@ -49,17 +61,17 @@ mod_ctt_server <- function(id, run_result) {
     })
 
     output$empty_state <- shiny::renderUI({
-      if (!is.null(run_result())) return(NULL)
+      if (!is.null(effective_run_result())) return(NULL)
       shiny::div(
         class = "empty-state",
-        shiny::icon("clipboard-check"),
-        shiny::h3("尚無 CTT 試題分析資料"),
-        shiny::p("請先於「成績計算與報表」頁籤完成計算後，即可在此處檢視獨立的試題品質診斷與誘答力分析。")
+        shiny::icon("file-circle-plus"),
+        shiny::h3("請上傳試題分析檔案"),
+        shiny::p("請在上方的「選擇執行方式」中選擇答案檔與作答檔，點擊「檢查檔案」與「開始計算」即可產出試題品質診斷與誘答力分析。")
       )
     })
 
     output$ctt_content <- shiny::renderUI({
-      result <- run_result()
+      result <- effective_run_result()
       if (is.null(result)) return(NULL)
 
       bslib::layout_sidebar(

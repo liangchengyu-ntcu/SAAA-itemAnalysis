@@ -311,7 +311,7 @@ app_server <- function(input, output, session) {
   mod_merge_server("merge")
   run_state <- mod_run_server("run")
   mod_results_server("results", run_state$result)
-  mod_ctt_server("ctt", run_state$result)
+  mod_ctt_server("ctt", main_run_result = run_state$result)
 }
 
 # 建立可由 runApp() 啟動的 Shiny app 物件。
