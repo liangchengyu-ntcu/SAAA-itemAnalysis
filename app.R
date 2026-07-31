@@ -227,9 +227,9 @@ app_ui <- bslib::page_navbar(
       mod_merge_ui("merge")
     )
   ),
-  # 第三頁：成績分析與報表（結合設定輸入、背景計算與即時結果預覽下載）
+  # 第三頁：成績計算與報表（結合設定輸入、背景計算與即時結果預覽下載）
   bslib::nav_panel(
-    "成績分析與報表",
+    "成績計算與報表",
     value = "analysis",
     shiny::div(
       class = "page-shell analysis-page",
@@ -238,7 +238,16 @@ app_ui <- bslib::page_navbar(
       mod_results_ui("results")
     )
   ),
-  # 第四頁：操作、檔名、統計規則、隱私與匿名範例。
+  # 第四頁：獨立試題分析 (CTT) 頁籤
+  bslib::nav_panel(
+    "試題分析 (CTT)",
+    value = "ctt",
+    shiny::div(
+      class = "page-shell ctt-page",
+      mod_ctt_ui("ctt")
+    )
+  ),
+  # 第五頁：操作、檔名、統計規則、隱私與匿名範例。
   bslib::nav_panel(
     "使用說明",
     value = "guide",
@@ -296,12 +305,13 @@ app_ui <- bslib::page_navbar(
 # ---------------------------------------------------------------------------
 # 全站 Server
 # ---------------------------------------------------------------------------
-# 串接執行模組與結果模組；計算完成後即時傳遞結果至下方報表區。
+# 串接執行模組與結果模組；計算完成後即時傳遞結果至下方報表區與 CTT 頁籤。
 app_server <- function(input, output, session) {
   mod_cleansing_server("cleansing")
   mod_merge_server("merge")
   run_state <- mod_run_server("run")
   mod_results_server("results", run_state$result)
+  mod_ctt_server("ctt", run_state$result)
 }
 
 # 建立可由 runApp() 啟動的 Shiny app 物件。
