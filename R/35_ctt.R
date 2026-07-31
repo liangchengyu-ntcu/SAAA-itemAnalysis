@@ -61,7 +61,10 @@ calculate_ctt_analysis <- function(
     abort_score("沒有可計分的有效題目。")
   }
 
-  valid_rows <- !absent_flag & (rowSums(item_matrix[, scored_mask, drop = FALSE] == "9") < n_scored)
+  unans_mat <- item_matrix[, scored_mask, drop = FALSE] == "9" | is.na(item_matrix[, scored_mask, drop = FALSE])
+  unans_counts <- rowSums(unans_mat, na.rm = TRUE)
+  valid_rows <- !absent_flag & (unans_counts < n_scored)
+  valid_rows[is.na(valid_rows)] <- FALSE
   if (sum(valid_rows) == 0L) {
     valid_rows <- !absent_flag
   }
@@ -139,12 +142,12 @@ calculate_ctt_analysis <- function(
 
     for (k in seq_along(opts)) {
       opt <- opts[k]
-      sel <- item_resp == opt
-      block$n[k] <- sum(sel)
-      block$rspP[k] <- mean(sel)
+      sel <- !is.na(item_resp) & item_resp == opt
+      block$n[k] <- sum(sel, na.rm = TRUE)
+      block$rspP[k] <- mean(sel, na.rm = TRUE)
       if (opt %in% item_key_vec) block$correct[k] <- "*"
 
-      grp_n <- tapply(sel, group, sum)
+      grp_n <- tapply(sel, group, sum, na.rm = TRUE)
       grp_total <- tapply(rep(1, n_total_valid), group, sum)
 
       l_val <- if ("lower" %in% names(grp_n)) grp_n[["lower"]] / grp_total[["lower"]] else 0
@@ -297,7 +300,10 @@ calculate_level_ctt_analysis <- function(
   }
 
   # 篩選有效學生
-  valid_rows <- !absent_flag & (rowSums(item_matrix[, scored_mask, drop = FALSE] == "9") < n_scored)
+  unans_mat <- item_matrix[, scored_mask, drop = FALSE] == "9" | is.na(item_matrix[, scored_mask, drop = FALSE])
+  unans_counts <- rowSums(unans_mat, na.rm = TRUE)
+  valid_rows <- !absent_flag & (unans_counts < n_scored)
+  valid_rows[is.na(valid_rows)] <- FALSE
   if (sum(valid_rows) == 0L) {
     valid_rows <- !absent_flag
   }
@@ -348,8 +354,8 @@ calculate_level_ctt_analysis <- function(
     mat$正確答案[item] <- correct_key
 
     # 通過率與鑑別度
-    is_correct <- item_resp %in% item_key_vec
-    pass_rate <- mean(is_correct)
+    is_correct <- !is.na(item_resp) & item_resp %in% item_key_vec
+    pass_rate <- mean(is_correct, na.rm = TRUE)
     mat$通過率[item] <- round(pass_rate, 4L)
 
     # 傳統 CTT 27% 鑑別度
@@ -360,8 +366,8 @@ calculate_level_ctt_analysis <- function(
     t_high <- sorted_s[n_total_valid - x_27 + 1]
     u_mask <- scores_valid >= t_high
     l_mask <- scores_valid <= t_low
-    u_rate <- mean(is_correct[u_mask])
-    l_rate <- mean(is_correct[l_mask])
+    u_rate <- mean(is_correct[u_mask], na.rm = TRUE)
+    l_rate <- mean(is_correct[l_mask], na.rm = TRUE)
     disc_val <- u_rate - l_rate
     mat$鑑別度[item] <- round(disc_val, 4L)
 
@@ -376,17 +382,17 @@ calculate_level_ctt_analysis <- function(
     col_idx <- 5L
     for (grp_name in c("全體", "精熟", "基礎", "待加強")) {
       grp_mask <- groups_list[[grp_name]]
-      grp_n <- sum(grp_mask)
+      grp_n <- sum(grp_mask, na.rm = TRUE)
       sub_resp <- item_resp[grp_mask]
 
       for (k in seq_along(opt_labels)) {
         opt <- opt_labels[k]
-        rate <- if (grp_n > 0L) sum(sub_resp == opt) / grp_n else 0
+        rate <- if (grp_n > 0L) sum(!is.na(sub_resp) & sub_resp == opt) / grp_n else 0
         mat[item, col_idx] <- round(rate, 4L)
         col_idx <- col_idx + 1L
       }
       # 其它
-      other_rate <- if (grp_n > 0L) sum(!sub_resp %in% opt_labels) / grp_n else 0
+      other_rate <- if (grp_n > 0L) sum(is.na(sub_resp) | !sub_resp %in% opt_labels) / grp_n else 0
       mat[item, col_idx] <- round(other_rate, 4L)
       col_idx <- col_idx + 1L
     }
