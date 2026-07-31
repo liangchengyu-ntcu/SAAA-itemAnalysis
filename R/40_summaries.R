@@ -52,9 +52,18 @@ calculate_summary_tables <- function(
     )
   }
 
+  # 計算所有到考學生的三等級標籤
+  n_scored <- length(prepared$key_vector)
+  m_cut <- if (!is.null(prepared$job$mastery_cutoff) && !is.na(prepared$job$mastery_cutoff)) prepared$job$mastery_cutoff else ceiling(n_scored * 0.75)
+  b_cut <- if (!is.null(prepared$job$basic_cutoff) && !is.na(prepared$job$basic_cutoff)) prepared$job$basic_cutoff else ceiling(n_scored * 0.50)
+
+  valid_correct_counts <- score_data$total_correct_count[valid_index]
+  valid_levels <- rep("待加強", length(valid_correct_counts))
+  valid_levels[valid_correct_counts >= b_cut] <- "基礎"
+  valid_levels[valid_correct_counts >= m_cut] <- "精熟"
+
   dimension_start <- ncol(student_scores) -
     ncol(dimension_matrices$scores) + 1L
-  # 平均只計算總答對率及各向度，不包含身分欄或原始資料。
   score_columns <- c(
     match("總答對率", colnames(student_scores)),
     seq.int(dimension_start, ncol(student_scores))
@@ -71,68 +80,101 @@ calculate_summary_tables <- function(
     )
   )
 
-  # 後續各種 aggregate() 都共用同一份到考學生資料。
   valid_data <- student_scores[valid_index, , drop = FALSE]
 
-  # 每張表的群組欄數不同，所以 round_table_columns() 起始位置也不同。
-  county_means <- aggregate(
-    student_scores[
-      valid_index,
-      score_columns,
-      drop = FALSE
-    ],
-    list(縣市 = student_scores[valid_index, "縣市"]),
-    mean,
-    na.rm = TRUE
-  )
-  county_means <- round_table_columns(county_means, 2L)
+  # 通用三等級與人數擴充聚合函式
+  aggregate_summary_with_levels <- function(valid_data, valid_levels, group_by_list, score_columns, first_num_col) {
+    means_df <- aggregate(
+      valid_data[, score_columns, drop = FALSE],
+      group_by_list,
+      mean,
+      na.rm = TRUE
+    )
 
-  school_means <- aggregate(
-    valid_data[, score_columns, drop = FALSE],
+    dt_data <- c(group_by_list, list(level = valid_levels))
+    dt <- data.table::as.data.table(dt_data)
+    group_keys <- names(group_by_list)
+
+    level_stats <- dt[
+      ,
+      list(
+        到考人數 = .N,
+        精熟人數 = sum(level == "精熟", na.rm = TRUE),
+        `精熟率(%)` = round6(sum(level == "精熟", na.rm = TRUE) / .N * 100),
+        基礎人數 = sum(level == "基礎", na.rm = TRUE),
+        `基礎率(%)` = round6(sum(level == "基礎", na.rm = TRUE) / .N * 100),
+        待加強人數 = sum(level == "待加強", na.rm = TRUE),
+        `待加強率(%)` = round6(sum(level == "待加強", na.rm = TRUE) / .N * 100)
+      ),
+      by = group_keys
+    ]
+
+    base_groups <- as.data.frame(group_by_list, stringsAsFactors = FALSE)
+    base_groups <- unique(base_groups)
+    res <- merge(base_groups, level_stats, by = group_keys, sort = FALSE)
+    res <- merge(res, means_df, by = group_keys, sort = FALSE)
+    res_df <- as.data.frame(res, stringsAsFactors = FALSE)
+    round_table_columns(res_df, first_num_col)
+  }
+
+  county_means <- aggregate_summary_with_levels(
+    valid_data, valid_levels,
+    list(縣市 = valid_data$縣市),
+    score_columns, 2L
+  )
+
+  school_means <- aggregate_summary_with_levels(
+    valid_data, valid_levels,
     list(
       學校代碼 = valid_data$學校代碼,
       學校名稱 = valid_data$學校名稱
     ),
-    mean,
-    na.rm = TRUE
+    score_columns, 3L
   )
-  school_means <- round_table_columns(school_means, 3L)
 
-  class_means <- aggregate(
-    valid_data[, score_columns, drop = FALSE],
+  class_means <- aggregate_summary_with_levels(
+    valid_data, valid_levels,
     list(
       學校代碼 = valid_data$學校代碼,
       班級代碼 = valid_data$班級代碼
     ),
-    mean,
-    na.rm = TRUE
+    score_columns, 3L
   )
-  class_means <- round_table_columns(class_means, 3L)
 
-  region_means <- aggregate(
-    valid_data[, score_columns, drop = FALSE],
+  region_means <- aggregate_summary_with_levels(
+    valid_data, valid_levels,
     list(
       縣市 = valid_data$縣市,
       鄉鎮區 = valid_data$鄉鎮區
     ),
-    mean,
-    na.rm = TRUE
+    score_columns, 3L
   )
-  region_means <- round_table_columns(region_means, 3L)
 
-  family_means <- aggregate(
-    valid_data[, score_columns, drop = FALSE],
+  family_means <- aggregate_summary_with_levels(
+    valid_data, valid_levels,
     list(
       縣市 = valid_data$縣市,
       身分別 = valid_data$身分別
     ),
-    mean,
-    na.rm = TRUE
+    score_columns, 3L
   )
-  family_means <- round_table_columns(family_means, 3L)
+
+  t_n <- length(valid_levels)
+  m_cnt <- sum(valid_levels == "精熟", na.rm = TRUE)
+  b_cnt <- sum(valid_levels == "基礎", na.rm = TRUE)
+  i_cnt <- sum(valid_levels == "待加強", na.rm = TRUE)
+
+  total_stats <- list(
+    到考人數 = t_n,
+    精熟人數 = m_cnt,
+    `精熟率(%)` = round6(m_cnt / t_n * 100),
+    基礎人數 = b_cnt,
+    `基礎率(%)` = round6(b_cnt / t_n * 100),
+    待加強人數 = i_cnt,
+    `待加強率(%)` = round6(i_cnt / t_n * 100)
+  )
 
   # 缺考名單只保留辨識與聯繫工作需要的欄位。
-  # 兩種流水號都要保留，避免匯出後無法對回原始作答資料。
   absent_list <- student_scores[
     prepared$absent_flag,
     c(
@@ -155,6 +197,7 @@ calculate_summary_tables <- function(
     special_index = special_index,
     score_columns = score_columns,
     overall_mean = overall_mean,
+    total_stats = total_stats,
     county_means = county_means,
     school_means = school_means,
     class_means = class_means,
@@ -368,7 +411,7 @@ calculate_ranked_outputs <- function(
     scored_output
   )
 
-  # 總平均輸出固定為單列，前兩欄標示科目與年級。
+  # 總平均輸出固定為單列，前兩欄標示科目與年級，並接續三等級統計與平均數。
   total_vector <- summaries$overall_mean[
     c("總答對率", dimension_names)
   ]
@@ -379,6 +422,13 @@ calculate_ranked_outputs <- function(
   total_output <- cbind(
     科目代號 = prepared$job$subject_code,
     年級 = as.character(prepared$job$grade),
+    到考人數 = summaries$total_stats$到考人數,
+    精熟人數 = summaries$total_stats$精熟人數,
+    `精熟率(%)` = summaries$total_stats$`精熟率(%)`,
+    基礎人數 = summaries$total_stats$基礎人數,
+    `基礎率(%)` = summaries$total_stats$`基礎率(%)`,
+    待加強人數 = summaries$total_stats$待加強人數,
+    `待加強率(%)` = summaries$total_stats$`待加強率(%)`,
     total_output
   )
   total_output$總平均 <- round(total_output$總平均, 6)
