@@ -87,21 +87,20 @@ validate_student_ids <- function(student_ids) {
 
 # 讀取指定向度欄，並只保留答案表中真正有效的題目。
 #
-# 動態解析答案檔「向度」工作表對應科目與年級的向度欄位名稱。
+# 動態解析答案檔「向度」工作表中，與指定科目年級匹配的所有向度欄位名稱。
 #
-# 支援各種欄位命名規格：
-#   1. E41_向度, E42_向度 (如英語區分聽力、閱讀及次向度)
-#   2. E4_1_向度, E4_2_向度
-#   3. M41_向度, M42_向度 (數學第一與第二向度)
-#   4. S4向度 / E4向度 / E4_向度
-#   5. 中文年級（如國語「三年級」）
-#   6. 標準答案欄名（如 E4）
+# 支援多種向度命名約定：
+# 1. 雙維度/多維度帶向度字尾：S51向度, S52向度, E41_向度, E42_向度 或 S5_1向度, S5_1_向度
+# 2. 雙維度/多維度純數字標籤：S51, S52 或 S5_1, S5_2
+# 3. 通用向度欄位：S5向度 或 S5_向度
+# 4. 中文年級標籤：三年級, 四年級 或 三年級向度
+# 5. 精確匹配：S5, C4
 resolve_dimension_columns <- function(dim_colnames, subject_code, grade) {
   answer_column <- paste0(subject_code, grade)
 
-  # 1. 搜尋包含數字序號的多重向度欄：如 E41_向度, E42_向度 或 E4_1_向度, E4_2_向度
-  pattern1 <- sprintf("^%s[0-9]+_向度$", answer_column)
-  pattern2 <- sprintf("^%s_[0-9]+_向度$", answer_column)
+  # 1. 搜尋包含多重向度字尾欄：如 S51向度, S51_向度, E41_向度, E42_向度 或 E4_1_向度
+  pattern1 <- sprintf("^%s[0-9]+_?向度$", answer_column)
+  pattern2 <- sprintf("^%s_[0-9]+_?向度$", answer_column)
 
   matched1 <- grep(pattern1, dim_colnames, value = TRUE)
   matched2 <- grep(pattern2, dim_colnames, value = TRUE)
@@ -109,20 +108,31 @@ resolve_dimension_columns <- function(dim_colnames, subject_code, grade) {
   if (length(matched1) > 0L) return(sort(matched1))
   if (length(matched2) > 0L) return(sort(matched2))
 
-  # 2. 搜尋通用「向度」字尾欄：如 E4向度 或 E4_向度
-  pattern3 <- sprintf("^%s_?向度$", answer_column)
-  matched3 <- grep(pattern3, dim_colnames, value = TRUE)
-  if (length(matched3) > 0L) return(matched3)
+  # 2. 搜尋純數字向度編號欄：如 S51, S52 或 S5_1, S5_2
+  pattern3 <- sprintf("^%s[0-9]+$", answer_column)
+  pattern4 <- sprintf("^%s_[0-9]+$", answer_column)
 
-  # 3. 國語中文年級 Pattern：如「三年級」
-  if (subject_code == "C") {
-    chinese_grade <- unname(GRADE_TO_CHINESE[as.character(grade)])
-    if (!is.na(chinese_grade) && chinese_grade %in% dim_colnames) {
-      return(chinese_grade)
-    }
+  matched3 <- grep(pattern3, dim_colnames, value = TRUE)
+  matched4 <- grep(pattern4, dim_colnames, value = TRUE)
+
+  if (length(matched3) > 0L) return(sort(matched3))
+  if (length(matched4) > 0L) return(sort(matched4))
+
+  # 3. 搜尋通用「向度」字尾欄：如 S5向度, S5_向度
+  pattern5 <- sprintf("^%s_?向度$", answer_column)
+  matched5 <- grep(pattern5, dim_colnames, value = TRUE)
+  if (length(matched5) > 0L) return(matched5)
+
+  # 4. 中文年級 Pattern：如「三年級」、「四年級」
+  chinese_grade <- unname(GRADE_TO_CHINESE[as.character(grade)])
+  if (!is.na(chinese_grade)) {
+    if (chinese_grade %in% dim_colnames) return(chinese_grade)
+    ch_dim_pat <- sprintf("^%s_?向度$", chinese_grade)
+    ch_matched <- grep(ch_dim_pat, dim_colnames, value = TRUE)
+    if (length(ch_matched) > 0L) return(ch_matched)
   }
 
-  # 4. 精確匹配答案欄名如 E4
+  # 5. 精確匹配答案欄名如 S5, C4
   if (answer_column %in% dim_colnames) {
     return(answer_column)
   }
