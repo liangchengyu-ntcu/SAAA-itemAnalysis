@@ -132,16 +132,22 @@ expected_export_keys <- c(
   "region",
   "family",
   "county_level",
+  "county_level_all",
   "school_level",
+  "school_level_all",
   "class_level",
+  "class_level_all",
   "region_level",
+  "region_level_all",
   "family_level",
+  "family_level_all",
   "absent",
   "personal_with_count",
   "all_students",
   "personal_detail",
   "total",
   "total_level",
+  "total_level_all",
   "ctt_analysis",
   "ctt_total",
   "level_ctt"
@@ -326,9 +332,10 @@ archive_entries <- utils::unzip(
   archive_path,
   list = TRUE
 )$Name
-stopifnot(length(archive_entries) == 21L)
+stopifnot(length(archive_entries) == 27L)
 stopifnot(any(grepl("縣市平均[.]xlsx$", archive_entries)))
-stopifnot(any(grepl("縣市平均[(]等級描述[)][.]xlsx$", archive_entries)))
+stopifnot(any(grepl("縣市平均[(]等級描述-扣除特殊生[)][.]xlsx$", archive_entries)))
+stopifnot(any(grepl("縣市平均[(]等級描述-含特殊生[)][.]xlsx$", archive_entries)))
 stopifnot(any(grepl("缺考名單[.]xlsx$", archive_entries)))
 stopifnot(any(grepl("個人成績含題數[.]xlsx$", archive_entries)))
 stopifnot(any(grepl("_個人成績[.]xlsx$", archive_entries)))

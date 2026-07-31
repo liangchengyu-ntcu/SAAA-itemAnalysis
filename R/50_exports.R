@@ -92,28 +92,53 @@ job_export_definitions <- function() {
       preview = TRUE
     ),
     county_level = list(
-      label = "縣市平均（等級描述）",
-      suffix = "_縣市平均(等級描述)",
+      label = "縣市平均（等級描述-扣除特殊生）",
+      suffix = "_縣市平均(等級描述-扣除特殊生)",
+      preview = TRUE
+    ),
+    county_level_all = list(
+      label = "縣市平均（等級描述-含特殊生）",
+      suffix = "_縣市平均(等級描述-含特殊生)",
       preview = TRUE
     ),
     school_level = list(
-      label = "各校平均（等級描述）",
-      suffix = "_各校平均(等級描述)",
+      label = "各校平均（等級描述-扣除特殊生）",
+      suffix = "_各校平均(等級描述-扣除特殊生)",
+      preview = TRUE
+    ),
+    school_level_all = list(
+      label = "各校平均（等級描述-含特殊生）",
+      suffix = "_各校平均(等級描述-含特殊生)",
       preview = TRUE
     ),
     class_level = list(
-      label = "各班平均（等級描述）",
-      suffix = "_各班平均(等級描述)",
+      label = "各班平均（等級描述-扣除特殊生）",
+      suffix = "_各班平均(等級描述-扣除特殊生)",
+      preview = TRUE
+    ),
+    class_level_all = list(
+      label = "各班平均（等級描述-含特殊生）",
+      suffix = "_各班平均(等級描述-含特殊生)",
       preview = TRUE
     ),
     region_level = list(
-      label = "縣市區域平均（等級描述）",
-      suffix = "_縣市區域平均(等級描述)",
+      label = "縣市區域平均（等級描述-扣除特殊生）",
+      suffix = "_縣市區域平均(等級描述-扣除特殊生)",
+      preview = TRUE
+    ),
+    region_level_all = list(
+      label = "縣市區域平均（等級描述-含特殊生）",
+      suffix = "_縣市區域平均(等級描述-含特殊生)",
       preview = TRUE
     ),
     family_level = list(
-      label = "不同家庭背景平均（等級描述）",
-      suffix = "_不同家庭背景平均(等級描述)",
+      label = "不同家庭背景平均（等級描述-扣除特殊生）",
+      suffix = "_不同家庭背景平均(等級描述-扣除特殊生)",
+      preview = TRUE
+    ),
+    family_level_all = list(
+      label = "不同家庭背景平均（等級描述-含特殊生）",
+      suffix = "_不同家庭背景平均(等級描述-含特殊生)",
       preview = TRUE
     ),
     absent = list(
@@ -142,8 +167,13 @@ job_export_definitions <- function() {
       preview = TRUE
     ),
     total_level = list(
-      label = "總平均（等級描述）",
-      suffix = "_總平均(等級描述)",
+      label = "總平均（等級描述-扣除特殊生）",
+      suffix = "_總平均(等級描述-扣除特殊生)",
+      preview = TRUE
+    ),
+    total_level_all = list(
+      label = "總平均（等級描述-含特殊生）",
+      suffix = "_總平均(等級描述-含特殊生)",
       preview = TRUE
     )
   )
@@ -165,16 +195,22 @@ build_export_tables <- function(analysis) {
     region = summaries$region_means,
     family = summaries$family_means,
     county_level = summaries$county_level_means,
+    county_level_all = summaries$county_level_means_all,
     school_level = summaries$school_level_means,
+    school_level_all = summaries$school_level_means_all,
     class_level = summaries$class_level_means,
+    class_level_all = summaries$class_level_means_all,
     region_level = summaries$region_level_means,
+    region_level_all = summaries$region_level_means_all,
     family_level = summaries$family_level_means,
+    family_level_all = summaries$family_level_means_all,
     absent = summaries$absent_list,
     personal_with_count = ranked$personal_with_count,
     all_students = ranked$personal_all,
     personal_detail = ranked$personal_output,
     total = ranked$total_output,
-    total_level = ranked$total_level_output
+    total_level = ranked$total_level_output,
+    total_level_all = ranked$total_level_output_all
   )
 }
 
