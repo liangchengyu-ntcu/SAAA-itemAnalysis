@@ -280,3 +280,85 @@ write_ctt_analysis_by_subject <- function(
   openxlsx::saveWorkbook(wb, output_path, overwrite = TRUE)
   output_path
 }
+
+# 4. 寫出縣市標準三等級 (精熟/基礎/待加強) 試題分析 Excel（完全對齊簡報截圖美學格式）
+write_level_ctt_excel <- function(
+  level_ctt_res,
+  subject_label,
+  grade,
+  year,
+  output_path
+) {
+  mat <- level_ctt_res$level_summary_table
+  n_items <- level_ctt_res$n_items
+  opt_labels <- level_ctt_res$opt_labels
+  n_opts <- length(opt_labels)
+  n_cols <- 4 + 4 * (n_opts + 1) # 24 欄
+
+  wb <- openxlsx::createWorkbook()
+  sheet_name <- paste0(grade, "年級")
+  openxlsx::addWorksheet(wb, sheet_name)
+
+  title <- paste0(year, "年度", subject_label, grade, "年級 試題分析結果")
+  header1 <- c(title, rep(NA, n_cols - 1))
+  openxlsx::writeData(wb, sheet_name, t(header1), startRow = 1, colNames = FALSE)
+
+  header2 <- c(
+    "題號", "鑑別度", "通過率", "正確答案",
+    "全體", rep(NA, n_opts),
+    "精熟", rep(NA, n_opts),
+    "基礎", rep(NA, n_opts),
+    "待加強", rep(NA, n_opts)
+  )
+  openxlsx::writeData(wb, sheet_name, t(header2), startRow = 2, colNames = FALSE)
+
+  header3 <- c(
+    NA, NA, NA, NA,
+    opt_labels, "其它",
+    opt_labels, "其它",
+    opt_labels, "其它",
+    opt_labels, "其它"
+  )
+  openxlsx::writeData(wb, sheet_name, t(header3), startRow = 3, colNames = FALSE)
+
+  openxlsx::writeData(wb, sheet_name, mat, startRow = 4, colNames = FALSE, rowNames = FALSE)
+
+  # 合併儲存格
+  openxlsx::mergeCells(wb, sheet_name, cols = 1:n_cols, rows = 1)
+  openxlsx::mergeCells(wb, sheet_name, cols = 1, rows = 2:3)
+  openxlsx::mergeCells(wb, sheet_name, cols = 2, rows = 2:3)
+  openxlsx::mergeCells(wb, sheet_name, cols = 3, rows = 2:3)
+  openxlsx::mergeCells(wb, sheet_name, cols = 4, rows = 2:3)
+
+  col_start <- 5L
+  for (grp in 1:4) {
+    c_from <- col_start + (grp - 1) * (n_opts + 1)
+    c_to <- c_from + n_opts
+    openxlsx::mergeCells(wb, sheet_name, cols = c_from:c_to, rows = 2)
+  }
+
+  # 美化樣式 (對齊簡報截圖: #E2EFDA 綠色表頭, 置中與 border)
+  green_header <- openxlsx::createStyle(
+    fgFill = "#E2EFDA",
+    halign = "center",
+    valign = "center",
+    wrapText = TRUE,
+    textDecoration = "bold",
+    border = "TopBottomLeftRight",
+    borderStyle = "thin"
+  )
+  openxlsx::addStyle(wb, sheet_name, green_header, rows = 1:3, cols = 1:n_cols, gridExpand = TRUE)
+
+  style_num <- openxlsx::createStyle(numFmt = "0.00", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+  openxlsx::addStyle(wb, sheet_name, style_num, rows = 4:(3 + n_items), cols = c(2:3, 5:n_cols), gridExpand = TRUE)
+
+  style_center <- openxlsx::createStyle(halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+  openxlsx::addStyle(wb, sheet_name, style_center, rows = 4:(3 + n_items), cols = c(1, 4), gridExpand = TRUE)
+
+  openxlsx::setColWidths(wb, sheet_name, cols = 1:n_cols, widths = 8)
+  openxlsx::setRowHeights(wb, sheet_name, rows = 1:3, heights = 25)
+  openxlsx::setRowHeights(wb, sheet_name, rows = 4:(3 + n_items), heights = 18)
+
+  openxlsx::saveWorkbook(wb, output_path, overwrite = TRUE)
+  output_path
+}

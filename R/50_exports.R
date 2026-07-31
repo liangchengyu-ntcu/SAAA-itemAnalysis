@@ -196,6 +196,19 @@ export_job_result <- function(
     paths[["ctt_total"]] <- ctt_total_path
   }
 
+  if (!is.null(analysis$level_ctt_analysis)) {
+    level_ctt_filename <- sprintf("%s_%s%s_縣市三等級試題分析.xlsx", job$year, job$subject_code, job$grade)
+    level_ctt_path <- file.path(output_directory, level_ctt_filename)
+    write_level_ctt_excel(
+      level_ctt_res = analysis$level_ctt_analysis,
+      subject_label = job$subject_name,
+      grade = job$grade,
+      year = job$year,
+      output_path = level_ctt_path
+    )
+    paths[["level_ctt"]] <- level_ctt_path
+  }
+
   unlist(paths, use.names = TRUE)
 }
 

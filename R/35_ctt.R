@@ -250,3 +250,155 @@ calculate_ctt_analysis <- function(
     key_vector = key_vector
   )
 }
+
+# -----------------------------------------------------------------------------
+# 縣市標準三等級 (精熟 / 基礎 / 待加強) 試題分析計算引擎
+# 對齊國立臺中教育大學測驗統計中心 / 縣市學檢標準規範
+# -----------------------------------------------------------------------------
+calculate_level_ctt_analysis <- function(
+  item_matrix,
+  key_vector,
+  grade,
+  subject_code,
+  absent_flag = NULL,
+  mastery_cutoff = NULL,
+  basic_cutoff = NULL
+) {
+  n_total <- nrow(item_matrix)
+  n_items <- ncol(item_matrix)
+
+  if (is.null(absent_flag)) {
+    absent_flag <- rep(FALSE, n_total)
+  }
+
+  scored_mask <- !is.na(key_vector) & key_vector != ""
+  key_split <- strsplit(key_vector, "、")
+  n_scored <- sum(scored_mask)
+
+  if (n_scored == 0L) {
+    abort_score("沒有可計分的有效題目。")
+  }
+
+  # 設定預設門檻（若未傳入）
+  if (is.null(mastery_cutoff) || is.na(mastery_cutoff)) {
+    mastery_cutoff <- ceiling(n_scored * 0.75)
+  }
+  if (is.null(basic_cutoff) || is.na(basic_cutoff)) {
+    basic_cutoff <- ceiling(n_scored * 0.50)
+  }
+
+  # 建立 0/1 計分矩陣
+  scored_mat <- matrix(0L, nrow = n_total, ncol = n_items)
+  for (j in seq_len(n_items)) {
+    if (scored_mask[j]) {
+      options <- key_split[[j]]
+      scored_mat[, j] <- ifelse(item_matrix[, j] %in% options, 1L, 0L)
+    }
+  }
+
+  # 篩選有效學生
+  valid_rows <- !absent_flag & (rowSums(item_matrix[, scored_mask, drop = FALSE] == "9") < n_scored)
+  if (sum(valid_rows) == 0L) {
+    valid_rows <- !absent_flag
+  }
+
+  item_mat_valid <- item_matrix[valid_rows, , drop = FALSE]
+  scored_mat_valid <- scored_mat[valid_rows, , drop = FALSE]
+  scores_valid <- rowSums(scored_mat_valid[, scored_mask, drop = FALSE] == 1L, na.rm = TRUE)
+  n_total_valid <- nrow(item_mat_valid)
+
+  # 依據標準門檻分類學生三等級：精熟、基礎、待加強
+  level_group <- rep("待加強", n_total_valid)
+  level_group[scores_valid >= basic_cutoff] <- "基礎"
+  level_group[scores_valid >= mastery_cutoff] <- "精熟"
+
+  level_counts <- table(factor(level_group, levels = c("精熟", "基礎", "待加強")))
+
+  grade_num <- suppressWarnings(as.integer(grade))
+  opt_labels <- if (!is.na(grade_num) && grade_num >= 7L) c("A", "B", "C", "D") else c("1", "2", "3", "4")
+
+  # 構建對齊簡報截圖美學格式的縣市三等級試題分析 Data Frame
+  n_opts <- length(opt_labels)
+  n_cols <- 4 + 4 * (n_opts + 1)
+
+  col_names_level <- c(
+    "題號", "鑑別度", "通過率", "正確答案",
+    paste0("全體_", c(opt_labels, "其它")),
+    paste0("精熟_", c(opt_labels, "其它")),
+    paste0("基礎_", c(opt_labels, "其它")),
+    paste0("待加強_", c(opt_labels, "其它"))
+  )
+
+  mat <- data.frame(
+    matrix(NA_real_, nrow = n_items, ncol = n_cols),
+    stringsAsFactors = FALSE
+  )
+  colnames(mat) <- col_names_level
+  mat$題號 <- seq_len(n_items)
+
+  for (item in seq_len(n_items)) {
+    if (!scored_mask[item]) {
+      mat$正確答案[item] <- "該題不予計分"
+      next
+    }
+
+    item_resp <- item_mat_valid[, item]
+    item_key_vec <- key_split[[item]]
+    correct_key <- paste(item_key_vec, collapse = "、")
+    mat$正確答案[item] <- correct_key
+
+    # 通過率與鑑別度
+    is_correct <- item_resp %in% item_key_vec
+    pass_rate <- mean(is_correct)
+    mat$通過率[item] <- round(pass_rate, 4L)
+
+    # 傳統 CTT 27% 鑑別度
+    x_27 <- round(n_total_valid * 0.27, 0)
+    if (x_27 < 1) x_27 <- 1
+    sorted_s <- sort(scores_valid)
+    t_low <- sorted_s[x_27]
+    t_high <- sorted_s[n_total_valid - x_27 + 1]
+    u_mask <- scores_valid >= t_high
+    l_mask <- scores_valid <= t_low
+    u_rate <- mean(is_correct[u_mask])
+    l_rate <- mean(is_correct[l_mask])
+    disc_val <- u_rate - l_rate
+    mat$鑑別度[item] <- round(disc_val, 4L)
+
+    # 算 4 組選答百分比：全體、精熟、基礎、待加強
+    groups_list <- list(
+      "全體" = rep(TRUE, n_total_valid),
+      "精熟" = level_group == "精熟",
+      "基礎" = level_group == "基礎",
+      "待加強" = level_group == "待加強"
+    )
+
+    col_idx <- 5L
+    for (grp_name in c("全體", "精熟", "基礎", "待加強")) {
+      grp_mask <- groups_list[[grp_name]]
+      grp_n <- sum(grp_mask)
+      sub_resp <- item_resp[grp_mask]
+
+      for (k in seq_along(opt_labels)) {
+        opt <- opt_labels[k]
+        rate <- if (grp_n > 0L) sum(sub_resp == opt) / grp_n else 0
+        mat[item, col_idx] <- round(rate, 4L)
+        col_idx <- col_idx + 1L
+      }
+      # 其它
+      other_rate <- if (grp_n > 0L) sum(!sub_resp %in% opt_labels) / grp_n else 0
+      mat[item, col_idx] <- round(other_rate, 4L)
+      col_idx <- col_idx + 1L
+    }
+  }
+
+  list(
+    level_summary_table = mat,
+    level_counts = level_counts,
+    mastery_cutoff = mastery_cutoff,
+    basic_cutoff = basic_cutoff,
+    n_total_valid = n_total_valid,
+    n_items = n_items,
+    opt_labels = opt_labels
+  )
+}

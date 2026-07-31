@@ -137,7 +137,8 @@ expected_export_keys <- c(
   "personal_detail",
   "total",
   "ctt_analysis",
-  "ctt_total"
+  "ctt_total",
+  "level_ctt"
 )
 stopifnot(identical(names(result$exported_files), expected_export_keys))
 stopifnot(result$student_count == 5L)
@@ -319,13 +320,14 @@ archive_entries <- utils::unzip(
   archive_path,
   list = TRUE
 )$Name
-stopifnot(length(archive_entries) == 14L)
+stopifnot(length(archive_entries) == 15L)
 stopifnot(any(grepl("縣市平均[.]xlsx$", archive_entries)))
 stopifnot(any(grepl("缺考名單[.]xlsx$", archive_entries)))
 stopifnot(any(grepl("個人成績含題數[.]xlsx$", archive_entries)))
 stopifnot(any(grepl("_個人成績[.]xlsx$", archive_entries)))
 stopifnot(any(grepl("分析結果[.]xlsx$", archive_entries)))
 stopifnot(any(grepl("試題分析總表[.]xlsx$", archive_entries)))
+stopifnot(any(grepl("縣市三等級試題分析[.]xlsx$", archive_entries)))
 
 # ---------------------------------------------------------------------------
 # 批次模式：基本配對及允許後綴的彈性檔名

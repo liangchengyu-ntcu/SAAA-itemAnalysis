@@ -1,7 +1,8 @@
 # =============================================================================
 # 檔案：R/mod_ctt.R
 # 用途：獨立「試題分析 (CTT)」頁籤模組
-# 功能：包含檔案上傳區 (mod_run_ui)、試題品質診斷卡、試題分析總表、誘答力明細矩陣與 CTT Excel 專屬下載。
+# 功能：支援「傳統 27% 高低分組」與「縣市標準三等級 (精熟/基礎/待加強)」雙模式，
+#       提供試題品質診斷卡、試題分析總表、誘答力明細矩陣與專屬 Excel 報表下載。
 # =============================================================================
 
 mod_ctt_ui <- function(id) {
@@ -77,22 +78,42 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       bslib::layout_sidebar(
         sidebar = bslib::sidebar(
           title = "試題分析設定",
-          width = 300,
+          width = 320,
           shiny::selectInput(
             ns("selected_job"),
             "選擇分析工作項目",
             choices = character()
           ),
-          shiny::tags$hr(),
-          shiny::downloadButton(
-            ns("download_ctt_excel"),
-            "下載 CTT 試題分析總表 (.xlsx)",
-            class = "btn-success w-100 mb-2"
+          shiny::radioButtons(
+            ns("ctt_mode"),
+            "分析模式",
+            choices = c(
+              "傳統 27% 高低分組" = "ctt_27",
+              "標準三等級 (精熟/基礎/待加強)" = "level_3"
+            ),
+            selected = "ctt_27"
           ),
-          shiny::downloadButton(
-            ns("download_distractor_excel"),
-            "下載誘答力明細表 (.xlsx)",
-            class = "btn-outline-primary w-100"
+          shiny::tags$hr(),
+          shiny::conditionalPanel(
+            condition = sprintf("input['%s'] === 'ctt_27'", ns("ctt_mode")),
+            shiny::downloadButton(
+              ns("download_ctt_excel"),
+              "下載 CTT 試題分析總表 (.xlsx)",
+              class = "btn-success w-100 mb-2"
+            ),
+            shiny::downloadButton(
+              ns("download_distractor_excel"),
+              "下載誘答力明細表 (.xlsx)",
+              class = "btn-outline-primary w-100"
+            )
+          ),
+          shiny::conditionalPanel(
+            condition = sprintf("input['%s'] === 'level_3'", ns("ctt_mode")),
+            shiny::downloadButton(
+              ns("download_level_ctt_excel"),
+              "下載縣市三等級試題分析 (.xlsx)",
+              class = "btn-success w-100"
+            )
           )
         ),
         shiny::div(
@@ -103,24 +124,30 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
             bslib::card_header(
               shiny::div(
                 class = "d-flex justify-content-between align-items-center",
-                shiny::span("📊 CTT 試題品質診斷總表"),
-                shiny::span(class = "badge bg-info", "高低分組 27% 臨界法")
+                shiny::span(shiny::textOutput(ns("table_title_text"), inline = TRUE)),
+                shiny::span(
+                  class = "badge bg-info",
+                  shiny::textOutput(ns("table_badge_text"), inline = TRUE)
+                )
               )
             ),
             bslib::card_body(
               shiny::div(
                 class = "table-scroll result-table",
-                shiny::tableOutput(ns("ctt_summary_table"))
+                shiny::tableOutput(ns("main_ctt_table"))
               )
             )
           ),
-          shiny::tags$br(),
-          bslib::card(
-            bslib::card_header("🔍 逐項誘答力分析矩陣 (Distractor Analysis)"),
-            bslib::card_body(
-              shiny::div(
-                class = "table-scroll result-table",
-                shiny::tableOutput(ns("distractor_matrix_table"))
+          shiny::conditionalPanel(
+            condition = sprintf("input['%s'] === 'ctt_27'", ns("ctt_mode")),
+            shiny::tags$br(),
+            bslib::card(
+              bslib::card_header("🔍 逐項誘答力分析矩陣 (Distractor Analysis)"),
+              bslib::card_body(
+                shiny::div(
+                  class = "table-scroll result-table",
+                  shiny::tableOutput(ns("distractor_matrix_table"))
+                )
               )
             )
           )
@@ -128,47 +155,89 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       )
     })
 
-    # CTT 頂部核心指標卡
+    # 動態標題文字
+    output$table_title_text <- shiny::renderText({
+      if (identical(input$ctt_mode, "level_3")) {
+        "📊 縣市標準三等級（精熟 / 基礎 / 待加強）試題分析表"
+      } else {
+        "📊 傳統 27% 試題品質診斷總表"
+      }
+    })
+
+    output$table_badge_text <- shiny::renderText({
+      if (identical(input$ctt_mode, "level_3")) {
+        "標準參照門檻法"
+      } else {
+        "高低分組 27% 臨界法"
+      }
+    })
+
+    # 頂部動態指標卡
     output$ctt_metrics <- shiny::renderUI({
       selected <- selected_job_result()
       ctt <- selected$analysis$ctt_analysis
-      summary_df <- ctt$item_summary
+      level_ctt <- selected$analysis$level_ctt_analysis
+      mode <- input$ctt_mode
 
-      alpha_val <- if (!is.null(ctt$alpha) && !is.na(ctt$alpha)) sprintf("%.2f", ctt$alpha) else "N/A"
-      n_items <- ctt$n_items
+      if (identical(mode, "level_3") && !is.null(level_ctt)) {
+        counts <- level_ctt$level_counts
+        m_count <- unname(counts["精熟"])
+        b_count <- unname(counts["基礎"])
+        i_count <- unname(counts["待加強"])
+        total <- level_ctt$n_total_valid
 
-      pass_rates <- suppressWarnings(as.numeric(summary_df$通過率))
-      avg_pass <- sprintf("%.2f%%", mean(pass_rates, na.rm = TRUE) * 100)
+        m_pct <- sprintf("%.1f%%", (m_count / total) * 100)
+        b_pct <- sprintf("%.1f%%", (b_count / total) * 100)
+        i_pct <- sprintf("%.1f%%", (i_count / total) * 100)
 
-      disc_vals <- suppressWarnings(as.numeric(summary_df$鑑別度))
-      avg_disc <- sprintf("%.2f", mean(disc_vals, na.rm = TRUE))
-      low_disc_count <- sum(!is.na(disc_vals) & disc_vals < 0.15)
+        shiny::div(
+          class = "metric-grid",
+          metric_tile("精熟人數 (比例)", sprintf("%d (%s)", m_count, m_pct)),
+          metric_tile("基礎人數 (比例)", sprintf("%d (%s)", b_count, b_pct)),
+          metric_tile("待加強人數 (比例)", sprintf("%d (%s)", i_count, i_pct)),
+          metric_tile("精熟門檻", sprintf("≥ %d 題", level_ctt$mastery_cutoff)),
+          metric_tile("基礎門檻", sprintf("≥ %d 題", level_ctt$basic_cutoff))
+        )
+      } else {
+        summary_df <- ctt$item_summary
+        alpha_val <- if (!is.null(ctt$alpha) && !is.na(ctt$alpha)) sprintf("%.2f", ctt$alpha) else "N/A"
+        n_items <- ctt$n_items
 
-      shiny::div(
-        class = "metric-grid",
-        metric_tile("Cronbach's α 信度", alpha_val),
-        metric_tile("試題總數", n_items),
-        metric_tile("平均通過率", avg_pass),
-        metric_tile("平均鑑別度", avg_disc),
-        metric_tile("鑑別度偏低題數 (<0.15)", low_disc_count)
-      )
+        pass_rates <- suppressWarnings(as.numeric(summary_df$通過率))
+        avg_pass <- sprintf("%.2f%%", mean(pass_rates, na.rm = TRUE) * 100)
+
+        disc_vals <- suppressWarnings(as.numeric(summary_df$鑑別度))
+        avg_disc <- sprintf("%.2f", mean(disc_vals, na.rm = TRUE))
+        low_disc_count <- sum(!is.na(disc_vals) & disc_vals < 0.15)
+
+        shiny::div(
+          class = "metric-grid",
+          metric_tile("Cronbach's α 信度", alpha_val),
+          metric_tile("試題總數", n_items),
+          metric_tile("平均通過率", avg_pass),
+          metric_tile("平均鑑別度", avg_disc),
+          metric_tile("鑑別度偏低題數 (<0.15)", low_disc_count)
+        )
+      }
     })
 
-    # 輸出 CTT 試題診斷總表
-    output$ctt_summary_table <- shiny::renderTable({
+    # 動態主表格（27% 或 三等級）
+    output$main_ctt_table <- shiny::renderTable({
       selected <- selected_job_result()
-      ctt <- selected$analysis$ctt_analysis
-      ctt$item_summary
+      if (identical(input$ctt_mode, "level_3")) {
+        selected$analysis$level_ctt_analysis$level_summary_table
+      } else {
+        selected$analysis$ctt_analysis$item_summary
+      }
     }, striped = TRUE, hover = TRUE, bordered = TRUE, spacing = "s")
 
-    # 輸出誘答力矩陣表
+    # 27% 模式下的誘答力矩陣表
     output$distractor_matrix_table <- shiny::renderTable({
       selected <- selected_job_result()
-      ctt <- selected$analysis$ctt_analysis
-      ctt$distractor_results
+      selected$analysis$ctt_analysis$distractor_results
     }, striped = TRUE, hover = TRUE, bordered = TRUE, spacing = "s")
 
-    # 下載 CTT 試題分析總表 Excel
+    # 下載傳統 CTT 試題分析總表 Excel
     output$download_ctt_excel <- shiny::downloadHandler(
       filename = function() {
         selected <- selected_job_result()
@@ -204,6 +273,27 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           ctt_res = ctt,
           subject_label = job$subject_name,
           grade = job$grade,
+          output_path = file
+        )
+      }
+    )
+
+    # 下載縣市三等級試題分析 Excel（對齊簡報截圖）
+    output$download_level_ctt_excel <- shiny::downloadHandler(
+      filename = function() {
+        selected <- selected_job_result()
+        job <- selected$prepared$job
+        sprintf("%s_%s%s_縣市三等級試題分析.xlsx", job$year, job$subject_code, job$grade)
+      },
+      content = function(file) {
+        selected <- selected_job_result()
+        job <- selected$prepared$job
+        level_ctt <- selected$analysis$level_ctt_analysis
+        write_level_ctt_excel(
+          level_ctt_res = level_ctt,
+          subject_label = job$subject_name,
+          grade = job$grade,
+          year = job$year,
           output_path = file
         )
       }
