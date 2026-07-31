@@ -29,6 +29,19 @@ round6 <- function(x) {
   result
 }
 
+# 動態識別答案檔中存放向度/評量指標的工作表名稱。
+#
+# 支援向度工作表別名：向度、評量指標、評量指標代、維度。
+# 若無符合名稱，預設回傳第二張工作表（若存在）。
+find_dimension_sheet <- function(sheets) {
+  candidates <- c("向度", "評量指標", "評量指標代", "維度")
+  for (cand in candidates) {
+    if (cand %in% sheets) return(cand)
+  }
+  if (length(sheets) >= 2L) return(sheets[2L])
+  NULL
+}
+
 # 以 256 位元多重精度執行除法，保留舊版計分所需的精度行為。
 bcdiv <- function(a, b) {
   Rmpfr::mpfr(a, 256) / Rmpfr::mpfr(b, 256)

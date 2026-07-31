@@ -374,18 +374,22 @@ preview_jobs <- function(jobs) {
   do.call(rbind, rows)
 }
 
-# 一次讀取答案檔的「答案」與「向度」工作表。
+# 一次讀取答案檔的「答案」與「向度」（或「評量指標」）工作表。
 # skipEmptyRows=FALSE 很重要，因為空白答案列仍對應原始題號位置。
 read_answer_tables <- function(path) {
+  sheets <- openxlsx::getSheetNames(path)
+  ans_sheet <- if ("答案" %in% sheets) "答案" else sheets[1L]
+  dim_sheet <- find_dimension_sheet(sheets)
+
   list(
     answers = openxlsx::read.xlsx(
       path,
-      sheet = "答案",
+      sheet = ans_sheet,
       skipEmptyRows = FALSE
     ),
     dimensions = openxlsx::read.xlsx(
       path,
-      sheet = "向度",
+      sheet = dim_sheet,
       skipEmptyRows = FALSE
     )
   )

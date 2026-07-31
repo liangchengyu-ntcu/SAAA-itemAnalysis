@@ -182,12 +182,11 @@ validate_answer_workbook <- function(path, subject_code, grade = NULL) {
   }
 
   sheets <- openxlsx::getSheetNames(path)
-  missing_sheets <- setdiff(c("答案", "向度"), sheets)
-  if (length(missing_sheets) > 0L) {
+  dim_sheet <- find_dimension_sheet(sheets)
+  if (is.null(dim_sheet)) {
     abort_score(
       basename(path),
-      " 缺少工作表：",
-      paste(missing_sheets, collapse = ", ")
+      " 缺少「向度」或「評量指標」工作表。"
     )
   }
 
