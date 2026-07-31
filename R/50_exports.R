@@ -56,6 +56,11 @@ write_result_workbook <- function(data, path) {
 # 注意 overall_scores 的 suffix 未以底線開頭是沿用既有檔名契約。
 job_export_definitions <- function() {
   list(
+    ctt = list(
+      label = "試題 CTT 品質與診斷",
+      suffix = "_試題CTT品質與診斷",
+      preview = TRUE
+    ),
     overall_scores = list(
       label = "全體總答對率",
       suffix = "全體總答對率",
@@ -122,8 +127,10 @@ build_export_tables <- function(analysis) {
   summaries <- analysis$summaries
   ranked <- analysis$ranked_outputs
   scores <- analysis$score_data$student_scores
+  ctt_summary <- analysis$ctt_analysis$item_summary
 
   list(
+    ctt = ctt_summary,
     overall_scores = scores,
     county = summaries$county_means,
     school = summaries$school_means,
@@ -139,11 +146,6 @@ build_export_tables <- function(analysis) {
 }
 
 # 寫出單一工作的全部 Excel。
-#
-# analysis：完整分析結果。
-# output_root：本次執行的輸出根目錄。
-# export_tables：可選；若前面已建好就傳入，避免重複組裝。
-# 回傳值：以報表內部鍵命名的 11 個絕對路徑。
 export_job_result <- function(
   analysis,
   output_root,
@@ -156,7 +158,6 @@ export_job_result <- function(
     export_tables <- build_export_tables(analysis)
   }
 
-  # definitions 決定輸出順序與檔名；export_tables 提供實際資料。
   paths <- lapply(names(definitions), function(key) {
     write_result_workbook(
       export_tables[[key]],
@@ -171,13 +172,37 @@ export_job_result <- function(
   })
   names(paths) <- names(definitions)
 
+  # 匯出 CTT 雙分頁分析結果 XLSX
+  if (!is.null(analysis$ctt_analysis)) {
+    ctt_analysis_filename <- sprintf("%s_%s%s_分析結果.xlsx", job$year, job$subject_code, job$grade)
+    ctt_analysis_path <- file.path(output_directory, ctt_analysis_filename)
+    write_distractor_analysis_xlsx(
+      ctt_res = analysis$ctt_analysis,
+      subject_label = job$subject_name,
+      grade = job$grade,
+      output_path = ctt_analysis_path
+    )
+    paths[["ctt_analysis"]] <- ctt_analysis_path
+
+    ctt_total_filename <- sprintf("%s_%s%s_試題分析總表.xlsx", job$year, job$subject_code, job$grade)
+    ctt_total_path <- file.path(output_directory, ctt_total_filename)
+    grade_map <- setNames(list(analysis$ctt_analysis), as.character(job$grade))
+    write_ctt_analysis_by_subject(
+      subject_label = job$subject_name,
+      year = job$year,
+      output_path = ctt_total_path,
+      grade_ctt_map = grade_map
+    )
+    paths[["ctt_total"]] <- ctt_total_path
+  }
+
   unlist(paths, use.names = TRUE)
 }
 
-# 只挑選無個資的六張彙總表供網頁預覽，順序對應 RESULT_VIEWS。
-# 回傳的 data.frame 與 Excel 寫入時是同一批物件。
+# 只挑選無個資的彙總表供網頁預覽，順序對應 RESULT_VIEWS。
 build_result_views <- function(export_tables) {
   preview_order <- c(
+    "ctt",
     "total",
     "county",
     "school",

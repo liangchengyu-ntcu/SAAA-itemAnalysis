@@ -221,16 +221,18 @@ mod_results_server <- function(id, run_result) {
       spacing = "s"
     )
 
-    # 四張互斥人數卡必須符合：
-    # 學生數 = 到考數 + 缺考數 + 特殊生。
     output$summary_cards <- shiny::renderUI({
       selected <- selected_result()
+      alpha_val <- selected$cronbach_alpha
+      alpha_str <- if (!is.null(alpha_val) && !is.na(alpha_val)) sprintf("%.2f", alpha_val) else "N/A"
+
       shiny::div(
         class = "metric-grid",
         metric_tile("學生數", selected$student_count),
         metric_tile("到考數", selected$attended_count),
         metric_tile("缺考數", selected$absent_count),
-        metric_tile("特殊生", selected$special_count)
+        metric_tile("特殊生", selected$special_count),
+        metric_tile("Cronbach's α", alpha_str)
       )
     })
 

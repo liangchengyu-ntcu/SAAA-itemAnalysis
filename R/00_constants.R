@@ -136,6 +136,7 @@ INFO_COLUMN_ALIASES <- list(
 # 結果頁可預覽的彙總報表。
 # 向量名稱是畫面文字，值必須對應 build_result_views() 的清單名稱。
 RESULT_VIEWS <- c(
+  "試題 CTT 品質與診斷" = "ctt",
   "總平均" = "total",
   "縣市平均" = "county",
   "各校平均" = "school",
