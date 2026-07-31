@@ -156,95 +156,115 @@ calculate_summary_tables <- function(
   )
   family_means <- round_table_columns(family_means, 3L)
 
-  # 2. 獨立等級描述報表聚合函式：
-  build_level_description_table <- function(valid_data, valid_levels, group_by_list, first_num_col) {
-    means_df <- aggregate(
-      valid_data[, "總答對率", drop = FALSE],
-      group_by_list,
-      mean,
-      na.rm = TRUE
-    )
-
-    dt_data <- c(group_by_list, list(level = valid_levels))
-    dt <- data.table::as.data.table(dt_data)
+  # 2. 併表等級描述報表聚合函式：在同一張表內併列呈現【扣除特殊生】與【含特殊生】
+  # 欄位順序：[分組標籤] | 到考人數(扣除特殊生) | 總答對率(扣除特殊生) | 精熟人數(扣除特殊生) | 精熟率(%)(扣除特殊生)... | 到考人數(含特殊生)...
+  build_combined_level_description_table <- function(
+    valid_data, valid_levels,
+    all_valid_data, all_valid_levels,
+    group_by_list, group_by_list_all,
+    first_num_col
+  ) {
     group_keys <- names(group_by_list)
 
-    level_stats <- dt[
+    # A. 扣除特殊生
+    means1 <- aggregate(valid_data[, "總答對率", drop = FALSE], group_by_list, mean, na.rm = TRUE)
+    dt1 <- data.table::as.data.table(c(group_by_list, list(level = valid_levels)))
+    stats1 <- dt1[
       ,
       list(
-        到考人數 = .N,
-        精熟人數 = sum(level == "精熟", na.rm = TRUE),
-        `精熟率(%)` = round6(sum(level == "精熟", na.rm = TRUE) / .N * 100),
-        基礎人數 = sum(level == "基礎", na.rm = TRUE),
-        `基礎率(%)` = round6(sum(level == "基礎", na.rm = TRUE) / .N * 100),
-        待加強人數 = sum(level == "待加強", na.rm = TRUE),
-        `待加強率(%)` = round6(sum(level == "待加強", na.rm = TRUE) / .N * 100)
+        `到考人數(扣除特殊生)` = .N,
+        `精熟人數(扣除特殊生)` = sum(level == "精熟", na.rm = TRUE),
+        `精熟率(%)(扣除特殊生)` = round6(sum(level == "精熟", na.rm = TRUE) / .N * 100),
+        `基礎人數(扣除特殊生)` = sum(level == "基礎", na.rm = TRUE),
+        `基礎率(%)(扣除特殊生)` = round6(sum(level == "基礎", na.rm = TRUE) / .N * 100),
+        `待加強人數(扣除特殊生)` = sum(level == "待加強", na.rm = TRUE),
+        `待加強率(%)(扣除特殊生)` = round6(sum(level == "待加強", na.rm = TRUE) / .N * 100)
       ),
       by = group_keys
     ]
+    m1 <- merge(stats1, means1, by = group_keys, sort = FALSE)
+    colnames(m1)[colnames(m1) == "總答對率"] <- "總答對率(扣除特殊生)"
 
-    base_groups <- as.data.frame(group_by_list, stringsAsFactors = FALSE)
+    # B. 含特殊生
+    means2 <- aggregate(all_valid_data[, "總答對率", drop = FALSE], group_by_list_all, mean, na.rm = TRUE)
+    dt2 <- data.table::as.data.table(c(group_by_list_all, list(level = all_valid_levels)))
+    stats2 <- dt2[
+      ,
+      list(
+        `到考人數(含特殊生)` = .N,
+        `精熟人數(含特殊生)` = sum(level == "精熟", na.rm = TRUE),
+        `精熟率(%)(含特殊生)` = round6(sum(level == "精熟", na.rm = TRUE) / .N * 100),
+        `基礎人數(含特殊生)` = sum(level == "基礎", na.rm = TRUE),
+        `基礎率(%)(含特殊生)` = round6(sum(level == "基礎", na.rm = TRUE) / .N * 100),
+        `待加強人數(含特殊生)` = sum(level == "待加強", na.rm = TRUE),
+        `待加強率(%)(含特殊生)` = round6(sum(level == "待加強", na.rm = TRUE) / .N * 100)
+      ),
+      by = group_keys
+    ]
+    m2 <- merge(stats2, means2, by = group_keys, sort = FALSE)
+    colnames(m2)[colnames(m2) == "總答對率"] <- "總答對率(含特殊生)"
+
+    base_groups <- as.data.frame(group_by_list_all, stringsAsFactors = FALSE)
     base_groups <- unique(base_groups)
-    res <- merge(base_groups, level_stats, by = group_keys, sort = FALSE)
-    res <- merge(res, means_df, by = group_keys, sort = FALSE)
-    res_df <- as.data.frame(res, stringsAsFactors = FALSE)
+
+    res <- merge(base_groups, m1, by = group_keys, all.x = TRUE, sort = FALSE)
+    res <- merge(res, m2, by = group_keys, all.x = TRUE, sort = FALSE)
 
     cols_order <- c(
       group_keys,
-      "到考人數",
-      "總答對率",
-      "精熟人數",
-      "精熟率(%)",
-      "基礎人數",
-      "基礎率(%)",
-      "待加強人數",
-      "待加強率(%)"
+      "到考人數(扣除特殊生)",
+      "總答對率(扣除特殊生)",
+      "精熟人數(扣除特殊生)",
+      "精熟率(%)(扣除特殊生)",
+      "基礎人數(扣除特殊生)",
+      "基礎率(%)(扣除特殊生)",
+      "待加強人數(扣除特殊生)",
+      "待加強率(%)(扣除特殊生)",
+      "到考人數(含特殊生)",
+      "總答對率(含特殊生)",
+      "精熟人數(含特殊生)",
+      "精熟率(%)(含特殊生)",
+      "基礎人數(含特殊生)",
+      "基礎率(%)(含特殊生)",
+      "待加強人數(含特殊生)",
+      "待加強率(%)(含特殊生)"
     )
-    res_df <- res_df[, cols_order, drop = FALSE]
+    res_df <- as.data.frame(res, stringsAsFactors = FALSE)[, cols_order, drop = FALSE]
     round_table_columns(res_df, first_num_col)
   }
 
-  # --- A. 扣除特殊生等級描述報表 ---
-  county_level_means <- build_level_description_table(
+  county_level_means <- build_combined_level_description_table(
     valid_data, valid_levels,
-    list(縣市 = valid_data$縣市), 2L
-  )
-  school_level_means <- build_level_description_table(
-    valid_data, valid_levels,
-    list(學校代碼 = valid_data$學校代碼, 學校名稱 = valid_data$學校名稱), 3L
-  )
-  class_level_means <- build_level_description_table(
-    valid_data, valid_levels,
-    list(學校代碼 = valid_data$學校代碼, 班級代碼 = valid_data$班級代碼), 3L
-  )
-  region_level_means <- build_level_description_table(
-    valid_data, valid_levels,
-    list(縣市 = valid_data$縣市, 鄉鎮區 = valid_data$鄉鎮區), 3L
-  )
-  family_level_means <- build_level_description_table(
-    valid_data, valid_levels,
-    list(縣市 = valid_data$縣市, 身分別 = valid_data$身分別), 3L
-  )
-
-  # --- B. 含特殊生等級描述報表 ---
-  county_level_means_all <- build_level_description_table(
     all_valid_data, all_valid_levels,
+    list(縣市 = valid_data$縣市),
     list(縣市 = all_valid_data$縣市), 2L
   )
-  school_level_means_all <- build_level_description_table(
+
+  school_level_means <- build_combined_level_description_table(
+    valid_data, valid_levels,
     all_valid_data, all_valid_levels,
+    list(學校代碼 = valid_data$學校代碼, 學校名稱 = valid_data$學校名稱),
     list(學校代碼 = all_valid_data$學校代碼, 學校名稱 = all_valid_data$學校名稱), 3L
   )
-  class_level_means_all <- build_level_description_table(
+
+  class_level_means <- build_combined_level_description_table(
+    valid_data, valid_levels,
     all_valid_data, all_valid_levels,
+    list(學校代碼 = valid_data$學校代碼, 班級代碼 = valid_data$班級代碼),
     list(學校代碼 = all_valid_data$學校代碼, 班級代碼 = all_valid_data$班級代碼), 3L
   )
-  region_level_means_all <- build_level_description_table(
+
+  region_level_means <- build_combined_level_description_table(
+    valid_data, valid_levels,
     all_valid_data, all_valid_levels,
+    list(縣市 = valid_data$縣市, 鄉鎮區 = valid_data$鄉鎮區),
     list(縣市 = all_valid_data$縣市, 鄉鎮區 = all_valid_data$鄉鎮區), 3L
   )
-  family_level_means_all <- build_level_description_table(
+
+  family_level_means <- build_combined_level_description_table(
+    valid_data, valid_levels,
     all_valid_data, all_valid_levels,
+    list(縣市 = valid_data$縣市, 身分別 = valid_data$身分別),
     list(縣市 = all_valid_data$縣市, 身分別 = all_valid_data$身分別), 3L
   )
 
@@ -313,11 +333,6 @@ calculate_summary_tables <- function(
     class_level_means = class_level_means,
     region_level_means = region_level_means,
     family_level_means = family_level_means,
-    county_level_means_all = county_level_means_all,
-    school_level_means_all = school_level_means_all,
-    class_level_means_all = class_level_means_all,
-    region_level_means_all = region_level_means_all,
-    family_level_means_all = family_level_means_all,
     absent_list = absent_list
   )
 }
@@ -541,34 +556,26 @@ calculate_ranked_outputs <- function(
   )
   total_output$總平均 <- round(total_output$總平均, 6)
 
-  # 2. 獨立總平均（等級描述-扣除特殊生）：科目代號 | 年級 | 到考人數 | 總答對率 | 精熟人數 | 精熟率(%) | 基礎人數 | 基礎率(%) | 待加強人數 | 待加強率(%)
+  # 2. 併表總平均（等級描述）：併列呈現【扣除特殊生】與【含特殊生】
   total_level_output <- data.frame(
     科目代號 = prepared$job$subject_code,
     年級 = as.character(prepared$job$grade),
-    到考人數 = summaries$total_stats$到考人數,
-    總答對率 = round(as.numeric(summaries$overall_mean["總答對率"]), 6),
-    精熟人數 = summaries$total_stats$精熟人數,
-    `精熟率(%)` = summaries$total_stats$`精熟率(%)`,
-    基礎人數 = summaries$total_stats$基礎人數,
-    `基礎率(%)` = summaries$total_stats$`基礎率(%)`,
-    待加強人數 = summaries$total_stats$待加強人數,
-    `待加強率(%)` = summaries$total_stats$`待加強率(%)`,
-    check.names = FALSE,
-    stringsAsFactors = FALSE
-  )
-
-  # 3. 獨立總平均（等級描述-含特殊生）：科目代號 | 年級 | 到考人數 | 總答對率 | 精熟人數 | 精熟率(%) | 基礎人數 | 基礎率(%) | 待加強人數 | 待加強率(%)
-  total_level_output_all <- data.frame(
-    科目代號 = prepared$job$subject_code,
-    年級 = as.character(prepared$job$grade),
-    到考人數 = summaries$total_stats_all$到考人數,
-    總答對率 = round(as.numeric(summaries$overall_mean_all["總答對率"]), 6),
-    精熟人數 = summaries$total_stats_all$精熟人數,
-    `精熟率(%)` = summaries$total_stats_all$`精熟率(%)`,
-    基礎人數 = summaries$total_stats_all$基礎人數,
-    `基礎率(%)` = summaries$total_stats_all$`基礎率(%)`,
-    待加強人數 = summaries$total_stats_all$待加強人數,
-    `待加強率(%)` = summaries$total_stats_all$`待加強率(%)`,
+    `到考人數(扣除特殊生)` = summaries$total_stats$到考人數,
+    `總答對率(扣除特殊生)` = round(as.numeric(summaries$overall_mean["總答對率"]), 6),
+    `精熟人數(扣除特殊生)` = summaries$total_stats$精熟人數,
+    `精熟率(%)(扣除特殊生)` = summaries$total_stats$`精熟率(%)`,
+    `基礎人數(扣除特殊生)` = summaries$total_stats$基礎人數,
+    `基礎率(%)(扣除特殊生)` = summaries$total_stats$`基礎率(%)`,
+    `待加強人數(扣除特殊生)` = summaries$total_stats$待加強人數,
+    `待加強率(%)(扣除特殊生)` = summaries$total_stats$`待加強率(%)`,
+    `到考人數(含特殊生)` = summaries$total_stats_all$到考人數,
+    `總答對率(含特殊生)` = round(as.numeric(summaries$overall_mean_all["總答對率"]), 6),
+    `精熟人數(含特殊生)` = summaries$total_stats_all$精熟人數,
+    `精熟率(%)(含特殊生)` = summaries$total_stats_all$`精熟率(%)`,
+    `基礎人數(含特殊生)` = summaries$total_stats_all$基礎人數,
+    `基礎率(%)(含特殊生)` = summaries$total_stats_all$`基礎率(%)`,
+    `待加強人數(含特殊生)` = summaries$total_stats_all$待加強人數,
+    `待加強率(%)(含特殊生)` = summaries$total_stats_all$`待加強率(%)`,
     check.names = FALSE,
     stringsAsFactors = FALSE
   )
@@ -578,8 +585,7 @@ calculate_ranked_outputs <- function(
     personal_all = personal_all,
     personal_output = personal_output,
     total_output = total_output,
-    total_level_output = total_level_output,
-    total_level_output_all = total_level_output_all
+    total_level_output = total_level_output
   )
 }
 
