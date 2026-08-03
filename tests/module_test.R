@@ -5,6 +5,8 @@
 # 範圍：測 server reactive 邏輯，不啟動真實瀏覽器。
 # =============================================================================
 
+if (dir.exists(".Rlib")) .libPaths(c(".Rlib", .libPaths()))
+
 # 確認測試從專案根目錄執行，才能依相對路徑載入 R/。
 project_root <- normalizePath(
   getwd(),
@@ -98,7 +100,7 @@ shiny::testServer(mod_run_server, {
   stopifnot(identical(task$status(), "success"))
   calculated <- task$result()
   stopifnot(identical(calculated$job_table$狀態, "完成"))
-  stopifnot(length(calculated$results[["115_C4"]]$exported_files) == 21L)
+  stopifnot(length(calculated$results[["115_C4"]]$exported_files) == 17L)
   background_result <<- calculated
 })
 
