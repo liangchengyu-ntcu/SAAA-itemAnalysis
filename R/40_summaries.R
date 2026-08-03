@@ -655,15 +655,6 @@ analyze_job <- function(job) {
     absent_flag = prepared$absent_flag
   )
 
-  # 7. CTT 試題品質分析、誘答力與 Cronbach's alpha 信度。
-  ctt_analysis <- calculate_ctt_analysis(
-    item_matrix = prepared$item_matrix,
-    key_vector = prepared$key_vector,
-    grade = prepared$job$grade,
-    subject_code = prepared$job$subject_code,
-    absent_flag = prepared$absent_flag
-  )
-
   # 8. 縣市標準三等級 (精熟/基礎/待加強) 試題分析。
   level_ctt_analysis <- calculate_level_ctt_analysis(
     item_matrix = prepared$item_matrix,
