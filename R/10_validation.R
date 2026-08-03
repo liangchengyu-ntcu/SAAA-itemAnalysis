@@ -16,7 +16,7 @@
 resolve_info_columns <- function(headers) {
   normalized_headers <- normalize_header(headers)
 
-  resolved <- vapply(names(DEFAULT_INFO_COLUMNS), function(field) {
+  resolved <- vapply(names(INFO_COLUMN_ALIASES), function(field) {
     candidates <- normalize_header(INFO_COLUMN_ALIASES[[field]])
     matched <- which(normalized_headers %in% candidates)
 
@@ -30,27 +30,30 @@ resolve_info_columns <- function(headers) {
       return(matched)
     }
 
-    # 相容舊檔：標題不同時，仍可依已確認的固定欄序繼續處理。
+    # 若標題未精確匹配，優先檢查預設固定欄位位置 (若該位置尚未被佔用)
     fallback <- DEFAULT_INFO_COLUMNS[[field]]
-    if (fallback <= length(headers)) {
-      warn_score(
-        sprintf(
-          "找不到「%s」欄位，暫時沿用舊版第 %d 欄（目前標題：%s）。",
-          INFO_COLUMN_ALIASES[[field]][[1L]],
-          fallback,
-          as.character(headers[[fallback]])
-        )
-      )
-      return(fallback)
+    if (!is.null(fallback) && fallback <= length(headers)) {
+      # 只有當備用欄位的現有標題屬於未識別的字串時才考慮 fallback
+      # 避免把「縣市」強行認作「總流水號」
+      return(NA_integer_)
     }
 
-    abort_score(
-      "找不到必要資訊欄位：",
-      INFO_COLUMN_ALIASES[[field]][[1L]]
-    )
+    NA_integer_
   }, integer(1))
 
-  duplicated_positions <- unique(resolved[duplicated(resolved)])
+  # 驗證必要核心學生資訊欄位
+  required_fields <- c("city", "school_code", "school_name", "class_code", "seat_no", "student_name")
+  missing_req <- required_fields[is.na(resolved[required_fields])]
+  if (length(missing_req) > 0L) {
+    req_labels <- vapply(missing_req, function(f) INFO_COLUMN_ALIASES[[f]][[1L]], character(1))
+    abort_score(
+      "找不到必要資訊欄位：",
+      paste(req_labels, collapse = ", ")
+    )
+  }
+
+  valid_resolved <- resolved[!is.na(resolved)]
+  duplicated_positions <- unique(valid_resolved[duplicated(valid_resolved)])
   if (length(duplicated_positions) > 0L) {
     abort_score(
       "多個必要欄位被解析到相同位置：",

@@ -42,6 +42,29 @@ find_dimension_sheet <- function(sheets) {
   NULL
 }
 
+# 動態判定學生資訊欄與題目作答欄的分界位置。
+#
+# 支援 23 欄標準格式（含總流水號與縣市流水號）及 21 欄簡化格式（直接從縣市欄位開始）。
+find_info_boundary <- function(headers) {
+  headers_str <- as.character(headers)
+
+  # 1. 優先尋找第一個數字題號標題 (如 '1' 或 'Q1')
+  first_num <- which(grepl("^[Qq]?[0-9]+$", trimws(headers_str)))
+  if (length(first_num) > 0L && first_num[1L] > 5L) {
+    return(first_num[1L] - 1L)
+  }
+
+  # 2. 尋找所有資訊欄位別名匹配到的最大索引位置
+  all_aliases <- normalize_header(unlist(INFO_COLUMN_ALIASES))
+  norm_headers <- normalize_header(headers_str)
+  matched <- which(norm_headers %in% all_aliases)
+  if (length(matched) > 0L) {
+    return(max(matched))
+  }
+
+  23L
+}
+
 # 以 256 位元多重精度執行除法，保留舊版計分所需的精度行為。
 bcdiv <- function(a, b) {
   Rmpfr::mpfr(a, 256) / Rmpfr::mpfr(b, 256)

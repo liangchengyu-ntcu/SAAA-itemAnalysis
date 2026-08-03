@@ -39,24 +39,48 @@ prepare_job_input <- function(job) {
   headers <- as.character(raw[1, ])
   data <- raw[-1, , drop = FALSE]
   n_total <- nrow(data)
-  n_items_raw <- ncol(data) - N_INFO_COLUMNS
-  # 只解析前 23 欄學生資訊；後方欄位一律視為題目作答。
-  info_columns <- resolve_info_columns(
-    headers[seq_len(N_INFO_COLUMNS)]
-  )
 
-  info_data <- data[, seq_len(N_INFO_COLUMNS), drop = FALSE]
-  colnames(info_data) <- headers[seq_len(N_INFO_COLUMNS)]
+  info_boundary <- find_info_boundary(headers)
+  if (ncol(raw) <= info_boundary) {
+    abort_score(
+      sprintf(
+        "%s 只有 %d 欄，至少需要 %d 個資訊欄位及 1 個作答欄位。",
+        basename(job$response_path),
+        ncol(raw),
+        info_boundary
+      )
+    )
+  }
 
-  student_ids <- trimws(
-    as.character(info_data[, info_columns[["id"]]])
-  )
+  n_items_raw <- ncol(data) - info_boundary
+  info_headers <- headers[seq_len(info_boundary)]
+  info_columns <- resolve_info_columns(info_headers)
+
+  info_data <- data[, seq_len(info_boundary), drop = FALSE]
+  colnames(info_data) <- info_headers
+
+  # 1. 總流水號 (id)：若檔中缺少，自動填補 6 位數流水號
+  if (is.na(info_columns[["id"]])) {
+    student_ids <- sprintf("%06d", seq_len(n_total))
+  } else {
+    student_ids <- trimws(as.character(info_data[[info_columns[["id"]]]]))
+  }
   validate_student_ids(student_ids)
+
+  # 2. 縣市流水號 (county_id)：若檔中缺少，自動生成縣市流水號
+  if (is.na(info_columns[["county_id"]])) {
+    city_names <- as.character(info_data[[info_columns[["city"]]]])
+    county_ids <- generate_county_id(
+      job$year, city_names, paste0(job$subject_code, job$grade), seq_len(n_total)
+    )
+  } else {
+    county_ids <- as.character(info_data[[info_columns[["county_id"]]]])
+  }
 
   # 強制轉為文字矩陣，確保 A/B/C/D 與數字型答案使用相同比較規則。
   item_data <- data[
     ,
-    (N_INFO_COLUMNS + 1L):(N_INFO_COLUMNS + n_items_raw),
+    (info_boundary + 1L):(info_boundary + n_items_raw),
     drop = FALSE
   ]
   item_matrix <- as.matrix(item_data)
@@ -76,6 +100,12 @@ prepare_job_input <- function(job) {
   key_vector <- as.character(
     answer_tables$answers[[answer_column]]
   )
+  # 移除答案鍵末尾無效空白 NA
+  valid_key_indices <- which(!is.na(key_vector) & key_vector != "")
+  if (length(valid_key_indices) > 0L) {
+    key_vector <- key_vector[seq_len(max(valid_key_indices))]
+  }
+
   # 答案鍵與作答題數不同時，以作答檔題數為外框；不足部分補 NA，
   # 多出的答案則截掉，避免索引超出作答矩陣。
   if (length(key_vector) > n_items_raw) {
@@ -83,7 +113,7 @@ prepare_job_input <- function(job) {
   } else if (length(key_vector) < n_items_raw) {
     warn_score(
       sprintf(
-        "%s 的答案鍵只有 %d 題，作答檔有 %d 題；缺少部分視為無答案鍵。",
+        "%s 的答案鍵只有 %d 題，作答檔有 %d 個作答欄位；缺少部分視為無答案鍵。",
         job$key,
         length(key_vector),
         n_items_raw
@@ -138,6 +168,7 @@ prepare_job_input <- function(job) {
     info_columns = info_columns,
     info_data = info_data,
     student_ids = student_ids,
+    county_ids = county_ids,
     item_matrix = item_matrix,
     key_vector = key_vector,
     original_item_numbers = original_item_numbers,
@@ -296,18 +327,19 @@ build_student_score_table <- function(
   columns <- prepared$info_columns
   info <- prepared$info_data
 
-  # 輸出欄「特殊生」採舊規則：非 NA 且不等於 0 即標為 TRUE。
-  # 但平均排除與摘要「特殊生數」只使用代碼 1、2、3，
-  # 該互斥分類規則位於 calculate_summary_tables()。
-  special_values <- as.character(info[, columns[["special"]]])
+  get_info_column <- function(col_key, default_val = "") {
+    col_idx <- columns[[col_key]]
+    if (is.na(col_idx) || col_idx > ncol(info)) {
+      return(rep(default_val, nrow(info)))
+    }
+    info[[col_idx]]
+  }
+
+  special_values <- as.character(get_info_column("special", "0"))
   special_flag <- !is.na(special_values) & special_values != "0"
 
-  aboriginal_values <- as.character(
-    info[, columns[["aboriginal"]]]
-  )
-  immigrant_values <- as.character(
-    info[, columns[["immigrant"]]]
-  )
+  aboriginal_values <- as.character(get_info_column("aboriginal", "0"))
+  immigrant_values <- as.character(get_info_column("immigrant", "0"))
   aboriginal <- as.integer(
     !is.na(aboriginal_values) & aboriginal_values == "1"
   )
@@ -335,14 +367,14 @@ build_student_score_table <- function(
   # 固定欄位順序同時供彙總、排名與 Excel 匯出使用；更名時要全域搜尋。
   student_scores <- data.frame(
     總流水號 = prepared$student_ids,
-    縣市流水號 = as.character(info[, columns[["county_id"]]]),
-    縣市 = info[, columns[["city"]]],
-    鄉鎮區 = info[, columns[["district"]]],
-    學校代碼 = as.character(info[, columns[["school_code"]]]),
-    學校名稱 = info[, columns[["school_name"]]],
-    班級代碼 = as.character(info[, columns[["class_code"]]]),
-    座號 = as.integer(info[, columns[["seat_no"]]]),
-    姓名 = info[, columns[["student_name"]]],
+    縣市流水號 = prepared$county_ids,
+    縣市 = get_info_column("city"),
+    鄉鎮區 = get_info_column("district"),
+    學校代碼 = as.character(get_info_column("school_code")),
+    學校名稱 = get_info_column("school_name"),
+    班級代碼 = as.character(get_info_column("class_code")),
+    座號 = as.integer(get_info_column("seat_no")),
+    姓名 = get_info_column("student_name"),
     總答對率 = total_correct_rate,
     缺考 = prepared$absent_flag,
     特殊生 = special_flag,
