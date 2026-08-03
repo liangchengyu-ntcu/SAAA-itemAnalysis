@@ -44,12 +44,19 @@ calculate_ctt_analysis <- function(
   key_split <- strsplit(key_vector, "、")
   key_flat <- unique(unlist(key_split))
 
+  unique_matrix_vals <- unique(as.vector(item_matrix))
+  is_dichotomous <- all(unique_matrix_vals %in% c("0", "1", "9", "", NA_character_))
+
   # 建立 0/1 計分矩陣（9 表示無效作答/未答）
   scored_mat <- matrix(0L, nrow = n_total, ncol = n_items)
   for (j in seq_len(n_items)) {
     if (scored_mask[j]) {
-      options <- key_split[[j]]
-      scored_mat[, j] <- ifelse(item_matrix[, j] %in% options, 1L, 0L)
+      if (is_dichotomous) {
+        scored_mat[, j] <- ifelse(!is.na(item_matrix[, j]) & item_matrix[, j] == "1", 1L, 0L)
+      } else {
+        options <- key_split[[j]]
+        scored_mat[, j] <- ifelse(item_matrix[, j] %in% options, 1L, 0L)
+      }
     }
   }
   scored_mat[item_matrix == "9"] <- 9L
@@ -91,10 +98,10 @@ calculate_ctt_analysis <- function(
   group[scores_valid >= threshold_high] <- "upper"
   # ---------------------------------------------------------------------------
 
-  # 設定選項標籤（國中 A~D，國小 1~4）
+  # 設定選項標籤（國中 A~D，國小 1~4；若作答檔為 0/1 已計分檔，則為 1與0）
   grade_num <- suppressWarnings(as.integer(grade))
-  opt_labels <- if (!is.na(grade_num) && grade_num >= 7L) c("A", "B", "C", "D") else c("1", "2", "3", "4")
-  opts <- sort(unique(c(key_flat, opt_labels, "9")))
+  opt_labels <- if (is_dichotomous) c("1", "0") else if (!is.na(grade_num) && grade_num >= 7L) c("A", "B", "C", "D") else c("1", "2", "3", "4")
+  opts <- sort(unique(c(if (!is_dichotomous) key_flat, opt_labels, "9")))
 
   results_list <- list()
 
@@ -120,7 +127,7 @@ calculate_ctt_analysis <- function(
     }
 
     item_resp <- item_mat_valid[, j]
-    item_key_vec <- key_split[[j]]
+    item_key_vec <- if (is_dichotomous) "1" else key_split[[j]]
     if (length(item_key_vec) == 0L || is.na(item_key_vec[1L]) || item_key_vec[1L] == "") {
       item_key_vec <- "9"
     }
@@ -196,20 +203,20 @@ calculate_ctt_analysis <- function(
         item_summary$診斷建議[item] <- "不計分"
         next
       }
-      item_summary$正確答案[item] <- paste(cr$key, collapse = "、")
+      item_summary$正確答案[item] <- if (is_dichotomous) key_vector[item] else paste(cr$key, collapse = "、")
       item_summary$樣本數[item] <- as.character(sum(cr$n, na.rm = TRUE))
       item_summary$通過率[item] <- sprintf("%.2f", sum(cr$rspP, na.rm = TRUE))
       item_summary$pBis[item] <- sprintf("%.2f", mean(cr$pBis, na.rm = TRUE))
 
-      disc_val <- mean(cr$discrim, na.rm = TRUE)
+      hp_val <- sum(cr$upper, na.rm = TRUE)
+      lp_val <- sum(cr$lower, na.rm = TRUE)
+      disc_val <- hp_val - lp_val
       item_summary$鑑別度[item] <- sprintf("%.2f", disc_val)
-      item_summary$低分組[item] <- sprintf("%.2f", sum(cr$lower, na.rm = TRUE))
-      item_summary$中分組[item] <- sprintf("%.2f", mean(cr$mid68, na.rm = TRUE))
-      item_summary$高分組[item] <- sprintf("%.2f", sum(cr$upper, na.rm = TRUE))
+      item_summary$低分組[item] <- sprintf("%.2f", lp_val)
+      item_summary$中分組[item] <- sprintf("%.2f", sum(cr$mid68, na.rm = TRUE))
+      item_summary$高分組[item] <- sprintf("%.2f", hp_val)
 
-      hp <- sum(cr$upper, na.rm = TRUE)
-      lp <- sum(cr$lower, na.rm = TRUE)
-      diff_val <- (hp + lp) / 2
+      diff_val <- (hp_val + lp_val) / 2
       item_summary$難度[item] <- sprintf("%.2f", diff_val)
 
       # 診斷建議
@@ -220,22 +227,24 @@ calculate_ctt_analysis <- function(
         msgs <- c(msgs, "鑑別度0.05～0.15需進行試題修改")
       }
 
-      cr_max_upper <- max(cr$upper, na.rm = TRUE)
-      cr_max_rspP <- max(cr$rspP, na.rm = TRUE)
+      if (!is_dichotomous && nrow(cr) > 0L) {
+        cr_max_upper <- max(cr$upper, na.rm = TRUE)
+        cr_max_rspP <- max(cr$rspP, na.rm = TRUE)
 
-      for (k in seq_along(opt_labels)) {
-        or <- subset(sub, key == opt_labels[k])
-        if (nrow(or) > 0L && !is.na(or$upper[1L]) && or$upper[1L] > cr_max_upper) {
-          msgs <- c(msgs, "高分組錯誤選項選答率高於正確選項")
-          break
+        for (k in seq_along(opt_labels)) {
+          or <- subset(sub, key == opt_labels[k])
+          if (nrow(or) > 0L && !is.na(or$upper[1L]) && or$upper[1L] > cr_max_upper) {
+            msgs <- c(msgs, "高分組錯誤選項選答率高於正確選項")
+            break
+          }
         }
-      }
 
-      for (k in seq_along(opt_labels)) {
-        or <- subset(sub, key == opt_labels[k])
-        if (nrow(or) > 0L && !is.na(or$rspP[1L]) && or$rspP[1L] > cr_max_rspP) {
-          msgs <- c(msgs, "錯誤選項選答率高於正確選項")
-          break
+        for (k in seq_along(opt_labels)) {
+          or <- subset(sub, key == opt_labels[k])
+          if (nrow(or) > 0L && !is.na(or$rspP[1L]) && or$rspP[1L] > cr_max_rspP) {
+            msgs <- c(msgs, "錯誤選項選答率高於正確選項")
+            break
+          }
         }
       }
 
@@ -290,12 +299,19 @@ calculate_level_ctt_analysis <- function(
     basic_cutoff <- ceiling(n_scored * 0.50)
   }
 
+  unique_matrix_vals <- unique(as.vector(item_matrix))
+  is_dichotomous <- all(unique_matrix_vals %in% c("0", "1", "9", "", NA_character_))
+
   # 建立 0/1 計分矩陣
   scored_mat <- matrix(0L, nrow = n_total, ncol = n_items)
   for (j in seq_len(n_items)) {
     if (scored_mask[j]) {
-      options <- key_split[[j]]
-      scored_mat[, j] <- ifelse(item_matrix[, j] %in% options, 1L, 0L)
+      if (is_dichotomous) {
+        scored_mat[, j] <- ifelse(!is.na(item_matrix[, j]) & item_matrix[, j] == "1", 1L, 0L)
+      } else {
+        options <- key_split[[j]]
+        scored_mat[, j] <- ifelse(item_matrix[, j] %in% options, 1L, 0L)
+      }
     }
   }
 
@@ -321,7 +337,7 @@ calculate_level_ctt_analysis <- function(
   level_counts <- table(factor(level_group, levels = c("精熟", "基礎", "待加強")))
 
   grade_num <- suppressWarnings(as.integer(grade))
-  opt_labels <- if (!is.na(grade_num) && grade_num >= 7L) c("A", "B", "C", "D") else c("1", "2", "3", "4")
+  opt_labels <- if (is_dichotomous) c("1", "0") else if (!is.na(grade_num) && grade_num >= 7L) c("A", "B", "C", "D") else c("1", "2", "3", "4")
 
   # 構建對齊簡報截圖美學格式的縣市三等級試題分析 Data Frame
   n_opts <- length(opt_labels)
@@ -350,11 +366,11 @@ calculate_level_ctt_analysis <- function(
 
     item_resp <- item_mat_valid[, item]
     item_key_vec <- key_split[[item]]
-    correct_key <- paste(item_key_vec, collapse = "、")
+    correct_key <- if (is_dichotomous) key_vector[item] else paste(item_key_vec, collapse = "、")
     mat$正確答案[item] <- correct_key
 
     # 通過率與鑑別度
-    is_correct <- !is.na(item_resp) & item_resp %in% item_key_vec
+    is_correct <- if (is_dichotomous) (!is.na(item_resp) & item_resp == "1") else (!is.na(item_resp) & item_resp %in% item_key_vec)
     pass_rate <- mean(is_correct, na.rm = TRUE)
     mat$通過率[item] <- round(pass_rate, 4L)
 

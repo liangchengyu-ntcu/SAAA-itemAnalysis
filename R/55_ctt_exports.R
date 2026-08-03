@@ -85,10 +85,10 @@ write_ctt_analysis_sheet <- function(
     cr <- subset(sub, correct == "*")
 
     pass_rate <- if (nrow(cr) > 0) sum(cr$rspP, na.rm = TRUE) else NA
-    correct_key <- if (nrow(cr) > 0) paste(cr$key, collapse = "、") else NA_character_
-    disc_val <- if (nrow(cr) > 0) mean(cr$discrim, na.rm = TRUE) else NA
+    correct_key <- if (isTRUE(ctt_res$is_dichotomous) && !is.null(key_vec) && length(key_vec) >= item) key_vec[item] else if (nrow(cr) > 0) paste(cr$key, collapse = "、") else NA_character_
     hp <- if (nrow(cr) > 0) sum(cr$upper, na.rm = TRUE) else NA
     lp <- if (nrow(cr) > 0) sum(cr$lower, na.rm = TRUE) else NA
+    disc_val <- if (!is.na(hp) && !is.na(lp)) (hp - lp) else NA
 
     mat[item, 2] <- if (!is.na(disc_val)) sprintf("%.2f", round(disc_val, 2)) else NA
     mat[item, 3] <- if (!is.na(hp) && !is.na(lp)) sprintf("%.2f", round((hp + lp) / 2, 2)) else NA
