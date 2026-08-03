@@ -175,8 +175,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
     # 頂部動態指標卡
     output$ctt_metrics <- shiny::renderUI({
       selected <- selected_job_result()
-      ctt <- selected$analysis$ctt_analysis
-      level_ctt <- selected$analysis$level_ctt_analysis
+      ctt <- selected$ctt_analysis
+      level_ctt <- selected$level_ctt_analysis
       mode <- input$ctt_mode
 
       if (identical(mode, "level_3") && !is.null(level_ctt)) {
@@ -225,16 +225,16 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
     output$main_ctt_table <- shiny::renderTable({
       selected <- selected_job_result()
       if (identical(input$ctt_mode, "level_3")) {
-        selected$analysis$level_ctt_analysis$level_summary_table
+        selected$level_ctt_analysis$level_summary_table
       } else {
-        selected$analysis$ctt_analysis$item_summary
+        selected$ctt_analysis$item_summary
       }
     }, striped = TRUE, hover = TRUE, bordered = TRUE, spacing = "s")
 
     # 27% 模式下的誘答力矩陣表
     output$distractor_matrix_table <- shiny::renderTable({
       selected <- selected_job_result()
-      selected$analysis$ctt_analysis$distractor_results
+      selected$ctt_analysis$distractor_results
     }, striped = TRUE, hover = TRUE, bordered = TRUE, spacing = "s")
 
     # 下載傳統 CTT 試題分析總表 Excel
@@ -247,7 +247,7 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       content = function(file) {
         selected <- selected_job_result()
         job <- selected$prepared$job
-        ctt <- selected$analysis$ctt_analysis
+        ctt <- selected$ctt_analysis
         grade_map <- setNames(list(ctt), as.character(job$grade))
         write_ctt_analysis_by_subject(
           subject_label = job$subject_name,
@@ -268,7 +268,7 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       content = function(file) {
         selected <- selected_job_result()
         job <- selected$prepared$job
-        ctt <- selected$analysis$ctt_analysis
+        ctt <- selected$ctt_analysis
         write_distractor_analysis_xlsx(
           ctt_res = ctt,
           subject_label = job$subject_name,
@@ -288,7 +288,7 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       content = function(file) {
         selected <- selected_job_result()
         job <- selected$prepared$job
-        level_ctt <- selected$analysis$level_ctt_analysis
+        level_ctt <- selected$level_ctt_analysis
         write_level_ctt_excel(
           level_ctt_res = level_ctt,
           subject_label = job$subject_name,
