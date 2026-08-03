@@ -16,9 +16,30 @@ warn_score <- function(...) {
   warning(..., call. = FALSE)
 }
 
-# 將 Excel 標題轉成便於比對的形式：轉文字、去頭尾空白、移除所有空白。
+# 解碼數字型 HTML 實體編碼 (例如 &#32317;&#27969;&#27700;&#34399; -> 總流水號)。
+decode_html_entities <- function(x) {
+  if (is.null(x)) return(x)
+  vapply(as.character(x), function(s) {
+    if (is.na(s) || s == "") return(s)
+    matches <- gregexpr("&#([0-9]+);", s)
+    if (matches[[1]][1] != -1) {
+      reg_matches <- regmatches(s, matches)[[1]]
+      for (m in reg_matches) {
+        num <- as.integer(gsub("[^0-9]", "", m))
+        if (!is.na(num)) {
+          char_val <- intToUtf8(num)
+          s <- gsub(m, char_val, s, fixed = TRUE)
+        }
+      }
+    }
+    s
+  }, character(1), USE.NAMES = FALSE)
+}
+
+# 將 Excel 標題轉成便於比對的形式：自動解碼 HTML 實體、轉文字、去頭尾空白、移除所有空白。
 normalize_header <- function(x) {
-  gsub("[[:space:]]+", "", trimws(as.character(x)))
+  decoded <- decode_html_entities(x)
+  gsub("[[:space:]]+", "", trimws(as.character(decoded)))
 }
 
 # 統一所有彙總報表的顯示精度，並保留原向量名稱。

@@ -162,13 +162,9 @@ get_dimension_labels <- function(
 
   labels <- as.character(dimension_table[[column_name]])
   if (length(labels) < n_items_raw) {
-    abort_score(
-      sprintf(
-        "向度欄位「%s」只有 %d 列，但原始作答有 %d 題。",
-        column_name,
-        length(labels),
-        n_items_raw
-      )
+    labels <- c(
+      labels,
+      rep(NA_character_, n_items_raw - length(labels))
     )
   }
 
