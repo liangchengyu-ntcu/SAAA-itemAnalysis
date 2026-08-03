@@ -255,7 +255,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           output_path = file,
           grade_ctt_map = grade_map
         )
-      }
+      },
+      contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
     # 下載誘答力明細表 Excel
@@ -275,7 +276,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           grade = job$grade,
           output_path = file
         )
-      }
+      },
+      contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
     # 下載縣市三等級試題分析 Excel（對齊簡報截圖）
@@ -296,7 +298,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           year = job$year,
           output_path = file
         )
-      }
+      },
+      contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
   })
 }

@@ -198,14 +198,16 @@ mod_cleansing_server <- function(id) {
 
     output$download_clean <- shiny::downloadHandler(
       filename = function() {
-        paste0("cleaned_", gsub("\\.xlsx$", "", input$raw_file$name), ".xlsx")
+        raw_name <- if (!is.null(input$raw_file$name)) input$raw_file$name else "file"
+        paste0("cleaned_", gsub("\\.xlsx$", "", raw_name), ".xlsx")
       },
       content = function(file) {
         res <- cleaned_result()
         if (!is.null(res)) {
           openxlsx::write.xlsx(res$cleaned_df, file)
         }
-      }
+      },
+      contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
     output$download_split_zip <- shiny::downloadHandler(
@@ -217,7 +219,8 @@ mod_cleansing_server <- function(id) {
         if (!is.null(res) && !is.null(res$split_result$zip_path)) {
           file.copy(res$split_result$zip_path, file, overwrite = TRUE)
         }
-      }
+      },
+      contentType = "application/zip"
     )
 
     output$preview_table <- shiny::renderTable({
