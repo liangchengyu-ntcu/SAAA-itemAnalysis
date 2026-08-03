@@ -237,16 +237,28 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       selected$ctt_analysis$distractor_results
     }, striped = TRUE, hover = TRUE, bordered = TRUE, spacing = "s")
 
+    get_job_info <- function(selected) {
+      if (!is.null(selected$prepared) && !is.null(selected$prepared$job)) {
+        return(selected$prepared$job)
+      }
+      list(
+        year = selected$year,
+        subject_code = selected$subject_code,
+        subject_name = selected$subject_name,
+        grade = selected$grade
+      )
+    }
+
     # 下載傳統 CTT 試題分析總表 Excel
     output$download_ctt_excel <- shiny::downloadHandler(
       filename = function() {
         selected <- selected_job_result()
-        job <- selected$prepared$job
+        job <- get_job_info(selected)
         sprintf("%s_%s%s_試題分析總表.xlsx", job$year, job$subject_code, job$grade)
       },
       content = function(file) {
         selected <- selected_job_result()
-        job <- selected$prepared$job
+        job <- get_job_info(selected)
         ctt <- selected$ctt_analysis
         grade_map <- setNames(list(ctt), as.character(job$grade))
         write_ctt_analysis_by_subject(
@@ -263,12 +275,12 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
     output$download_distractor_excel <- shiny::downloadHandler(
       filename = function() {
         selected <- selected_job_result()
-        job <- selected$prepared$job
+        job <- get_job_info(selected)
         sprintf("%s_%s%s_分析結果.xlsx", job$year, job$subject_code, job$grade)
       },
       content = function(file) {
         selected <- selected_job_result()
-        job <- selected$prepared$job
+        job <- get_job_info(selected)
         ctt <- selected$ctt_analysis
         write_distractor_analysis_xlsx(
           ctt_res = ctt,
@@ -284,12 +296,12 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
     output$download_level_ctt_excel <- shiny::downloadHandler(
       filename = function() {
         selected <- selected_job_result()
-        job <- selected$prepared$job
+        job <- get_job_info(selected)
         sprintf("%s_%s%s_縣市三等級試題分析.xlsx", job$year, job$subject_code, job$grade)
       },
       content = function(file) {
         selected <- selected_job_result()
-        job <- selected$prepared$job
+        job <- get_job_info(selected)
         level_ctt <- selected$level_ctt_analysis
         write_level_ctt_excel(
           level_ctt_res = level_ctt,

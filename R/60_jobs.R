@@ -67,6 +67,10 @@ run_one_job <- function(job, output_root) {
     views = build_result_views(export_tables),
     distribution = analysis$distribution,
     exported_files = exported_files,
+    analysis = analysis,
+    prepared = analysis$prepared,
+    ctt_analysis = analysis$ctt_analysis,
+    level_ctt_analysis = analysis$level_ctt_analysis,
     analysis_seconds = analysis_seconds,
     export_seconds = export_seconds,
     elapsed_seconds = as.numeric(
