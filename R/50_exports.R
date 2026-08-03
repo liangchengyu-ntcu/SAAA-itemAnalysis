@@ -56,11 +56,7 @@ write_result_workbook <- function(data, path) {
 # 注意 overall_scores 的 suffix 未以底線開頭是沿用既有檔名契約。
 job_export_definitions <- function() {
   list(
-    ctt = list(
-      label = "試題 CTT 品質與診斷",
-      suffix = "_試題CTT品質與診斷",
-      preview = TRUE
-    ),
+
     overall_scores = list(
       label = "全體總答對率",
       suffix = "全體總答對率",
@@ -154,10 +150,7 @@ build_export_tables <- function(analysis) {
   summaries <- analysis$summaries
   ranked <- analysis$ranked_outputs
   scores <- analysis$score_data$student_scores
-  ctt_summary <- analysis$ctt_analysis$item_summary
-
   list(
-    ctt = ctt_summary,
     overall_scores = scores,
     county = summaries$county_means,
     school = summaries$school_means,
@@ -205,50 +198,12 @@ export_job_result <- function(
   })
   names(paths) <- names(definitions)
 
-  # 匯出 CTT 雙分頁分析結果 XLSX
-  if (!is.null(analysis$ctt_analysis)) {
-    ctt_analysis_filename <- sprintf("%s_%s%s_分析結果.xlsx", job$year, job$subject_code, job$grade)
-    ctt_analysis_path <- file.path(output_directory, ctt_analysis_filename)
-    write_distractor_analysis_xlsx(
-      ctt_res = analysis$ctt_analysis,
-      subject_label = job$subject_name,
-      grade = job$grade,
-      output_path = ctt_analysis_path
-    )
-    paths[["ctt_analysis"]] <- ctt_analysis_path
-
-    ctt_total_filename <- sprintf("%s_%s%s_試題分析總表.xlsx", job$year, job$subject_code, job$grade)
-    ctt_total_path <- file.path(output_directory, ctt_total_filename)
-    grade_map <- setNames(list(analysis$ctt_analysis), as.character(job$grade))
-    write_ctt_analysis_by_subject(
-      subject_label = job$subject_name,
-      year = job$year,
-      output_path = ctt_total_path,
-      grade_ctt_map = grade_map
-    )
-    paths[["ctt_total"]] <- ctt_total_path
-  }
-
-  if (!is.null(analysis$level_ctt_analysis)) {
-    level_ctt_filename <- sprintf("%s_%s%s_縣市三等級試題分析.xlsx", job$year, job$subject_code, job$grade)
-    level_ctt_path <- file.path(output_directory, level_ctt_filename)
-    write_level_ctt_excel(
-      level_ctt_res = analysis$level_ctt_analysis,
-      subject_label = job$subject_name,
-      grade = job$grade,
-      year = job$year,
-      output_path = level_ctt_path
-    )
-    paths[["level_ctt"]] <- level_ctt_path
-  }
-
   unlist(paths, use.names = TRUE)
 }
 
 # 只挑選無個資的彙總表供網頁預覽，順序對應 RESULT_VIEWS。
 build_result_views <- function(export_tables) {
   preview_order <- c(
-    "ctt",
     "total",
     "county",
     "school",
