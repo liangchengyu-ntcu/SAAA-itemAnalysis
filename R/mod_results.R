@@ -297,19 +297,43 @@ mod_results_server <- function(id, run_result) {
     output$download_all <- shiny::downloadHandler(
       filename = function() {
         result <- run_result()
-        year <- if (is.null(result)) {
-          format(Sys.Date(), "%Y%m%d")
-        } else {
-          unique_years <- unique(vapply(
-            result$results,
-            `[[`,
-            character(1),
-            "year"
-          ))
-          paste(unique_years, collapse = "-")
+        if (is.null(result) || length(result$results) == 0L) {
+          return(paste0(format(Sys.Date(), "%Y%m%d"), "_成績分析結果.zip"))
         }
-        # 批次若含多年度，以連字號串接年度；目前介面通常只有一個年度。
-        paste0(year, "_成績分析結果.zip")
+
+        unique_years <- unique(vapply(
+          result$results,
+          `[[`,
+          character(1),
+          "year"
+        ))
+        year_str <- paste(unique_years, collapse = "-")
+
+        subj_codes <- unique(vapply(
+          result$results,
+          function(res) {
+            if (!is.null(res$prepared$job$subject_code)) {
+              res$prepared$job$subject_code
+            } else if (!is.null(res$job$subject_code)) {
+              res$job$subject_code
+            } else {
+              ""
+            }
+          },
+          character(1)
+        ))
+        subj_codes <- subj_codes[nzchar(subj_codes)]
+
+        if (length(subj_codes) > 0L) {
+          subj_full <- chartr(
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZ",
+            "ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ",
+            paste(subj_codes, collapse = "、")
+          )
+          paste0(year_str, "_成績分析結果 (", subj_full, ").zip")
+        } else {
+          paste0(year_str, "_成績分析結果.zip")
+        }
       },
       content = function(file) {
         result <- run_result()
