@@ -100,7 +100,7 @@ shiny::testServer(mod_run_server, {
   stopifnot(identical(task$status(), "success"))
   calculated <- task$result()
   stopifnot(identical(calculated$job_table$狀態, "完成"))
-  stopifnot(length(calculated$results[["115_C4"]]$exported_files) == 17L)
+  stopifnot(length(calculated$results[["115_C4"]]$exported_files) == 11L)
   background_result <<- calculated
 })
 

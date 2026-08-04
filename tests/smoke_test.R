@@ -130,17 +130,11 @@ expected_export_keys <- c(
   "class",
   "region",
   "family",
-  "county_level",
-  "school_level",
-  "class_level",
-  "region_level",
-  "family_level",
   "absent",
   "personal_with_count",
   "all_students",
   "personal_detail",
-  "total",
-  "total_level"
+  "total"
 )
 stopifnot(identical(names(result$exported_files), expected_export_keys))
 stopifnot(result$student_count == 5L)
@@ -308,10 +302,29 @@ stopifnot(identical(
   match("等級", colnames(level_personal)),
   match("PR值(全部參與縣市)", colnames(level_personal)) + 1L
 ))
-
+level_expected_keys <- c(
+  "overall_scores",
+  "county",
+  "school",
+  "class",
+  "region",
+  "family",
+  "county_level",
+  "school_level",
+  "class_level",
+  "region_level",
+  "family_level",
+  "absent",
+  "personal_with_count",
+  "all_students",
+  "personal_detail",
+  "total",
+  "total_level"
+)
+stopifnot(identical(names(level_result$exported_files), level_expected_keys))
 
 # ---------------------------------------------------------------------------
-# 下載 ZIP：11 份 Excel 都應包含，包含恢復的三份個人／缺考報表
+# 下載 ZIP：未勾選等級描述產出 11 份；勾選時產出 17 份 Excel
 # ---------------------------------------------------------------------------
 archive_path <- create_result_archive(
   run$output_root,
@@ -322,12 +335,20 @@ archive_entries <- utils::unzip(
   archive_path,
   list = TRUE
 )$Name
-stopifnot(length(archive_entries) == 17L)
+stopifnot(length(archive_entries) == 11L)
 stopifnot(any(grepl("縣市平均[.]xlsx$", archive_entries)))
-stopifnot(any(grepl("縣市平均[(]等級描述[)][.]xlsx$", archive_entries)))
+stopifnot(!any(grepl("等級描述", archive_entries)))
 stopifnot(any(grepl("缺考名單[.]xlsx$", archive_entries)))
 stopifnot(any(grepl("個人成績含題數[.]xlsx$", archive_entries)))
 stopifnot(any(grepl("_個人成績[.]xlsx$", archive_entries)))
+
+level_archive_path <- create_result_archive(
+  level_run$output_root,
+  file.path(test_root, "level_results.zip")
+)
+level_archive_entries <- utils::unzip(level_archive_path, list = TRUE)$Name
+stopifnot(length(level_archive_entries) == 17L)
+stopifnot(any(grepl("縣市平均[(]等級描述[)][.]xlsx$", level_archive_entries)))
 
 # ---------------------------------------------------------------------------
 # 批次模式：基本配對及允許後綴的彈性檔名

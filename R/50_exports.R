@@ -54,9 +54,8 @@ write_result_workbook <- function(data, path) {
 # 內部鍵必須與 build_export_tables() 的清單名稱完全一致。
 # preview=FALSE 的報表含個資或明細，不應直接顯示在網頁上。
 # 注意 overall_scores 的 suffix 未以底線開頭是沿用既有檔名契約。
-job_export_definitions <- function() {
-  list(
-
+job_export_definitions <- function(calc_level = TRUE) {
+  defs <- list(
     overall_scores = list(
       label = "全體總答對率",
       suffix = "全體總答對率",
@@ -143,6 +142,20 @@ job_export_definitions <- function() {
       preview = TRUE
     )
   )
+
+  if (!isTRUE(calc_level)) {
+    level_keys <- c(
+      "county_level",
+      "school_level",
+      "class_level",
+      "region_level",
+      "family_level",
+      "total_level"
+    )
+    defs <- defs[!names(defs) %in% level_keys]
+  }
+
+  defs
 }
 
 # 將 analyze_job() 的巢狀結果整理成正式輸出表。
@@ -150,7 +163,9 @@ build_export_tables <- function(analysis) {
   summaries <- analysis$summaries
   ranked <- analysis$ranked_outputs
   scores <- analysis$score_data$student_scores
-  list(
+  calc_level <- isTRUE(analysis$prepared$job$calc_level)
+
+  tbls <- list(
     overall_scores = scores,
     county = summaries$county_means,
     school = summaries$school_means,
@@ -169,6 +184,20 @@ build_export_tables <- function(analysis) {
     total = ranked$total_output,
     total_level = ranked$total_level_output
   )
+
+  if (!calc_level) {
+    level_keys <- c(
+      "county_level",
+      "school_level",
+      "class_level",
+      "region_level",
+      "family_level",
+      "total_level"
+    )
+    tbls <- tbls[!names(tbls) %in% level_keys]
+  }
+
+  tbls
 }
 
 # 寫出單一工作的全部 Excel。
@@ -179,7 +208,8 @@ export_job_result <- function(
 ) {
   job <- analysis$prepared$job
   output_directory <- job_output_directory(output_root, job)
-  definitions <- job_export_definitions()
+  calc_level <- isTRUE(job$calc_level)
+  definitions <- job_export_definitions(calc_level = calc_level)
   if (is.null(export_tables)) {
     export_tables <- build_export_tables(analysis)
   }
