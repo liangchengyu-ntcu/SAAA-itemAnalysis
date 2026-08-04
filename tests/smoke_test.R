@@ -335,7 +335,8 @@ archive_entries <- utils::unzip(
   archive_path,
   list = TRUE
 )$Name
-stopifnot(length(archive_entries) == 11L)
+archive_files <- archive_entries[!grepl("/$", archive_entries)]
+stopifnot(length(archive_files) == 11L)
 stopifnot(any(grepl("縣市平均[.]xlsx$", archive_entries)))
 stopifnot(!any(grepl("等級描述", archive_entries)))
 stopifnot(any(grepl("缺考名單[.]xlsx$", archive_entries)))
@@ -347,7 +348,8 @@ level_archive_path <- create_result_archive(
   file.path(test_root, "level_results.zip")
 )
 level_archive_entries <- utils::unzip(level_archive_path, list = TRUE)$Name
-stopifnot(length(level_archive_entries) == 17L)
+level_archive_files <- level_archive_entries[!grepl("/$", level_archive_entries)]
+stopifnot(length(level_archive_files) == 17L)
 stopifnot(any(grepl("縣市平均[(]等級描述[)][.]xlsx$", level_archive_entries)))
 
 # ---------------------------------------------------------------------------

@@ -254,15 +254,12 @@ create_result_archive <- function(output_root, archive_path) {
     winslash = "/",
     mustWork = TRUE
   )
-  files <- list.files(
+  top_entries <- list.files(
     output_root,
-    recursive = TRUE,
-    full.names = TRUE,
+    full.names = FALSE,
     all.files = FALSE
   )
-  # list.files() 可能包含子資料夾，ZIP 只需要真正的檔案。
-  files <- files[file.info(files)$isdir %in% FALSE]
-  if (length(files) == 0L) {
+  if (length(top_entries) == 0L) {
     abort_score("沒有可供下載的輸出檔案。")
   }
 
@@ -274,9 +271,8 @@ create_result_archive <- function(output_root, archive_path) {
 
   zip::zipr(
     zipfile = archive_path,
-    files = files,
-    root = output_root,
-    include_directories = FALSE
+    files = top_entries,
+    root = output_root
   )
   normalizePath(archive_path, winslash = "/", mustWork = TRUE)
 }
