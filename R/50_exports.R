@@ -9,14 +9,13 @@
 #   - 調整檔名：job_output_filename() 或個別 definition 的 suffix。
 # =============================================================================
 
-# 建立單一工作的輸出資料夾：輸出根目錄／科目中文名／年級。
+# 建立單一工作的輸出資料夾：例如 S5、S7、S8。
 # 回傳正規化絕對路徑，供後續所有 Excel 寫入共用。
 job_output_directory <- function(output_root, job) {
   ensure_directory(
     file.path(
       output_root,
-      job$subject_name,
-      as.character(job$grade)
+      paste0(job$subject_code, job$grade)
     )
   )
 }
