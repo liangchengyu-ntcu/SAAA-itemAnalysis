@@ -80,18 +80,8 @@ app_theme <- bslib::bs_theme(
   secondary = "#475569",
   success = "#15803d",
   danger = "#b91c1c",
-  base_font = bslib::font_collection(
-    "Noto Sans TC",
-    "Microsoft JhengHei",
-    "PingFang TC",
-    "sans-serif"
-  ),
-  heading_font = bslib::font_collection(
-    "Noto Sans TC",
-    "Microsoft JhengHei",
-    "PingFang TC",
-    "sans-serif"
-  )
+  base_font = bslib::font_google("Noto Sans TC"),
+  heading_font = bslib::font_google("Noto Sans TC")
 )
 
 # 建立「使用說明」頁的通用編號卡片。
