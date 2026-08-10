@@ -14,12 +14,12 @@
 # data：待處理報表。
 # first_numeric_column：第一個數值欄的 1-based 位置。
 # 回傳值：欄位順序不變、數值已統一精度的 data.frame。
-round_table_columns <- function(data, first_numeric_column) {
+round_table_columns <- function(data, first_numeric_column, digits = 6) {
   if (ncol(data) < first_numeric_column) {
     return(data)
   }
   for (column_index in seq.int(first_numeric_column, ncol(data))) {
-    data[, column_index] <- round6(data[, column_index])
+    data[, column_index] <- round(data[, column_index], digits)
   }
   data
 }
@@ -143,7 +143,7 @@ calculate_summary_tables <- function(
     mean,
     na.rm = TRUE
   )
-  region_means <- round_table_columns(region_means, 3L)
+  region_means <- round_table_columns(region_means, 3L, digits = 14)
   if ("總答對率" %in% colnames(region_means)) {
     region_means$總答對率 <- round(region_means$總答對率, 2)
   }
@@ -169,6 +169,7 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     group_by_list, group_by_list_all,
     first_num_col,
+    digits = 6L,
     round_total_digits = NULL
   ) {
     group_keys <- names(group_by_list)
@@ -237,7 +238,7 @@ calculate_summary_tables <- function(
       "待加強率(%)(含特殊生)"
     )
     res_df <- as.data.frame(res, stringsAsFactors = FALSE)[, cols_order, drop = FALSE]
-    res_df <- round_table_columns(res_df, first_num_col)
+    res_df <- round_table_columns(res_df, first_num_col, digits = digits)
     if (!is.null(round_total_digits)) {
       if ("總答對率(扣除特殊生)" %in% colnames(res_df)) {
         res_df$`總答對率(扣除特殊生)` <- round(res_df$`總答對率(扣除特殊生)`, round_total_digits)
@@ -275,6 +276,7 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     list(縣市 = valid_data$縣市, 鄉鎮區 = valid_data$鄉鎮區),
     list(縣市 = all_valid_data$縣市, 鄉鎮區 = all_valid_data$鄉鎮區), 3L,
+    digits = 14L,
     round_total_digits = 2L
   )
 
