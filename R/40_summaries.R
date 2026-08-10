@@ -143,10 +143,7 @@ calculate_summary_tables <- function(
     mean,
     na.rm = TRUE
   )
-  region_means <- round_table_columns(region_means, 3L, digits = 14)
-  if ("總答對率" %in% colnames(region_means)) {
-    region_means$總答對率 <- round_half_up(region_means$總答對率, 2)
-  }
+  region_means <- round_table_columns(region_means, 3L, digits = 15)
 
   family_means <- aggregate(
     valid_data[, score_columns, drop = FALSE],
@@ -157,10 +154,7 @@ calculate_summary_tables <- function(
     mean,
     na.rm = TRUE
   )
-  family_means <- round_table_columns(family_means, 3L, digits = 14)
-  if ("總答對率" %in% colnames(family_means)) {
-    family_means$總答對率 <- round_half_up(family_means$總答對率, 2) * 100
-  }
+  family_means <- round_table_columns(family_means, 3L, digits = 15)
 
   # 2. 併表等級描述報表聚合函式：在同一張表內併列呈現【扣除特殊生】與【含特殊生】
   # 欄位順序：[分組標籤] | 到考人數(扣除特殊生) | 總答對率(扣除特殊生) | 精熟人數(扣除特殊生) | 精熟率(%)(扣除特殊生)... | 到考人數(含特殊生)...
@@ -278,8 +272,8 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     list(縣市 = valid_data$縣市, 鄉鎮區 = valid_data$鄉鎮區),
     list(縣市 = all_valid_data$縣市, 鄉鎮區 = all_valid_data$鄉鎮區), 3L,
-    digits = 14L,
-    round_total_digits = 2L
+    digits = 15L,
+    round_total_digits = 15L
   )
 
   family_level_means <- build_combined_level_description_table(
@@ -287,9 +281,8 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     list(縣市 = valid_data$縣市, 身分別 = valid_data$身分別),
     list(縣市 = all_valid_data$縣市, 身分別 = all_valid_data$身分別), 3L,
-    digits = 14L,
-    round_total_digits = 2L,
-    scale_100 = TRUE
+    digits = 15L,
+    round_total_digits = 15L
   )
 
   t_n <- length(valid_levels)
