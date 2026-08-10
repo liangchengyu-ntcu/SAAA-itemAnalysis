@@ -14,12 +14,12 @@
 # data：待處理報表。
 # first_numeric_column：第一個數值欄的 1-based 位置。
 # 回傳值：欄位順序不變、數值已統一精度的 data.frame。
-round_table_columns <- function(data, first_numeric_column, digits = 6) {
+round_table_columns <- function(data, first_numeric_column) {
   if (ncol(data) < first_numeric_column) {
     return(data)
   }
   for (column_index in seq.int(first_numeric_column, ncol(data))) {
-    data[, column_index] <- round(data[, column_index], digits)
+    data[, column_index] <- round6(data[, column_index])
   }
   data
 }
@@ -143,7 +143,10 @@ calculate_summary_tables <- function(
     mean,
     na.rm = TRUE
   )
-  region_means <- round_table_columns(region_means, 3L, digits = 2)
+  region_means <- round_table_columns(region_means, 3L)
+  if ("總答對率" %in% colnames(region_means)) {
+    region_means$總答對率 <- round(region_means$總答對率, 2)
+  }
 
   family_means <- aggregate(
     valid_data[, score_columns, drop = FALSE],
@@ -154,7 +157,10 @@ calculate_summary_tables <- function(
     mean,
     na.rm = TRUE
   )
-  family_means <- round_table_columns(family_means, 3L, digits = 2)
+  family_means <- round_table_columns(family_means, 3L)
+  if ("總答對率" %in% colnames(family_means)) {
+    family_means$總答對率 <- round(family_means$總答對率, 2)
+  }
 
   # 2. 併表等級描述報表聚合函式：在同一張表內併列呈現【扣除特殊生】與【含特殊生】
   # 欄位順序：[分組標籤] | 到考人數(扣除特殊生) | 總答對率(扣除特殊生) | 精熟人數(扣除特殊生) | 精熟率(%)(扣除特殊生)... | 到考人數(含特殊生)...
@@ -163,7 +169,7 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     group_by_list, group_by_list_all,
     first_num_col,
-    digits = 6L
+    round_total_2 = FALSE
   ) {
     group_keys <- names(group_by_list)
 
@@ -231,7 +237,16 @@ calculate_summary_tables <- function(
       "待加強率(%)(含特殊生)"
     )
     res_df <- as.data.frame(res, stringsAsFactors = FALSE)[, cols_order, drop = FALSE]
-    round_table_columns(res_df, first_num_col, digits)
+    res_df <- round_table_columns(res_df, first_num_col)
+    if (round_total_2) {
+      if ("總答對率(扣除特殊生)" %in% colnames(res_df)) {
+        res_df$`總答對率(扣除特殊生)` <- round(res_df$`總答對率(扣除特殊生)`, 2)
+      }
+      if ("總答對率(含特殊生)" %in% colnames(res_df)) {
+        res_df$`總答對率(含特殊生)` <- round(res_df$`總答對率(含特殊生)`, 2)
+      }
+    }
+    res_df
   }
 
   county_level_means <- build_combined_level_description_table(
@@ -260,7 +275,7 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     list(縣市 = valid_data$縣市, 鄉鎮區 = valid_data$鄉鎮區),
     list(縣市 = all_valid_data$縣市, 鄉鎮區 = all_valid_data$鄉鎮區), 3L,
-    digits = 2L
+    round_total_2 = TRUE
   )
 
   family_level_means <- build_combined_level_description_table(
@@ -268,7 +283,7 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     list(縣市 = valid_data$縣市, 身分別 = valid_data$身分別),
     list(縣市 = all_valid_data$縣市, 身分別 = all_valid_data$身分別), 3L,
-    digits = 2L
+    round_total_2 = TRUE
   )
 
   t_n <- length(valid_levels)
