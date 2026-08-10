@@ -159,7 +159,7 @@ calculate_summary_tables <- function(
   )
   family_means <- round_table_columns(family_means, 3L)
   if ("總答對率" %in% colnames(family_means)) {
-    family_means$總答對率 <- round(family_means$總答對率, 2)
+    family_means$總答對率 <- round(family_means$總答對率, 0)
   }
 
   # 2. 併表等級描述報表聚合函式：在同一張表內併列呈現【扣除特殊生】與【含特殊生】
@@ -169,7 +169,7 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     group_by_list, group_by_list_all,
     first_num_col,
-    round_total_2 = FALSE
+    round_total_digits = NULL
   ) {
     group_keys <- names(group_by_list)
 
@@ -238,12 +238,12 @@ calculate_summary_tables <- function(
     )
     res_df <- as.data.frame(res, stringsAsFactors = FALSE)[, cols_order, drop = FALSE]
     res_df <- round_table_columns(res_df, first_num_col)
-    if (round_total_2) {
+    if (!is.null(round_total_digits)) {
       if ("總答對率(扣除特殊生)" %in% colnames(res_df)) {
-        res_df$`總答對率(扣除特殊生)` <- round(res_df$`總答對率(扣除特殊生)`, 2)
+        res_df$`總答對率(扣除特殊生)` <- round(res_df$`總答對率(扣除特殊生)`, round_total_digits)
       }
       if ("總答對率(含特殊生)" %in% colnames(res_df)) {
-        res_df$`總答對率(含特殊生)` <- round(res_df$`總答對率(含特殊生)`, 2)
+        res_df$`總答對率(含特殊生)` <- round(res_df$`總答對率(含特殊生)`, round_total_digits)
       }
     }
     res_df
@@ -275,7 +275,7 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     list(縣市 = valid_data$縣市, 鄉鎮區 = valid_data$鄉鎮區),
     list(縣市 = all_valid_data$縣市, 鄉鎮區 = all_valid_data$鄉鎮區), 3L,
-    round_total_2 = TRUE
+    round_total_digits = 2L
   )
 
   family_level_means <- build_combined_level_description_table(
@@ -283,7 +283,7 @@ calculate_summary_tables <- function(
     all_valid_data, all_valid_levels,
     list(縣市 = valid_data$縣市, 身分別 = valid_data$身分別),
     list(縣市 = all_valid_data$縣市, 身分別 = all_valid_data$身分別), 3L,
-    round_total_2 = TRUE
+    round_total_digits = 0L
   )
 
   t_n <- length(valid_levels)
