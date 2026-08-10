@@ -19,7 +19,7 @@ round_table_columns <- function(data, first_numeric_column, digits = 6) {
     return(data)
   }
   for (column_index in seq.int(first_numeric_column, ncol(data))) {
-    data[, column_index] <- round(data[, column_index], digits)
+    data[, column_index] <- round_half_up(data[, column_index], digits)
   }
   data
 }
@@ -145,7 +145,7 @@ calculate_summary_tables <- function(
   )
   region_means <- round_table_columns(region_means, 3L, digits = 14)
   if ("總答對率" %in% colnames(region_means)) {
-    region_means$總答對率 <- round(region_means$總答對率, 2)
+    region_means$總答對率 <- round_half_up(region_means$總答對率, 2)
   }
 
   family_means <- aggregate(
@@ -159,7 +159,7 @@ calculate_summary_tables <- function(
   )
   family_means <- round_table_columns(family_means, 3L, digits = 14)
   if ("總答對率" %in% colnames(family_means)) {
-    family_means$總答對率 <- round(family_means$總答對率, 2) * 100
+    family_means$總答對率 <- round_half_up(family_means$總答對率, 2) * 100
   }
 
   # 2. 併表等級描述報表聚合函式：在同一張表內併列呈現【扣除特殊生】與【含特殊生】
@@ -243,10 +243,10 @@ calculate_summary_tables <- function(
     if (!is.null(round_total_digits)) {
       mult <- if (scale_100) 100 else 1
       if ("總答對率(扣除特殊生)" %in% colnames(res_df)) {
-        res_df$`總答對率(扣除特殊生)` <- round(res_df$`總答對率(扣除特殊生)`, round_total_digits) * mult
+        res_df$`總答對率(扣除特殊生)` <- round_half_up(res_df$`總答對率(扣除特殊生)`, round_total_digits) * mult
       }
       if ("總答對率(含特殊生)" %in% colnames(res_df)) {
-        res_df$`總答對率(含特殊生)` <- round(res_df$`總答對率(含特殊生)`, round_total_digits) * mult
+        res_df$`總答對率(含特殊生)` <- round_half_up(res_df$`總答對率(含特殊生)`, round_total_digits) * mult
       }
     }
     res_df

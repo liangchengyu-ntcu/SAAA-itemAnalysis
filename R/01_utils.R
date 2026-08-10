@@ -57,12 +57,21 @@ is_valid_key <- function(key) {
   !is_unscored_key(key)
 }
 
-# 統一所有彙總報表的顯示精度，並保留原向量名稱。
-# 注意：這裡使用 R 的 round() 規則；不要改成 format()，否則會變文字。
-round6 <- function(x) {
-  result <- round(x, 6)
+# 傳統四捨五入 (Round Half Up)，確保 0.5 永遠向上進位 (例如 0.325 -> 0.33)。
+round_half_up <- function(x, digits = 0) {
+  if (is.null(x)) return(x)
+  pos_neg <- sign(x)
+  z <- abs(x) * 10^digits
+  z <- z + 0.5 + sqrt(.Machine$double.eps)
+  z <- floor(z)
+  result <- (z / 10^digits) * pos_neg
   names(result) <- names(x)
   result
+}
+
+# 統一所有彙總報表的顯示精度，並保留原向量名稱。
+round6 <- function(x) {
+  round_half_up(x, 6)
 }
 
 # 動態識別答案檔中存放向度/評量指標的工作表名稱。
