@@ -100,8 +100,8 @@ prepare_job_input <- function(job) {
   key_vector <- as.character(
     answer_tables$answers[[answer_column]]
   )
-  # 移除答案鍵末尾無效空白 NA
-  valid_key_indices <- which(!is.na(key_vector) & key_vector != "")
+  # 移除答案鍵末尾無效空白/不予計分項目
+  valid_key_indices <- which(is_valid_key(key_vector))
   if (length(valid_key_indices) > 0L) {
     key_vector <- key_vector[seq_len(max(valid_key_indices))]
   }
@@ -125,9 +125,7 @@ prepare_job_input <- function(job) {
     )
   }
 
-  valid_items <- which(
-    !is.na(key_vector) & key_vector != ""
-  )
+  valid_items <- which(is_valid_key(key_vector))
   if (length(valid_items) == 0L) {
     abort_score(job$key, " 沒有任何有效答案題目。")
   }
@@ -160,6 +158,12 @@ prepare_job_input <- function(job) {
     )
   })
 
+  # 自動辨識作答檔是否為已計分 (0/1/9) 檔案
+  unique_matrix_vals <- unique(as.vector(item_matrix))
+  is_dichotomous <- all(
+    unique_matrix_vals %in% c("0", "1", "9", "", NA_character_)
+  )
+
   list(
     job = job,
     n_total = n_total,
@@ -173,15 +177,17 @@ prepare_job_input <- function(job) {
     key_vector = key_vector,
     original_item_numbers = original_item_numbers,
     absent_flag = absent_flag,
-    dimension_labels = dimension_labels
+    dimension_labels = dimension_labels,
+    is_dichotomous = is_dichotomous
   )
 }
 
-# 將作答矩陣與答案鍵逐題比較，產生 1（答對）、0（答錯）或 NA。
+# 依答案鍵對作答矩陣進行批改計分。
 #
-# prepared：prepare_job_input() 的回傳值。
-# 回傳值：列為學生、欄為有效題目的整數矩陣，欄名保留原題號 Q1、Q2。
+# prepared：由 prepare_job_input() 輸出的預處理資料。
+# 回傳值：1/0 答對／答錯計分矩陣。
 # 答案鍵若使用頓號「、」，代表該題接受其中任一答案。
+# 若輸入檔為 0/1 已計分檔，直接取 1 為答對。
 score_item_matrix <- function(prepared) {
   scored_matrix <- matrix(
     0L,
@@ -189,11 +195,19 @@ score_item_matrix <- function(prepared) {
     ncol = prepared$n_items
   )
 
+  is_dichotomous <- isTRUE(prepared$is_dichotomous)
+
   for (item_index in seq_len(prepared$n_items)) {
     key <- prepared$key_vector[[item_index]]
     responses <- prepared$item_matrix[, item_index]
 
-    if (grepl("、", key, fixed = TRUE)) {
+    if (is_dichotomous) {
+      scored_matrix[, item_index] <- ifelse(
+        !is.na(responses) & responses == "1",
+        1L,
+        0L
+      )
+    } else if (grepl("、", key, fixed = TRUE)) {
       # 多重可接受答案範例：答案鍵「A、C」接受 A 或 C。
       options <- strsplit(key, "、", fixed = TRUE)[[1L]]
       scored_matrix[, item_index] <- ifelse(

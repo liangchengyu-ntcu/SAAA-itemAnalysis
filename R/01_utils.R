@@ -42,6 +42,21 @@ normalize_header <- function(x) {
   gsub("[[:space:]]+", "", trimws(as.character(decoded)))
 }
 
+# 判定單一答案鍵是否為無效或「不予計分」題目。
+#
+# 支援：NA、空字串、"NA"、"不予計分"、"不計分"、"此題不計分"、"無"、"送分"、"不採計"。
+is_unscored_key <- function(key) {
+  if (is.null(key)) return(TRUE)
+  key_str <- trimws(as.character(key))
+  is.na(key_str) | key_str == "" | key_str == "NA" |
+    grepl("^(不予計分|不計分|此題不計分|無|送分|不採計)$", key_str)
+}
+
+# 判定單一答案鍵是否為有效可計分題目。
+is_valid_key <- function(key) {
+  !is_unscored_key(key)
+}
+
 # 統一所有彙總報表的顯示精度，並保留原向量名稱。
 # 注意：這裡使用 R 的 round() 規則；不要改成 format()，否則會變文字。
 round6 <- function(x) {

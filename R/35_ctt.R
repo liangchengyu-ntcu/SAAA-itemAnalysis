@@ -40,7 +40,7 @@ calculate_ctt_analysis <- function(
   }
 
   # 標記有答案鍵且非空白的計分題目
-  scored_mask <- !is.na(key_vector) & key_vector != ""
+  scored_mask <- is_valid_key(key_vector)
   key_split <- strsplit(key_vector, "、")
   key_flat <- unique(unlist(key_split))
 
@@ -283,7 +283,7 @@ calculate_level_ctt_analysis <- function(
     absent_flag <- rep(FALSE, n_total)
   }
 
-  scored_mask <- !is.na(key_vector) & key_vector != ""
+  scored_mask <- is_valid_key(key_vector)
   key_split <- strsplit(key_vector, "、")
   n_scored <- sum(scored_mask)
 
