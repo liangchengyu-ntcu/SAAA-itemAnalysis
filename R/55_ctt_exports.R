@@ -356,6 +356,9 @@ write_level_ctt_excel <- function(
   b_count <- if (!is.null(counts) && "基礎" %in% names(counts)) unname(counts["基礎"]) else 0L
   i_count <- if (!is.null(counts) && "待加強" %in% names(counts)) unname(counts["待加強"]) else 0L
 
+  m_cutoff <- if (!is.null(level_ctt_res$mastery_cutoff)) level_ctt_res$mastery_cutoff else NA
+  b_cutoff <- if (!is.null(level_ctt_res$basic_cutoff)) level_ctt_res$basic_cutoff else NA
+
   m_pct <- if (n_total > 0) sprintf("%.2f%%", (m_count / n_total) * 100) else "0.00%"
   b_pct <- if (n_total > 0) sprintf("%.2f%%", (b_count / n_total) * 100) else "0.00%"
   i_pct <- if (n_total > 0) sprintf("%.2f%%", (i_count / n_total) * 100) else "0.00%"
@@ -370,17 +373,17 @@ write_level_ctt_excel <- function(
   b_str <- paste0("基礎人數：", format(b_count, big.mark = ","), " (", b_pct, ")")
   i_str <- paste0("待加強人數：", format(i_count, big.mark = ","), " (", i_pct, ")")
 
-  header1 <- c(
-    title, rep(NA, 3),
-    n_total_str, rep(NA, 3),
-    m_str, rep(NA, 3),
-    b_str, rep(NA, 3),
-    i_str, rep(NA, max(0L, n_cols - 17L))
-  )
-  if (length(header1) < n_cols) {
-    header1 <- c(header1, rep(NA, n_cols - length(header1)))
-  } else if (length(header1) > n_cols) {
-    header1 <- header1[seq_len(n_cols)]
+  header1 <- rep(NA_character_, n_cols)
+  header1[1] <- title
+  header1[5] <- n_total_str
+  header1[9] <- m_str
+  header1[13] <- b_str
+  header1[17] <- i_str
+  if (n_cols >= 24L) {
+    header1[21] <- "基礎"
+    header1[22] <- if (!is.na(b_cutoff)) as.character(b_cutoff) else ""
+    header1[23] <- "精熟"
+    header1[24] <- if (!is.na(m_cutoff)) as.character(m_cutoff) else ""
   }
   openxlsx::writeData(wb, sheet_name, t(header1), startRow = 1, colNames = FALSE)
 
@@ -412,8 +415,8 @@ write_level_ctt_excel <- function(
   if (n_cols >= 8L) openxlsx::mergeCells(wb, sheet_name, cols = 5:8, rows = 1)
   if (n_cols >= 12L) openxlsx::mergeCells(wb, sheet_name, cols = 9:12, rows = 1)
   if (n_cols >= 16L) openxlsx::mergeCells(wb, sheet_name, cols = 13:16, rows = 1)
-  if (n_cols >= 20L) openxlsx::mergeCells(wb, sheet_name, cols = 17:min(n_cols, 20L), rows = 1)
-  if (n_cols > 20L) openxlsx::mergeCells(wb, sheet_name, cols = 21:n_cols, rows = 1)
+  if (n_cols >= 20L) openxlsx::mergeCells(wb, sheet_name, cols = 17:20, rows = 1)
+  if (n_cols > 24L) openxlsx::mergeCells(wb, sheet_name, cols = 25:n_cols, rows = 1)
 
   # 表頭第 2-3 列合併
   openxlsx::mergeCells(wb, sheet_name, cols = 1, rows = 2:3)
