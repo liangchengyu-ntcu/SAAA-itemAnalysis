@@ -71,7 +71,7 @@ mod_run_ui <- function(id) {
               ns("response_files"),
               "作答檔（可複選不同年級）",
               multiple = TRUE,
-              accept = ".xlsx"
+              accept = c(".xlsx", ".csv", "text/csv", "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
             )
           ),
           # 批次模式：只接收一個內含答案檔及作答檔的 ZIP。

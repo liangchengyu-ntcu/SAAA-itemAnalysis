@@ -198,6 +198,12 @@ discover_single_jobs <- function(
   is_aux <- grepl("無效清單|無效.*\\.xlsx$|report|summary", basename(response_paths), ignore.case = TRUE)
   if (any(!is_aux)) {
     response_paths <- response_paths[!is_aux]
+  } else if (all(is_aux) && length(response_paths) > 0L) {
+    abort_score(
+      "您所選取的檔案「",
+      paste(basename(response_paths), collapse = ", "),
+      "」為無效資料名單報告檔，非作答檔。請選取資料夾中的「_analyzed.csv」或「.xlsx」學生作答檔案。"
+    )
   }
 
   # 先逐檔解析；任何檔名無法辨識都整批退回，避免算錯科目。
