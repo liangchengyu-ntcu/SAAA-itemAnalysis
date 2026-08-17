@@ -194,6 +194,12 @@ discover_single_jobs <- function(
   mastery_cutoff = NA,
   basic_cutoff = NA
 ) {
+  # 自動略過無效清單等輔助報告檔，只保留作答檔案
+  is_aux <- grepl("無效清單|無效.*\\.xlsx$|report|summary", basename(response_paths), ignore.case = TRUE)
+  if (any(!is_aux)) {
+    response_paths <- response_paths[!is_aux]
+  }
+
   # 先逐檔解析；任何檔名無法辨識都整批退回，避免算錯科目。
   parsed <- lapply(response_paths, parse_response_filename)
   recognized <- !vapply(parsed, is.null, logical(1))
@@ -227,9 +233,20 @@ discover_single_jobs <- function(
     )
   }
 
+  # 若同一年級同時上傳了多個檔案（如 _analyzed.csv 與 .xlsx），優先採用 _analyzed.csv
   grades <- vapply(parsed, `[[`, integer(1), "grade")
   if (anyDuplicated(grades)) {
-    abort_score("同一年級只能提供一個作答檔。")
+    deduped <- list()
+    for (item in parsed) {
+      g <- as.character(item$grade)
+      if (is.null(deduped[[g]])) {
+        deduped[[g]] <- item
+      } else if (grepl("analyzed", item$path, ignore.case = TRUE)) {
+        deduped[[g]] <- item
+      }
+    }
+    parsed <- unname(deduped)
+    grades <- vapply(parsed, `[[`, integer(1), "grade")
   }
 
   jobs <- lapply(parsed, function(item) {
