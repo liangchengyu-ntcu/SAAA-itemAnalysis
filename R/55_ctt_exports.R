@@ -350,13 +350,38 @@ write_level_ctt_excel <- function(
   opt_labels <- if (!is.null(level_ctt_res$opt_labels)) level_ctt_res$opt_labels else c("1", "2", "3", "4")
   n_opts <- length(opt_labels)
   n_cols <- 4L + 4L * (n_opts + 1L)
+  n_total <- if (!is.null(level_ctt_res$n_total_valid)) level_ctt_res$n_total_valid else 0L
+  counts <- level_ctt_res$level_counts
+  m_count <- if (!is.null(counts) && "精熟" %in% names(counts)) unname(counts["精熟"]) else 0L
+  b_count <- if (!is.null(counts) && "基礎" %in% names(counts)) unname(counts["基礎"]) else 0L
+  i_count <- if (!is.null(counts) && "待加強" %in% names(counts)) unname(counts["待加強"]) else 0L
+
+  m_pct <- if (n_total > 0) sprintf("%.2f%%", (m_count / n_total) * 100) else "0.00%"
+  b_pct <- if (n_total > 0) sprintf("%.2f%%", (b_count / n_total) * 100) else "0.00%"
+  i_pct <- if (n_total > 0) sprintf("%.2f%%", (i_count / n_total) * 100) else "0.00%"
 
   wb <- openxlsx::createWorkbook()
   sheet_name <- paste0(grade, "年級")
   openxlsx::addWorksheet(wb, sheet_name)
 
   title <- paste0(year, "年度", subject_label, grade, "年級 試題分析結果")
-  header1 <- c(title, rep(NA, n_cols - 1L))
+  n_total_str <- paste0("有效樣本人數：", format(n_total, big.mark = ","))
+  m_str <- paste0("精熟人數：", format(m_count, big.mark = ","), " (", m_pct, ")")
+  b_str <- paste0("基礎人數：", format(b_count, big.mark = ","), " (", b_pct, ")")
+  i_str <- paste0("待加強人數：", format(i_count, big.mark = ","), " (", i_pct, ")")
+
+  header1 <- c(
+    title, rep(NA, 3),
+    n_total_str, rep(NA, 3),
+    m_str, rep(NA, 3),
+    b_str, rep(NA, 3),
+    i_str, rep(NA, max(0L, n_cols - 17L))
+  )
+  if (length(header1) < n_cols) {
+    header1 <- c(header1, rep(NA, n_cols - length(header1)))
+  } else if (length(header1) > n_cols) {
+    header1 <- header1[seq_len(n_cols)]
+  }
   openxlsx::writeData(wb, sheet_name, t(header1), startRow = 1, colNames = FALSE)
 
   header2 <- c(
@@ -382,7 +407,15 @@ write_level_ctt_excel <- function(
   }
 
   # 合併儲存格
-  openxlsx::mergeCells(wb, sheet_name, cols = seq_len(n_cols), rows = 1)
+  # 第 1 列頂部資訊依區塊合併 (仿照總表版型)
+  openxlsx::mergeCells(wb, sheet_name, cols = 1:4, rows = 1)
+  if (n_cols >= 8L) openxlsx::mergeCells(wb, sheet_name, cols = 5:8, rows = 1)
+  if (n_cols >= 12L) openxlsx::mergeCells(wb, sheet_name, cols = 9:12, rows = 1)
+  if (n_cols >= 16L) openxlsx::mergeCells(wb, sheet_name, cols = 13:16, rows = 1)
+  if (n_cols >= 20L) openxlsx::mergeCells(wb, sheet_name, cols = 17:min(n_cols, 20L), rows = 1)
+  if (n_cols > 20L) openxlsx::mergeCells(wb, sheet_name, cols = 21:n_cols, rows = 1)
+
+  # 表頭第 2-3 列合併
   openxlsx::mergeCells(wb, sheet_name, cols = 1, rows = 2:3)
   openxlsx::mergeCells(wb, sheet_name, cols = 2, rows = 2:3)
   openxlsx::mergeCells(wb, sheet_name, cols = 3, rows = 2:3)

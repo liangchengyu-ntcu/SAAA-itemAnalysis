@@ -212,15 +212,16 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
         i_count <- unname(counts["待加強"])
         total <- level_ctt$n_total_valid
 
-        m_pct <- sprintf("%.1f%%", (m_count / total) * 100)
-        b_pct <- sprintf("%.1f%%", (b_count / total) * 100)
-        i_pct <- sprintf("%.1f%%", (i_count / total) * 100)
+        m_pct <- sprintf("%.2f%%", (m_count / total) * 100)
+        b_pct <- sprintf("%.2f%%", (b_count / total) * 100)
+        i_pct <- sprintf("%.2f%%", (i_count / total) * 100)
 
         shiny::div(
           class = "metric-grid",
-          metric_tile("精熟人數 (比例)", sprintf("%d (%s)", m_count, m_pct)),
-          metric_tile("基礎人數 (比例)", sprintf("%d (%s)", b_count, b_pct)),
-          metric_tile("待加強人數 (比例)", sprintf("%d (%s)", i_count, i_pct)),
+          metric_tile("有效樣本人數", format(total, big.mark = ",")),
+          metric_tile("精熟人數 (比例)", sprintf("%s (%s)", format(m_count, big.mark = ","), m_pct)),
+          metric_tile("基礎人數 (比例)", sprintf("%s (%s)", format(b_count, big.mark = ","), b_pct)),
+          metric_tile("待加強人數 (比例)", sprintf("%s (%s)", format(i_count, big.mark = ","), i_pct)),
           metric_tile("精熟門檻", sprintf("≥ %d 題", level_ctt$mastery_cutoff)),
           metric_tile("基礎門檻", sprintf("≥ %d 題", level_ctt$basic_cutoff))
         )
