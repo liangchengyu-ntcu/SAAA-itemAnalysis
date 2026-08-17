@@ -40,19 +40,31 @@ prepare_job_input <- function(job) {
   data <- raw[-1, , drop = FALSE]
   n_total <- nrow(data)
 
-  info_boundary <- find_info_boundary(headers)
-  if (ncol(raw) <= info_boundary) {
-    abort_score(
-      sprintf(
-        "%s 只有 %d 欄，至少需要 %d 個資訊欄位及 1 個作答欄位。",
-        basename(job$response_path),
-        ncol(raw),
-        info_boundary
+  explicit_item_idx <- grep("^(item|Item|第)[._ \\t]?[0-9]+", headers, ignore.case = TRUE)
+  if (length(explicit_item_idx) >= 1L) {
+    info_boundary <- min(explicit_item_idx) - 1L
+    n_items_raw <- length(explicit_item_idx)
+    item_data <- data[, explicit_item_idx, drop = FALSE]
+  } else {
+    info_boundary <- find_info_boundary(headers)
+    if (ncol(raw) <= info_boundary) {
+      abort_score(
+        sprintf(
+          "%s 只有 %d 欄，至少需要 %d 個資訊欄位及 1 個作答欄位。",
+          basename(job$response_path),
+          ncol(raw),
+          info_boundary
+        )
       )
-    )
+    }
+    n_items_raw <- ncol(data) - info_boundary
+    item_data <- data[
+      ,
+      (info_boundary + 1L):(info_boundary + n_items_raw),
+      drop = FALSE
+    ]
   }
 
-  n_items_raw <- ncol(data) - info_boundary
   info_headers <- headers[seq_len(info_boundary)]
   info_columns <- resolve_info_columns(info_headers)
 
@@ -78,11 +90,6 @@ prepare_job_input <- function(job) {
   }
 
   # 強制轉為文字矩陣，確保 A/B/C/D 與數字型答案使用相同比較規則。
-  item_data <- data[
-    ,
-    (info_boundary + 1L):(info_boundary + n_items_raw),
-    drop = FALSE
-  ]
   item_matrix <- as.matrix(item_data)
   item_matrix <- matrix(
     as.character(item_matrix),
@@ -136,9 +143,18 @@ prepare_job_input <- function(job) {
   item_matrix <- item_matrix[, valid_items, drop = FALSE]
   n_items <- length(valid_items)
 
-  # 缺考定義：所有「有答案鍵的有效題目」均為 NA。
-  # 部分漏答不算缺考；答錯也不算缺考。
-  absent_flag <- rowSums(is.na(item_matrix)) == n_items
+  # 缺考與無效定義：
+  # 1. 所有「有答案鍵的有效題目」均為 NA 或空白。
+  # 2. 若欄位中有「缺考」或「無效」欄位，標記為 1 或 TRUE 者一併排除（避免干擾計分與 CTT）。
+  absent_flag <- rowSums(is.na(item_matrix) | item_matrix == "") == n_items
+  absent_col <- which(headers %in% c("缺考", "缺考標記"))
+  if (length(absent_col) > 0L) {
+    absent_flag <- absent_flag | (data[[absent_col[1L]]] %in% c("1", 1, "TRUE", TRUE, "缺考"))
+  }
+  invalid_col <- which(headers %in% c("無效", "無效標記", "無效資料"))
+  if (length(invalid_col) > 0L) {
+    absent_flag <- absent_flag | (data[[invalid_col[1L]]] %in% c("1", 1, "TRUE", TRUE, "無效"))
+  }
 
   # 各科答案檔的向度欄命名不同，動態解析包含聽力/閱讀劃分與多重向度之欄名。
   dim_colnames <- colnames(answer_tables$dimensions)

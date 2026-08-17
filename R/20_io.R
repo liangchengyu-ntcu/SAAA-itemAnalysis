@@ -92,7 +92,10 @@ extract_zip_safely <- function(zip_path, destination) {
 # 無法辨識時回傳 NULL，辨識成功則回傳具名 list。
 parse_response_filename <- function(path) {
   name <- basename(path)
-  pattern <- "^([0-9]+)[ _-]*([CEMS])([3-8]).*\\.xlsx$"
+  if (grepl("無效清單|無效", name)) {
+    return(NULL)
+  }
+  pattern <- "^([0-9]+)[ _-]*([CEMS])([3-8]).*\\.(xlsx|csv)$"
   matched <- regexec(
     pattern,
     name,
@@ -398,6 +401,9 @@ read_answer_tables <- function(path) {
 # 讀取作答檔第一個工作表，保留第一列原始標題供欄位解析使用。
 # colNames=FALSE 表示不讓 openxlsx 自動把第一列當成 data.frame 欄名。
 read_response_table <- function(path) {
+  if (grepl("\\.csv$", path, ignore.case = TRUE)) {
+    return(data.table::fread(path, data.table = FALSE, header = FALSE, colClasses = "character"))
+  }
   openxlsx::read.xlsx(
     path,
     sheet = 1,
