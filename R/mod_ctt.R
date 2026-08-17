@@ -52,13 +52,37 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       )
     })
 
+    ensure_ctt_analysis <- function(selected) {
+      if (is.null(selected)) return(selected)
+      prep <- selected$prepared
+      if (is.null(selected$ctt_analysis) && !is.null(prep)) {
+        selected$ctt_analysis <- calculate_ctt_analysis(
+          item_matrix = prep$item_matrix,
+          key_vector = prep$key_vector,
+          grade = prep$job$grade,
+          subject_code = prep$job$subject_code,
+          absent_flag = prep$absent_flag
+        )
+      }
+      if (is.null(selected$level_ctt_analysis) && !is.null(prep)) {
+        selected$level_ctt_analysis <- calculate_level_ctt_analysis(
+          item_matrix = prep$item_matrix,
+          key_vector = prep$key_vector,
+          grade = prep$job$grade,
+          subject_code = prep$job$subject_code,
+          absent_flag = prep$absent_flag
+        )
+      }
+      selected
+    }
+
     selected_job_result <- shiny::reactive({
       result <- effective_run_result()
       shiny::req(!is.null(result))
       shiny::req(input$selected_job)
       selected <- result$results[[input$selected_job]]
       shiny::req(!is.null(selected))
-      selected
+      ensure_ctt_analysis(selected)
     })
 
     output$empty_state <- shiny::renderUI({

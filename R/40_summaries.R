@@ -663,6 +663,21 @@ analyze_job <- function(job) {
     summaries
   )
 
+  ctt_analysis <- calculate_ctt_analysis(
+    item_matrix = prepared$item_matrix,
+    key_vector = prepared$key_vector,
+    grade = prepared$job$grade,
+    subject_code = prepared$job$subject_code,
+    absent_flag = prepared$absent_flag
+  )
+  level_ctt_analysis <- calculate_level_ctt_analysis(
+    item_matrix = prepared$item_matrix,
+    key_vector = prepared$key_vector,
+    grade = prepared$job$grade,
+    subject_code = prepared$job$subject_code,
+    absent_flag = prepared$absent_flag
+  )
+
   list(
     prepared = prepared,
     scored_matrix = scored_matrix,
@@ -672,6 +687,8 @@ analyze_job <- function(job) {
     ranked_outputs = ranked_outputs,
     distribution = build_score_distribution(
       score_data$total_correct_rate
-    )
+    ),
+    ctt_analysis = ctt_analysis,
+    level_ctt_analysis = level_ctt_analysis
   )
 }
