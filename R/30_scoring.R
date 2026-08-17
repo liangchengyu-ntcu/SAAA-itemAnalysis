@@ -36,7 +36,7 @@ prepare_job_input <- function(job) {
     )
   }
 
-  headers <- as.character(raw[1, ])
+  headers <- decode_html_entities(as.character(raw[1, ]))
   data <- raw[-1, , drop = FALSE]
   n_total <- nrow(data)
 
