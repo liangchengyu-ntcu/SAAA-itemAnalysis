@@ -70,7 +70,9 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           key_vector = prep$key_vector,
           grade = prep$job$grade,
           subject_code = prep$job$subject_code,
-          absent_flag = prep$absent_flag
+          absent_flag = prep$absent_flag,
+          mastery_cutoff = prep$job$mastery_cutoff,
+          basic_cutoff = prep$job$basic_cutoff
         )
       }
       selected

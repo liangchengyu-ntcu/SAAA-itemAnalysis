@@ -675,7 +675,9 @@ analyze_job <- function(job) {
     key_vector = prepared$key_vector,
     grade = prepared$job$grade,
     subject_code = prepared$job$subject_code,
-    absent_flag = prepared$absent_flag
+    absent_flag = prepared$absent_flag,
+    mastery_cutoff = prepared$job$mastery_cutoff,
+    basic_cutoff = prepared$job$basic_cutoff
   )
 
   list(
