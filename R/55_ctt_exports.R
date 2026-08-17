@@ -23,10 +23,16 @@ write_distractor_analysis_xlsx <- function(
   sheet1_name <- paste0(subject_label, grade, " 分析結果")
   openxlsx::addWorksheet(wb, sheet1_name)
   openxlsx::writeData(wb, sheet1_name, dist, startRow = 1, colNames = TRUE)
+  if (!is.null(dist) && ncol(dist) > 0L) {
+    openxlsx::setColWidths(wb, sheet1_name, cols = seq_len(ncol(dist)), widths = "auto")
+  }
 
   # Sheet 2: 逐題摘要
   openxlsx::addWorksheet(wb, "工作表1")
   openxlsx::writeData(wb, "工作表1", item_summary, startRow = 1, colNames = TRUE)
+  if (!is.null(item_summary) && ncol(item_summary) > 0L) {
+    openxlsx::setColWidths(wb, "工作表1", cols = seq_len(ncol(item_summary)), widths = "auto")
+  }
 
   openxlsx::saveWorkbook(wb, output_path, overwrite = TRUE)
   output_path
@@ -98,14 +104,15 @@ write_ctt_analysis_sheet <- function(
     hp <- if (nrow(cr) > 0) sum(cr$upper, na.rm = TRUE) else NA_real_
     lp <- if (nrow(cr) > 0) sum(cr$lower, na.rm = TRUE) else NA_real_
     disc_val <- if (!is.na(hp) && !is.na(lp)) (hp - lp) else NA_real_
+    diff_val <- if (!is.na(hp) && !is.na(lp)) (hp + lp) / 2 else NA_real_
 
-    mat[item, 2] <- if (!is.na(disc_val)) sprintf("%.2f", round(disc_val, 2)) else NA_character_
-    mat[item, 3] <- if (!is.na(hp) && !is.na(lp)) sprintf("%.2f", round((hp + lp) / 2, 2)) else NA_character_
-    mat[item, 4] <- if (!is.na(pass_rate)) sprintf("%.2f", round(pass_rate, 2)) else NA_character_
+    mat[item, 2] <- if (!is.na(disc_val)) disc_val else NA_real_
+    mat[item, 3] <- if (!is.na(diff_val)) diff_val else NA_real_
+    mat[item, 4] <- if (!is.na(pass_rate)) pass_rate else NA_real_
     mat[item, 5] <- correct_key
 
     pass_rates[item] <- pass_rate
-    diff_index[item] <- if (!is.na(hp) && !is.na(lp)) (hp + lp) / 2 else NA_real_
+    diff_index[item] <- diff_val
     disc_values[item] <- disc_val
 
     cr_max_upper <- if (nrow(cr) > 0) max(cr$upper, na.rm = TRUE) else NA_real_
@@ -134,16 +141,16 @@ write_ctt_analysis_sheet <- function(
     for (k in seq_len(n_opts)) {
       opt_row <- subset(sub, key == opt_labels[k])
       if (nrow(opt_row) > 0) {
-        mat[item, opt_start + k - 1L] <- sprintf("%.2f", round(opt_row$rspP, 2))
-        mat[item, opt_start + (n_opts + 1L) + k - 1L] <- sprintf("%.2f", round(opt_row$upper, 2))
-        mat[item, opt_start + 2L * (n_opts + 1L) + k - 1L] <- sprintf("%.2f", round(opt_row$lower, 2))
+        mat[item, opt_start + k - 1L] <- opt_row$rspP
+        mat[item, opt_start + (n_opts + 1L) + k - 1L] <- opt_row$upper
+        mat[item, opt_start + 2L * (n_opts + 1L) + k - 1L] <- opt_row$lower
       }
     }
     other_row <- subset(sub, key == "9")
     if (nrow(other_row) > 0) {
-      mat[item, opt_start + n_opts] <- sprintf("%.2f", round(other_row$rspP, 2))
-      mat[item, opt_start + (n_opts + 1L) + n_opts] <- sprintf("%.2f", round(other_row$upper, 2))
-      mat[item, opt_start + 2L * (n_opts + 1L) + n_opts] <- sprintf("%.2f", round(other_row$lower, 2))
+      mat[item, opt_start + n_opts] <- other_row$rspP
+      mat[item, opt_start + (n_opts + 1L) + n_opts] <- other_row$upper
+      mat[item, opt_start + 2L * (n_opts + 1L) + n_opts] <- other_row$lower
     }
   }
 
@@ -246,7 +253,7 @@ write_ctt_analysis_sheet <- function(
   # 樣式設定
   if (n_items > 0L) {
     data_rows <- seq.int(data_row_start, data_row_end)
-    style2dec <- openxlsx::createStyle(numFmt = "0.00", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    style2dec <- openxlsx::createStyle(numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     openxlsx::addStyle(wb, sheet_name, style2dec, rows = data_rows, cols = c(2:3, seq.int(6L, n_cols)), gridExpand = TRUE)
 
     center_style <- openxlsx::createStyle(halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
@@ -260,12 +267,12 @@ write_ctt_analysis_sheet <- function(
   header_center_style <- openxlsx::createStyle(halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
   openxlsx::addStyle(wb, sheet_name, header_center_style, rows = 1:3, cols = seq_len(n_cols), gridExpand = TRUE)
 
-  openxlsx::setColWidths(wb, sheet_name, cols = seq_len(n_cols), widths = 10)
+  openxlsx::setColWidths(wb, sheet_name, cols = seq_len(n_cols), widths = "auto")
   openxlsx::setRowHeights(wb, sheet_name, rows = 1:3, heights = 30)
 
   # 黃底標記正確選項
   if (n_items > 0L) {
-    yellow_fill <- openxlsx::createStyle(fgFill = "#FFF2CC", numFmt = "0.00", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    yellow_fill <- openxlsx::createStyle(fgFill = "#FFF2CC", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     for (item in seq_len(n_items)) {
       correct_val <- as.character(mat[item, 5])
       if (is.na(correct_val) || correct_val == "") next
@@ -290,7 +297,7 @@ write_ctt_analysis_sheet <- function(
     }
 
     # 鑑別度紅字
-    disc_red_font <- openxlsx::createStyle(fontColour = "#FF0000", textDecoration = "bold", numFmt = "0.00", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    disc_red_font <- openxlsx::createStyle(fontColour = "#FF0000", textDecoration = "bold", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     for (i in seq_len(n_items)) {
       if (!is.na(disc_values[i]) && disc_values[i] < 0.15) {
         openxlsx::addStyle(wb, sheet_name, disc_red_font, rows = i + 3L, cols = 2, gridExpand = TRUE)
@@ -445,7 +452,7 @@ write_level_ctt_excel <- function(
 
   if (n_items > 0L) {
     data_rows <- seq.int(4L, 3L + n_items)
-    style_num <- openxlsx::createStyle(numFmt = "0.00", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    style_num <- openxlsx::createStyle(numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     openxlsx::addStyle(wb, sheet_name, style_num, rows = data_rows, cols = c(2:3, seq.int(5L, n_cols)), gridExpand = TRUE)
 
     style_center <- openxlsx::createStyle(halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
@@ -454,7 +461,7 @@ write_level_ctt_excel <- function(
     openxlsx::setRowHeights(wb, sheet_name, rows = data_rows, heights = 18)
   }
 
-  openxlsx::setColWidths(wb, sheet_name, cols = seq_len(n_cols), widths = 8)
+  openxlsx::setColWidths(wb, sheet_name, cols = seq_len(n_cols), widths = "auto")
   openxlsx::setRowHeights(wb, sheet_name, rows = 1:3, heights = 25)
 
   openxlsx::saveWorkbook(wb, output_path, overwrite = TRUE)

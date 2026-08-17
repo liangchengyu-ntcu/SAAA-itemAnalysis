@@ -372,7 +372,7 @@ calculate_level_ctt_analysis <- function(
     # 通過率與鑑別度
     is_correct <- if (is_dichotomous) (!is.na(item_resp) & item_resp == "1") else (!is.na(item_resp) & item_resp %in% item_key_vec)
     pass_rate <- mean(is_correct, na.rm = TRUE)
-    mat$通過率[item] <- round(pass_rate, 4L)
+    mat$通過率[item] <- pass_rate
 
     # 傳統 CTT 27% 鑑別度
     x_27 <- round(n_total_valid * 0.27, 0)
@@ -385,7 +385,7 @@ calculate_level_ctt_analysis <- function(
     u_rate <- mean(is_correct[u_mask], na.rm = TRUE)
     l_rate <- mean(is_correct[l_mask], na.rm = TRUE)
     disc_val <- u_rate - l_rate
-    mat$鑑別度[item] <- round(disc_val, 4L)
+    mat$鑑別度[item] <- disc_val
 
     # 算 4 組選答百分比：全體、精熟、基礎、待加強
     groups_list <- list(
@@ -404,12 +404,12 @@ calculate_level_ctt_analysis <- function(
       for (k in seq_along(opt_labels)) {
         opt <- opt_labels[k]
         rate <- if (grp_n > 0L) sum(!is.na(sub_resp) & sub_resp == opt) / grp_n else 0
-        mat[item, col_idx] <- round(rate, 4L)
+        mat[item, col_idx] <- rate
         col_idx <- col_idx + 1L
       }
       # 其它
       other_rate <- if (grp_n > 0L) sum(is.na(sub_resp) | !sub_resp %in% opt_labels) / grp_n else 0
-      mat[item, col_idx] <- round(other_rate, 4L)
+      mat[item, col_idx] <- other_rate
       col_idx <- col_idx + 1L
     }
   }
