@@ -417,7 +417,9 @@ write_level_ctt_sheet <- function(
   if (n_cols >= 29L) {
     header1[29] <- paste0("精熟門檻：≥", if (!is.na(m_cutoff)) m_cutoff else "N/A", " 題")
   }
-  if (n_cols >= 30L) {
+  if (n_cols >= 32L) {
+    header1[32] <- paste0("基礎門檻：≥", if (!is.na(b_cutoff)) b_cutoff else "N/A", " 題")
+  } else if (n_cols >= 30L) {
     header1[30] <- paste0("基礎門檻：≥", if (!is.na(b_cutoff)) b_cutoff else "N/A", " 題")
   }
   openxlsx::writeData(wb, sheet_name, t(header1), startRow = 1, colNames = FALSE)
@@ -464,16 +466,18 @@ write_level_ctt_sheet <- function(
   # 合併儲存格
   # -------------------------------------------------------------------------
   merge_step <- n_opts + 1L
-  n_info_blocks <- n_cols %/% 4L
-  for (blk in 0:(n_info_blocks - 1L)) {
-    c_from <- 1L + blk * 4L
-    c_to   <- min(c_from + 3L, n_cols)
-    if (c_to > c_from) openxlsx::mergeCells(wb, sheet_name, cols = c_from:c_to, rows = 1)
-  }
-  if (n_cols %% 4L > 0L) {
-    c_rem_from <- 1L + n_info_blocks * 4L
-    openxlsx::mergeCells(wb, sheet_name, cols = c_rem_from:n_cols, rows = 1)
-  }
+
+  # 第 1 列頂部資訊依各區塊獨立合併
+  openxlsx::mergeCells(wb, sheet_name, cols = 1:4, rows = 1)
+  if (n_cols >= 8L)  openxlsx::mergeCells(wb, sheet_name, cols = 5:8, rows = 1)
+  if (n_cols >= 12L) openxlsx::mergeCells(wb, sheet_name, cols = 9:12, rows = 1)
+  if (n_cols >= 16L) openxlsx::mergeCells(wb, sheet_name, cols = 13:16, rows = 1)
+  if (n_cols >= 20L) openxlsx::mergeCells(wb, sheet_name, cols = 17:20, rows = 1)
+  if (n_cols >= 24L) openxlsx::mergeCells(wb, sheet_name, cols = 21:24, rows = 1)
+  if (n_cols >= 28L) openxlsx::mergeCells(wb, sheet_name, cols = 25:28, rows = 1)
+  if (n_cols >= 31L) openxlsx::mergeCells(wb, sheet_name, cols = 29:31, rows = 1)
+  if (n_cols >= 32L) openxlsx::mergeCells(wb, sheet_name, cols = 32:n_cols, rows = 1)
+
 
   for (col_fix in 1:4) {
     openxlsx::mergeCells(wb, sheet_name, cols = col_fix, rows = 2:3)
