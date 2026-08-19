@@ -263,9 +263,130 @@ calculate_ctt_analysis <- function(
   )
 }
 
+# 核心單一子集等級試題分析計算函式
+calculate_single_level_ctt_core <- function(
+  item_mat_valid,
+  scored_mat_valid,
+  scores_valid,
+  scored_mask,
+  key_split,
+  key_vector,
+  is_dichotomous,
+  opt_labels,
+  mastery_cutoff,
+  basic_cutoff,
+  city_label = "全體"
+) {
+  n_total_valid <- nrow(item_mat_valid)
+  n_items <- ncol(item_mat_valid)
+
+  if (n_total_valid == 0L) {
+    return(NULL)
+  }
+
+  level_group <- rep("待加強", n_total_valid)
+  level_group[scores_valid >= basic_cutoff] <- "基礎"
+  level_group[scores_valid >= mastery_cutoff] <- "精熟"
+  level_counts <- table(factor(level_group, levels = c("精熟", "基礎", "待加強")))
+
+  # ---------------------------------------------------------------------------
+  # 該分組之高低分組 27% 演算法
+  # ---------------------------------------------------------------------------
+  x_27 <- round(n_total_valid * 0.27, 0)
+  if (x_27 < 1L) x_27 <- 1L
+  sorted_s <- sort(scores_valid)
+  t_low <- sorted_s[x_27]
+  t_high <- sorted_s[n_total_valid - x_27 + 1L]
+  upper_mask <- scores_valid >= t_high
+  lower_mask <- scores_valid <= t_low
+
+  n_opts <- length(opt_labels)
+  n_cols <- 4L + 6L * (n_opts + 1L)
+
+  col_names_level <- c(
+    "題號", "鑑別度", "答對率", "正確答案",
+    paste0("全體_", c(opt_labels, "其它")),
+    paste0("精熟_", c(opt_labels, "其它")),
+    paste0("基礎_", c(opt_labels, "其它")),
+    paste0("待加強_", c(opt_labels, "其它")),
+    paste0("高分組_", c(opt_labels, "其它")),
+    paste0("低分組_", c(opt_labels, "其它"))
+  )
+
+  mat <- data.frame(
+    matrix(NA_real_, nrow = n_items, ncol = n_cols),
+    stringsAsFactors = FALSE
+  )
+  colnames(mat) <- col_names_level
+  mat$題號 <- seq_len(n_items)
+
+  for (item in seq_len(n_items)) {
+    if (!scored_mask[item]) {
+      mat$正確答案[item] <- "該題不予計分"
+      next
+    }
+
+    item_resp <- item_mat_valid[, item]
+    item_key_vec <- key_split[[item]]
+    correct_key <- if (is_dichotomous) key_vector[item] else paste(item_key_vec, collapse = "、")
+    mat$正確答案[item] <- correct_key
+
+    # 答對率（該群體有效學生）
+    is_correct <- if (is_dichotomous) (!is.na(item_resp) & item_resp == "1") else (!is.na(item_resp) & item_resp %in% item_key_vec)
+    pass_rate <- mean(is_correct, na.rm = TRUE)
+    mat$答對率[item] <- pass_rate
+
+    # 鑑別度（該群體高分組 - 低分組答對率）
+    u_rate <- if (sum(upper_mask) > 0) mean(is_correct[upper_mask], na.rm = TRUE) else 0
+    l_rate <- if (sum(lower_mask) > 0) mean(is_correct[lower_mask], na.rm = TRUE) else 0
+    mat$鑑別度[item] <- u_rate - l_rate
+
+    # 6 組選答百分比：全體、精熟、基礎、待加強、高分組（前27%）、低分組（後27%）
+    groups_list <- list(
+      "全體"   = rep(TRUE, n_total_valid),
+      "精熟"   = level_group == "精熟",
+      "基礎"   = level_group == "基礎",
+      "待加強" = level_group == "待加強",
+      "高分組" = upper_mask,
+      "低分組" = lower_mask
+    )
+
+    col_idx <- 5L
+    for (grp_name in c("全體", "精熟", "基礎", "待加強", "高分組", "低分組")) {
+      grp_mask <- groups_list[[grp_name]]
+      grp_n <- sum(grp_mask, na.rm = TRUE)
+      sub_resp <- item_resp[grp_mask]
+
+      for (k in seq_along(opt_labels)) {
+        opt <- opt_labels[k]
+        rate <- if (grp_n > 0L) sum(!is.na(sub_resp) & sub_resp == opt) / grp_n else 0
+        mat[item, col_idx] <- rate
+        col_idx <- col_idx + 1L
+      }
+      other_rate <- if (grp_n > 0L) sum(is.na(sub_resp) | !sub_resp %in% opt_labels) / grp_n else 0
+      mat[item, col_idx] <- other_rate
+      col_idx <- col_idx + 1L
+    }
+  }
+
+  list(
+    level_summary_table = mat,
+    level_counts = level_counts,
+    mastery_cutoff = mastery_cutoff,
+    basic_cutoff = basic_cutoff,
+    n_total_valid = n_total_valid,
+    n_items = n_items,
+    opt_labels = opt_labels,
+    upper_n = sum(upper_mask),
+    lower_n = sum(lower_mask),
+    city_name = city_label
+  )
+}
+
 # -----------------------------------------------------------------------------
 # 縣市標準三等級 (精熟 / 基礎 / 待加強) 試題分析計算引擎
 # 對齊國立臺中教育大學測驗統計中心 / 縣市學檢標準規範
+# 同時支援「總體 (全體)」與「各縣市獨立」之多層級試題分析
 # -----------------------------------------------------------------------------
 calculate_level_ctt_analysis <- function(
   item_matrix,
@@ -275,7 +396,8 @@ calculate_level_ctt_analysis <- function(
   city_name = "未知縣市",
   absent_flag = NULL,
   mastery_cutoff = NULL,
-  basic_cutoff = NULL
+  basic_cutoff = NULL,
+  city_vector = NULL
 ) {
   n_total <- nrow(item_matrix)
   n_items <- ncol(item_matrix)
@@ -330,108 +452,71 @@ calculate_level_ctt_analysis <- function(
   scores_valid <- rowSums(scored_mat_valid[, scored_mask, drop = FALSE] == 1L, na.rm = TRUE)
   n_total_valid <- nrow(item_mat_valid)
 
-  # 依據標準門檻分類學生三等級：精熟、基礎、待加強
-  level_group <- rep("待加強", n_total_valid)
-  level_group[scores_valid >= basic_cutoff] <- "基礎"
-  level_group[scores_valid >= mastery_cutoff] <- "精熟"
-
-  level_counts <- table(factor(level_group, levels = c("精熟", "基礎", "待加強")))
-
   grade_num <- suppressWarnings(as.integer(grade))
   opt_labels <- if (is_dichotomous) c("1", "0") else if (!is.na(grade_num) && grade_num >= 7L) c("A", "B", "C", "D") else c("1", "2", "3", "4")
 
-  # ---------------------------------------------------------------------------
-  # 高低分組 27% 演算法（與傳統 CTT 一致）
-  # ---------------------------------------------------------------------------
-  x_27 <- round(n_total_valid * 0.27, 0)
-  if (x_27 < 1L) x_27 <- 1L
-  sorted_s <- sort(scores_valid)
-  t_low <- sorted_s[x_27]
-  t_high <- sorted_s[n_total_valid - x_27 + 1L]
-  upper_mask <- scores_valid >= t_high
-  lower_mask <- scores_valid <= t_low
-
-  # 構建對齊縣市標準格式的六組試題分析 Data Frame
-  # 6 組：全體、精熟、基礎、待加強、高分組（前27%）、低分組（後27%）
-  n_opts <- length(opt_labels)
-  n_cols <- 4L + 6L * (n_opts + 1L)
-
-  col_names_level <- c(
-    "題號", "鑑別度", "答對率", "正確答案",
-    paste0("全體_", c(opt_labels, "其它")),
-    paste0("精熟_", c(opt_labels, "其它")),
-    paste0("基礎_", c(opt_labels, "其它")),
-    paste0("待加強_", c(opt_labels, "其它")),
-    paste0("高分組_", c(opt_labels, "其它")),
-    paste0("低分組_", c(opt_labels, "其它"))
+  # 1. 計算全體（總體）試題分析
+  overall_res <- calculate_single_level_ctt_core(
+    item_mat_valid = item_mat_valid,
+    scored_mat_valid = scored_mat_valid,
+    scores_valid = scores_valid,
+    scored_mask = scored_mask,
+    key_split = key_split,
+    key_vector = key_vector,
+    is_dichotomous = is_dichotomous,
+    opt_labels = opt_labels,
+    mastery_cutoff = mastery_cutoff,
+    basic_cutoff = basic_cutoff,
+    city_label = "全體"
   )
 
-  mat <- data.frame(
-    matrix(NA_real_, nrow = n_items, ncol = n_cols),
-    stringsAsFactors = FALSE
-  )
-  colnames(mat) <- col_names_level
-  mat$題號 <- seq_len(n_items)
+  # 2. 依縣市（City）進行獨立分組試題分析
+  by_city_list <- list()
+  distinct_cities <- character(0)
 
-  for (item in seq_len(n_items)) {
-    if (!scored_mask[item]) {
-      mat$正確答案[item] <- "該題不予計分"
-      next
-    }
+  if (!is.null(city_vector) && length(city_vector) == n_total) {
+    valid_cities <- trimws(as.character(city_vector[valid_rows]))
+    valid_cities_clean <- valid_cities[nzchar(valid_cities) & !is.na(valid_cities) & valid_cities != "NA"]
+    distinct_cities <- sort(unique(valid_cities_clean))
 
-    item_resp <- item_mat_valid[, item]
-    item_key_vec <- key_split[[item]]
-    correct_key <- if (is_dichotomous) key_vector[item] else paste(item_key_vec, collapse = "、")
-    mat$正確答案[item] <- correct_key
-
-    # 答對率（全體有效學生）
-    is_correct <- if (is_dichotomous) (!is.na(item_resp) & item_resp == "1") else (!is.na(item_resp) & item_resp %in% item_key_vec)
-    pass_rate <- mean(is_correct, na.rm = TRUE)
-    mat$答對率[item] <- pass_rate
-
-    # 鑑別度（高分組 - 低分組答對率）
-    u_rate <- mean(is_correct[upper_mask], na.rm = TRUE)
-    l_rate <- mean(is_correct[lower_mask], na.rm = TRUE)
-    mat$鑑別度[item] <- u_rate - l_rate
-
-    # 算 6 組選答百分比：全體、精熟、基礎、待加強、高分組（前27%）、低分組（後27%）
-    groups_list <- list(
-      "全體"   = rep(TRUE, n_total_valid),
-      "精熟"   = level_group == "精熟",
-      "基礎"   = level_group == "基礎",
-      "待加強" = level_group == "待加強",
-      "高分組" = upper_mask,
-      "低分組" = lower_mask
-    )
-
-    col_idx <- 5L
-    for (grp_name in c("全體", "精熟", "基礎", "待加強", "高分組", "低分組")) {
-      grp_mask <- groups_list[[grp_name]]
-      grp_n <- sum(grp_mask, na.rm = TRUE)
-      sub_resp <- item_resp[grp_mask]
-
-      for (k in seq_along(opt_labels)) {
-        opt <- opt_labels[k]
-        rate <- if (grp_n > 0L) sum(!is.na(sub_resp) & sub_resp == opt) / grp_n else 0
-        mat[item, col_idx] <- rate
-        col_idx <- col_idx + 1L
+    for (c_name in distinct_cities) {
+      c_mask <- valid_cities == c_name
+      if (sum(c_mask) >= 1L) {
+        c_res <- calculate_single_level_ctt_core(
+          item_mat_valid = item_mat_valid[c_mask, , drop = FALSE],
+          scored_mat_valid = scored_mat_valid[c_mask, , drop = FALSE],
+          scores_valid = scores_valid[c_mask],
+          scored_mask = scored_mask,
+          key_split = key_split,
+          key_vector = key_vector,
+          is_dichotomous = is_dichotomous,
+          opt_labels = opt_labels,
+          mastery_cutoff = mastery_cutoff,
+          basic_cutoff = basic_cutoff,
+          city_label = c_name
+        )
+        if (!is.null(c_res)) {
+          by_city_list[[c_name]] <- c_res
+        }
       }
-      # 其它（未選標準選項或作答空白）
-      other_rate <- if (grp_n > 0L) sum(is.na(sub_resp) | !sub_resp %in% opt_labels) / grp_n else 0
-      mat[item, col_idx] <- other_rate
-      col_idx <- col_idx + 1L
     }
   }
 
+  # 回傳結構相容原欄位，並擴充 overall、by_city 與 cities
   list(
-    level_summary_table = mat,
-    level_counts = level_counts,
+    level_summary_table = overall_res$level_summary_table,
+    level_counts = overall_res$level_counts,
     mastery_cutoff = mastery_cutoff,
     basic_cutoff = basic_cutoff,
-    n_total_valid = n_total_valid,
+    n_total_valid = overall_res$n_total_valid,
     n_items = n_items,
     opt_labels = opt_labels,
-    upper_n = sum(upper_mask),
-    lower_n = sum(lower_mask)
+    upper_n = overall_res$upper_n,
+    lower_n = overall_res$lower_n,
+    city_name = if (length(distinct_cities) == 1L) distinct_cities[1L] else "全體",
+    overall = overall_res,
+    by_city = by_city_list,
+    cities = distinct_cities
   )
 }
+

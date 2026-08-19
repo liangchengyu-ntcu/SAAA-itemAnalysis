@@ -672,17 +672,22 @@ analyze_job <- function(job) {
     absent_flag = prepared$absent_flag
   )
 
-  # 自動從作答檔的縣市欄擷取縣市名稱（取出現次數最多者）
-  city_name <- tryCatch({
+  # 擷取完整縣市向量
+  city_vector <- tryCatch({
     city_col <- prepared$info_columns[["city"]]
     if (!is.na(city_col) && city_col <= ncol(prepared$info_data)) {
-      city_vals <- trimws(as.character(prepared$info_data[[city_col]]))
-      city_vals <- city_vals[nzchar(city_vals) & !is.na(city_vals)]
-      if (length(city_vals) > 0L) names(which.max(table(city_vals))) else "未知縣市"
+      trimws(as.character(prepared$info_data[[city_col]]))
     } else {
-      "未知縣市"
+      NULL
     }
-  }, error = function(e) "未知縣市")
+  }, error = function(e) NULL)
+
+  city_name <- if (!is.null(city_vector)) {
+    c_vals <- city_vector[nzchar(city_vector) & !is.na(city_vector) & city_vector != "NA"]
+    if (length(c_vals) > 0L) names(which.max(table(c_vals))) else "未知縣市"
+  } else {
+    "未知縣市"
+  }
 
   level_ctt_analysis <- calculate_level_ctt_analysis(
     item_matrix = prepared$item_matrix,
@@ -692,7 +697,8 @@ analyze_job <- function(job) {
     city_name = city_name,
     absent_flag = prepared$absent_flag,
     mastery_cutoff = prepared$job$mastery_cutoff,
-    basic_cutoff = prepared$job$basic_cutoff
+    basic_cutoff = prepared$job$basic_cutoff,
+    city_vector = city_vector
   )
 
   list(

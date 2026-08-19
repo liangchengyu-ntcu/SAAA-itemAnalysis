@@ -341,18 +341,18 @@ write_ctt_analysis_by_subject <- function(
   output_path
 }
 
-# 4. 寫出縣市標準三等級 (精熟/基礎/待加強) 試題分析 Excel（完全對齊縣市規範，含高低分組與標準附註）
-write_level_ctt_excel <- function(
+# 4. 核心單工作表縣市三等級試題分析繪製
+write_level_ctt_sheet <- function(
+  wb,
+  sheet_name,
   level_ctt_res,
   subject_label,
   grade,
   year,
-  output_path,
   city_name = NULL
 ) {
-  if (is.null(level_ctt_res)) {
-    stop("level_ctt_res is NULL")
-  }
+  if (is.null(level_ctt_res)) return()
+
   mat <- level_ctt_res$level_summary_table
   n_items <- as.integer(if (!is.null(level_ctt_res$n_items)) level_ctt_res$n_items else if (!is.null(mat)) nrow(mat) else 0L)
   opt_labels <- if (!is.null(level_ctt_res$opt_labels)) level_ctt_res$opt_labels else c("1", "2", "3", "4")
@@ -380,8 +380,6 @@ write_level_ctt_excel <- function(
   u_pct <- pct_fmt(u_count, n_total)
   l_pct <- pct_fmt(l_count, n_total)
 
-  wb <- openxlsx::createWorkbook()
-  sheet_name <- paste0(grade, "年級")
   openxlsx::addWorksheet(wb, sheet_name)
 
   # -------------------------------------------------------------------------
@@ -436,10 +434,9 @@ write_level_ctt_excel <- function(
   openxlsx::writeData(wb, sheet_name, t(header3), startRow = 3, colNames = FALSE)
 
   # -------------------------------------------------------------------------
-  # 資料列（trim 舊 mat 欄，確保欄數吻合）
+  # 資料列
   # -------------------------------------------------------------------------
   if (!is.null(mat) && nrow(mat) > 0L) {
-    # mat 可能有 6 組（新版）或 4 組（舊版）；自動補齊至 n_cols
     if (ncol(mat) < n_cols) {
       extra <- matrix(NA_real_, nrow = nrow(mat), ncol = n_cols - ncol(mat))
       mat_out <- cbind(mat, extra)
@@ -452,7 +449,6 @@ write_level_ctt_excel <- function(
   # -------------------------------------------------------------------------
   # 合併儲存格
   # -------------------------------------------------------------------------
-  # 第 1 列：每 (n_opts+1) 欄一組
   merge_step <- n_opts + 1L
   n_info_blocks <- n_cols %/% 4L
   for (blk in 0:(n_info_blocks - 1L)) {
@@ -465,12 +461,10 @@ write_level_ctt_excel <- function(
     openxlsx::mergeCells(wb, sheet_name, cols = c_rem_from:n_cols, rows = 1)
   }
 
-  # 表頭第 2-3 列固定欄合併
   for (col_fix in 1:4) {
     openxlsx::mergeCells(wb, sheet_name, cols = col_fix, rows = 2:3)
   }
 
-  # 6 組各自合併第 2 列
   col_start <- 5L
   for (grp in 1:n_groups) {
     c_from <- col_start + (grp - 1L) * merge_step
@@ -545,10 +539,83 @@ write_level_ctt_excel <- function(
     openxlsx::writeData(wb, sheet_name, note_df, startRow = notes_start_row + i - 1L, colNames = FALSE)
   }
 
-  # 標題行粗體
   bold_style <- openxlsx::createStyle(textDecoration = "bold")
   openxlsx::addStyle(wb, sheet_name, bold_style, rows = notes_start_row, cols = 1L)
+}
+
+# 5. 寫出縣市標準三等級 (精熟/基礎/待加強) 試題分析 Excel（支援多縣市多分頁或指定縣市）
+write_level_ctt_excel <- function(
+  level_ctt_res,
+  subject_label,
+  grade,
+  year,
+  output_path,
+  city_name = NULL
+) {
+  if (is.null(level_ctt_res)) {
+    stop("level_ctt_res is NULL")
+  }
+
+  wb <- openxlsx::createWorkbook()
+
+  has_by_city <- !is.null(level_ctt_res$by_city) && length(level_ctt_res$by_city) > 0L
+
+  if (is.null(city_name) || city_name == "ALL" || city_name == "全部") {
+    # 預設多工作表：Sheet 1「總體」 + 各縣市獨立分頁
+    overall_data <- if (!is.null(level_ctt_res$overall)) level_ctt_res$overall else level_ctt_res
+    write_level_ctt_sheet(
+      wb = wb,
+      sheet_name = "總體",
+      level_ctt_res = overall_data,
+      subject_label = subject_label,
+      grade = grade,
+      year = year,
+      city_name = "總體"
+    )
+
+    if (has_by_city) {
+      for (c_name in names(level_ctt_res$by_city)) {
+        write_level_ctt_sheet(
+          wb = wb,
+          sheet_name = substring(c_name, 1, 31),
+          level_ctt_res = level_ctt_res$by_city[[c_name]],
+          subject_label = subject_label,
+          grade = grade,
+          year = year,
+          city_name = c_name
+        )
+      }
+    }
+  } else if (city_name %in% c("overall", "全體", "總體")) {
+    overall_data <- if (!is.null(level_ctt_res$overall)) level_ctt_res$overall else level_ctt_res
+    write_level_ctt_sheet(
+      wb = wb,
+      sheet_name = paste0(grade, "年級_總體"),
+      level_ctt_res = overall_data,
+      subject_label = subject_label,
+      grade = grade,
+      year = year,
+      city_name = "總體"
+    )
+  } else {
+    # 指定單一縣市
+    city_data <- if (has_by_city && city_name %in% names(level_ctt_res$by_city)) {
+      level_ctt_res$by_city[[city_name]]
+    } else {
+      level_ctt_res
+    }
+    write_level_ctt_sheet(
+      wb = wb,
+      sheet_name = paste0(grade, "年級_", city_name),
+      level_ctt_res = city_data,
+      subject_label = subject_label,
+      grade = grade,
+      year = year,
+      city_name = city_name
+    )
+  }
 
   openxlsx::saveWorkbook(wb, output_path, overwrite = TRUE)
   output_path
 }
+

@@ -65,6 +65,12 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
         )
       }
       if (is.null(selected$level_ctt_analysis) && !is.null(prep)) {
+        city_col <- prep$info_columns[["city"]]
+        c_vec <- if (!is.na(city_col) && city_col <= ncol(prep$info_data)) {
+          trimws(as.character(prep$info_data[[city_col]]))
+        } else {
+          NULL
+        }
         selected$level_ctt_analysis <- calculate_level_ctt_analysis(
           item_matrix = prep$item_matrix,
           key_vector = prep$key_vector,
@@ -72,7 +78,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           subject_code = prep$job$subject_code,
           absent_flag = prep$absent_flag,
           mastery_cutoff = prep$job$mastery_cutoff,
-          basic_cutoff = prep$job$basic_cutoff
+          basic_cutoff = prep$job$basic_cutoff,
+          city_vector = c_vec
         )
       }
       selected
@@ -85,6 +92,42 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       selected <- result$results[[input$selected_job]]
       shiny::req(!is.null(selected))
       ensure_ctt_analysis(selected)
+    })
+
+    # 當選取工作項目或計算結果變化時，動態更新「分析範圍 / 縣市」選單
+    shiny::observe({
+      selected <- selected_job_result()
+      shiny::req(!is.null(selected))
+      level_ctt <- selected$level_ctt_analysis
+      cities <- if (!is.null(level_ctt$cities)) level_ctt$cities else character(0)
+
+      scope_choices <- c("全體 (總體)" = "overall")
+      if (length(cities) > 0L) {
+        scope_choices <- c(scope_choices, stats::setNames(cities, cities))
+      }
+      curr_sel <- input$selected_scope
+      new_sel <- if (!is.null(curr_sel) && curr_sel %in% c("overall", cities)) curr_sel else "overall"
+      shiny::updateSelectInput(
+        session,
+        "selected_scope",
+        choices = scope_choices,
+        selected = new_sel
+      )
+    })
+
+    # 取得當前所選範圍（總體或特定縣市）之三等級分析結果
+    effective_level_ctt <- shiny::reactive({
+      selected <- selected_job_result()
+      shiny::req(!is.null(selected))
+      level_ctt <- selected$level_ctt_analysis
+      if (is.null(level_ctt)) return(NULL)
+
+      scope <- input$selected_scope
+      if (is.null(scope) || scope == "overall" || !scope %in% names(level_ctt$by_city)) {
+        if (!is.null(level_ctt$overall)) level_ctt$overall else level_ctt
+      } else {
+        level_ctt$by_city[[scope]]
+      }
     })
 
     output$empty_state <- shiny::renderUI({
@@ -114,14 +157,33 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
             ns("ctt_mode"),
             "分析模式",
             choices = c(
-              "傳統 27% 高低分組" = "ctt_27",
-              "標準三等級 (精熟/基礎/待加強)" = "level_3"
+              "標準三等級 (精熟/基礎/待加強)" = "level_3",
+              "傳統 27% 高低分組" = "ctt_27"
             ),
-            selected = "ctt_27"
+            selected = "level_3"
           ),
-          shiny::tags$hr(),
+          shiny::conditionalPanel(
+            condition = sprintf("input['%s'] === 'level_3'", ns("ctt_mode")),
+            shiny::tags$hr(),
+            shiny::selectInput(
+              ns("selected_scope"),
+              "選擇分析範圍 / 縣市",
+              choices = c("全體 (總體)" = "overall")
+            ),
+            shiny::downloadButton(
+              ns("download_all_level_ctt_excel"),
+              "下載全部縣市 (多工作表 .xlsx)",
+              class = "btn-success w-100 mb-2"
+            ),
+            shiny::downloadButton(
+              ns("download_level_ctt_excel"),
+              "下載目前所選縣市 (.xlsx)",
+              class = "btn-outline-success w-100"
+            )
+          ),
           shiny::conditionalPanel(
             condition = sprintf("input['%s'] === 'ctt_27'", ns("ctt_mode")),
+            shiny::tags$hr(),
             shiny::downloadButton(
               ns("download_ctt_excel"),
               "下載 CTT 試題分析總表 (.xlsx)",
@@ -131,14 +193,6 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
               ns("download_distractor_excel"),
               "下載誘答力明細表 (.xlsx)",
               class = "btn-outline-primary w-100"
-            )
-          ),
-          shiny::conditionalPanel(
-            condition = sprintf("input['%s'] === 'level_3'", ns("ctt_mode")),
-            shiny::downloadButton(
-              ns("download_level_ctt_excel"),
-              "下載縣市三等級試題分析 (.xlsx)",
-              class = "btn-success w-100"
             )
           )
         ),
@@ -184,7 +238,9 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
     # 動態標題文字
     output$table_title_text <- shiny::renderText({
       if (identical(input$ctt_mode, "level_3")) {
-        "📊 縣市標準三等級（精熟 / 基礎 / 待加強）試題分析表"
+        scope <- input$selected_scope
+        scope_label <- if (is.null(scope) || scope == "overall") "全體 / 總體" else scope
+        sprintf("📊 縣市標準三等級試題分析表（%s）", scope_label)
       } else {
         "📊 傳統 27% 試題品質診斷總表"
       }
@@ -200,12 +256,12 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
 
     # 頂部動態指標卡
     output$ctt_metrics <- shiny::renderUI({
-      selected <- selected_job_result()
-      ctt <- selected$ctt_analysis
-      level_ctt <- selected$level_ctt_analysis
       mode <- input$ctt_mode
 
-      if (identical(mode, "level_3") && !is.null(level_ctt)) {
+      if (identical(mode, "level_3")) {
+        level_ctt <- effective_level_ctt()
+        if (is.null(level_ctt)) return(NULL)
+
         counts <- level_ctt$level_counts
         m_count <- unname(counts["精熟"])
         b_count <- unname(counts["基礎"])
@@ -223,9 +279,11 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
         u_pct <- pct_fmt(u_count, total)
         l_pct <- pct_fmt(l_count, total)
 
+        scope_label <- if (is.null(input$selected_scope) || input$selected_scope == "overall") "總體" else input$selected_scope
+
         shiny::div(
           class = "metric-grid",
-          metric_tile("有效樣本人數", format(total, big.mark = ",")),
+          metric_tile(sprintf("有效樣本人數 (%s)", scope_label), format(total, big.mark = ",")),
           metric_tile("精熟人數 (比例)", sprintf("%s (%s)", format(m_count, big.mark = ","), m_pct)),
           metric_tile("基礎人數 (比例)", sprintf("%s (%s)", format(b_count, big.mark = ","), b_pct)),
           metric_tile("待加強人數 (比例)", sprintf("%s (%s)", format(i_count, big.mark = ","), i_pct)),
@@ -235,6 +293,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           metric_tile("基礎門檻", sprintf("≥ %d 題", level_ctt$basic_cutoff))
         )
       } else {
+        selected <- selected_job_result()
+        ctt <- selected$ctt_analysis
         summary_df <- ctt$item_summary
         alpha_val <- if (!is.null(ctt$alpha) && !is.na(ctt$alpha)) sprintf("%.2f", ctt$alpha) else "N/A"
         n_items <- ctt$n_items
@@ -259,10 +319,11 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
 
     # 動態主表格（27% 或 三等級）
     output$main_ctt_table <- shiny::renderTable({
-      selected <- selected_job_result()
       if (identical(input$ctt_mode, "level_3")) {
-        selected$level_ctt_analysis$level_summary_table
+        curr_res <- effective_level_ctt()
+        if (!is.null(curr_res)) curr_res$level_summary_table else NULL
       } else {
+        selected <- selected_job_result()
         selected$ctt_analysis$item_summary
       }
     }, striped = TRUE, hover = TRUE, bordered = TRUE, spacing = "s")
@@ -328,18 +389,44 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
 
-    # 下載縣市三等級試題分析 Excel（對齊簡報截圖）
-    output$download_level_ctt_excel <- shiny::downloadHandler(
+    # 下載全部縣市三等級試題分析 Excel（含總體 + 各縣市多工作表）
+    output$download_all_level_ctt_excel <- shiny::downloadHandler(
       filename = function() {
         selected <- selected_job_result()
         job <- get_job_info(selected)
-        sprintf("%s_%s%s_縣市三等級試題分析.xlsx", job$year, job$subject_code, job$grade)
+        sprintf("%s_%s%s_全部縣市試題分析.xlsx", job$year, job$subject_code, job$grade)
       },
       content = function(file) {
         selected <- selected_job_result()
         job <- get_job_info(selected)
         level_ctt <- selected$level_ctt_analysis
-        city <- if (!is.null(selected$city_name)) selected$city_name else NULL
+        write_level_ctt_excel(
+          level_ctt_res = level_ctt,
+          subject_label = job$subject_name,
+          grade = job$grade,
+          year = job$year,
+          output_path = file,
+          city_name = "ALL"
+        )
+      },
+      contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    )
+
+    # 下載當前所選縣市三等級試題分析 Excel
+    output$download_level_ctt_excel <- shiny::downloadHandler(
+      filename = function() {
+        selected <- selected_job_result()
+        job <- get_job_info(selected)
+        scope <- input$selected_scope
+        scope_name <- if (is.null(scope) || scope == "overall") "總體" else scope
+        sprintf("%s_%s%s_%s_試題分析.xlsx", job$year, job$subject_code, job$grade, scope_name)
+      },
+      content = function(file) {
+        selected <- selected_job_result()
+        job <- get_job_info(selected)
+        level_ctt <- selected$level_ctt_analysis
+        scope <- input$selected_scope
+        city <- if (is.null(scope) || scope == "overall") "總體" else scope
         write_level_ctt_excel(
           level_ctt_res = level_ctt,
           subject_label = job$subject_name,
