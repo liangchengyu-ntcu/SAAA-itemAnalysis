@@ -272,6 +272,7 @@ calculate_level_ctt_analysis <- function(
   key_vector,
   grade,
   subject_code,
+  city_name = "未知縣市",
   absent_flag = NULL,
   mastery_cutoff = NULL,
   basic_cutoff = NULL
@@ -339,16 +340,30 @@ calculate_level_ctt_analysis <- function(
   grade_num <- suppressWarnings(as.integer(grade))
   opt_labels <- if (is_dichotomous) c("1", "0") else if (!is.na(grade_num) && grade_num >= 7L) c("A", "B", "C", "D") else c("1", "2", "3", "4")
 
-  # 構建對齊簡報截圖美學格式的縣市三等級試題分析 Data Frame
+  # ---------------------------------------------------------------------------
+  # 高低分組 27% 演算法（與傳統 CTT 一致）
+  # ---------------------------------------------------------------------------
+  x_27 <- round(n_total_valid * 0.27, 0)
+  if (x_27 < 1L) x_27 <- 1L
+  sorted_s <- sort(scores_valid)
+  t_low <- sorted_s[x_27]
+  t_high <- sorted_s[n_total_valid - x_27 + 1L]
+  upper_mask <- scores_valid >= t_high
+  lower_mask <- scores_valid <= t_low
+
+  # 構建對齊縣市標準格式的六組試題分析 Data Frame
+  # 6 組：全體、精熟、基礎、待加強、高分組（前27%）、低分組（後27%）
   n_opts <- length(opt_labels)
-  n_cols <- 4 + 4 * (n_opts + 1)
+  n_cols <- 4L + 6L * (n_opts + 1L)
 
   col_names_level <- c(
-    "題號", "鑑別度", "通過率", "正確答案",
+    "題號", "鑑別度", "答對率", "正確答案",
     paste0("全體_", c(opt_labels, "其它")),
     paste0("精熟_", c(opt_labels, "其它")),
     paste0("基礎_", c(opt_labels, "其它")),
-    paste0("待加強_", c(opt_labels, "其它"))
+    paste0("待加強_", c(opt_labels, "其它")),
+    paste0("高分組_", c(opt_labels, "其它")),
+    paste0("低分組_", c(opt_labels, "其它"))
   )
 
   mat <- data.frame(
@@ -369,34 +384,28 @@ calculate_level_ctt_analysis <- function(
     correct_key <- if (is_dichotomous) key_vector[item] else paste(item_key_vec, collapse = "、")
     mat$正確答案[item] <- correct_key
 
-    # 通過率與鑑別度
+    # 答對率（全體有效學生）
     is_correct <- if (is_dichotomous) (!is.na(item_resp) & item_resp == "1") else (!is.na(item_resp) & item_resp %in% item_key_vec)
     pass_rate <- mean(is_correct, na.rm = TRUE)
-    mat$通過率[item] <- pass_rate
+    mat$答對率[item] <- pass_rate
 
-    # 傳統 CTT 27% 鑑別度
-    x_27 <- round(n_total_valid * 0.27, 0)
-    if (x_27 < 1) x_27 <- 1
-    sorted_s <- sort(scores_valid)
-    t_low <- sorted_s[x_27]
-    t_high <- sorted_s[n_total_valid - x_27 + 1]
-    u_mask <- scores_valid >= t_high
-    l_mask <- scores_valid <= t_low
-    u_rate <- mean(is_correct[u_mask], na.rm = TRUE)
-    l_rate <- mean(is_correct[l_mask], na.rm = TRUE)
-    disc_val <- u_rate - l_rate
-    mat$鑑別度[item] <- disc_val
+    # 鑑別度（高分組 - 低分組答對率）
+    u_rate <- mean(is_correct[upper_mask], na.rm = TRUE)
+    l_rate <- mean(is_correct[lower_mask], na.rm = TRUE)
+    mat$鑑別度[item] <- u_rate - l_rate
 
-    # 算 4 組選答百分比：全體、精熟、基礎、待加強
+    # 算 6 組選答百分比：全體、精熟、基礎、待加強、高分組（前27%）、低分組（後27%）
     groups_list <- list(
-      "全體" = rep(TRUE, n_total_valid),
-      "精熟" = level_group == "精熟",
-      "基礎" = level_group == "基礎",
-      "待加強" = level_group == "待加強"
+      "全體"   = rep(TRUE, n_total_valid),
+      "精熟"   = level_group == "精熟",
+      "基礎"   = level_group == "基礎",
+      "待加強" = level_group == "待加強",
+      "高分組" = upper_mask,
+      "低分組" = lower_mask
     )
 
     col_idx <- 5L
-    for (grp_name in c("全體", "精熟", "基礎", "待加強")) {
+    for (grp_name in c("全體", "精熟", "基礎", "待加強", "高分組", "低分組")) {
       grp_mask <- groups_list[[grp_name]]
       grp_n <- sum(grp_mask, na.rm = TRUE)
       sub_resp <- item_resp[grp_mask]
@@ -407,7 +416,7 @@ calculate_level_ctt_analysis <- function(
         mat[item, col_idx] <- rate
         col_idx <- col_idx + 1L
       }
-      # 其它
+      # 其它（未選標準選項或作答空白）
       other_rate <- if (grp_n > 0L) sum(is.na(sub_resp) | !sub_resp %in% opt_labels) / grp_n else 0
       mat[item, col_idx] <- other_rate
       col_idx <- col_idx + 1L
@@ -421,6 +430,8 @@ calculate_level_ctt_analysis <- function(
     basic_cutoff = basic_cutoff,
     n_total_valid = n_total_valid,
     n_items = n_items,
-    opt_labels = opt_labels
+    opt_labels = opt_labels,
+    upper_n = sum(upper_mask),
+    lower_n = sum(lower_mask)
   )
 }

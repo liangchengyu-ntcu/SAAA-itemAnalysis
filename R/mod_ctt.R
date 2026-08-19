@@ -211,10 +211,17 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
         b_count <- unname(counts["基礎"])
         i_count <- unname(counts["待加強"])
         total <- level_ctt$n_total_valid
+        u_count <- if (!is.null(level_ctt$upper_n)) level_ctt$upper_n else NA
+        l_count <- if (!is.null(level_ctt$lower_n)) level_ctt$lower_n else NA
 
-        m_pct <- sprintf("%.2f%%", (m_count / total) * 100)
-        b_pct <- sprintf("%.2f%%", (b_count / total) * 100)
-        i_pct <- sprintf("%.2f%%", (i_count / total) * 100)
+        pct_fmt <- function(n, tot) {
+          if (!is.na(n) && tot > 0) sprintf("%.2f%%", n / tot * 100) else "N/A"
+        }
+        m_pct <- pct_fmt(m_count, total)
+        b_pct <- pct_fmt(b_count, total)
+        i_pct <- pct_fmt(i_count, total)
+        u_pct <- pct_fmt(u_count, total)
+        l_pct <- pct_fmt(l_count, total)
 
         shiny::div(
           class = "metric-grid",
@@ -222,6 +229,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           metric_tile("精熟人數 (比例)", sprintf("%s (%s)", format(m_count, big.mark = ","), m_pct)),
           metric_tile("基礎人數 (比例)", sprintf("%s (%s)", format(b_count, big.mark = ","), b_pct)),
           metric_tile("待加強人數 (比例)", sprintf("%s (%s)", format(i_count, big.mark = ","), i_pct)),
+          metric_tile("高分組人數 (前27%)", sprintf("%s (%s)", if (!is.na(u_count)) format(u_count, big.mark = ",") else "N/A", u_pct)),
+          metric_tile("低分組人數 (後27%)", sprintf("%s (%s)", if (!is.na(l_count)) format(l_count, big.mark = ",") else "N/A", l_pct)),
           metric_tile("精熟門檻", sprintf("≥ %d 題", level_ctt$mastery_cutoff)),
           metric_tile("基礎門檻", sprintf("≥ %d 題", level_ctt$basic_cutoff))
         )
@@ -330,12 +339,14 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
         selected <- selected_job_result()
         job <- get_job_info(selected)
         level_ctt <- selected$level_ctt_analysis
+        city <- if (!is.null(selected$city_name)) selected$city_name else NULL
         write_level_ctt_excel(
           level_ctt_res = level_ctt,
           subject_label = job$subject_name,
           grade = job$grade,
           year = job$year,
-          output_path = file
+          output_path = file,
+          city_name = city
         )
       },
       contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

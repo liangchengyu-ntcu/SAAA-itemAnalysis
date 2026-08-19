@@ -341,13 +341,14 @@ write_ctt_analysis_by_subject <- function(
   output_path
 }
 
-# 4. 寫出縣市標準三等級 (精熟/基礎/待加強) 試題分析 Excel（完全對齊簡報截圖美學格式）
+# 4. 寫出縣市標準三等級 (精熟/基礎/待加強) 試題分析 Excel（完全對齊縣市規範，含高低分組與標準附註）
 write_level_ctt_excel <- function(
   level_ctt_res,
   subject_label,
   grade,
   year,
-  output_path
+  output_path,
+  city_name = NULL
 ) {
   if (is.null(level_ctt_res)) {
     stop("level_ctt_res is NULL")
@@ -356,113 +357,197 @@ write_level_ctt_excel <- function(
   n_items <- as.integer(if (!is.null(level_ctt_res$n_items)) level_ctt_res$n_items else if (!is.null(mat)) nrow(mat) else 0L)
   opt_labels <- if (!is.null(level_ctt_res$opt_labels)) level_ctt_res$opt_labels else c("1", "2", "3", "4")
   n_opts <- length(opt_labels)
-  n_cols <- 4L + 4L * (n_opts + 1L)
+
+  # 6 組矩陣：全體、精熟、基礎、待加強、高分組（前27%）、低分組（後27%）
+  n_groups <- 6L
+  n_cols <- 4L + n_groups * (n_opts + 1L)
+
   n_total <- if (!is.null(level_ctt_res$n_total_valid)) level_ctt_res$n_total_valid else 0L
-  counts <- level_ctt_res$level_counts
-  m_count <- if (!is.null(counts) && "精熟" %in% names(counts)) unname(counts["精熟"]) else 0L
-  b_count <- if (!is.null(counts) && "基礎" %in% names(counts)) unname(counts["基礎"]) else 0L
+  counts  <- level_ctt_res$level_counts
+  m_count <- if (!is.null(counts) && "精熟"   %in% names(counts)) unname(counts["精熟"])   else 0L
+  b_count <- if (!is.null(counts) && "基礎"   %in% names(counts)) unname(counts["基礎"])   else 0L
   i_count <- if (!is.null(counts) && "待加強" %in% names(counts)) unname(counts["待加強"]) else 0L
+  u_count <- if (!is.null(level_ctt_res$upper_n)) level_ctt_res$upper_n else NA_integer_
+  l_count <- if (!is.null(level_ctt_res$lower_n)) level_ctt_res$lower_n else NA_integer_
 
   m_cutoff <- if (!is.null(level_ctt_res$mastery_cutoff)) level_ctt_res$mastery_cutoff else NA
-  b_cutoff <- if (!is.null(level_ctt_res$basic_cutoff)) level_ctt_res$basic_cutoff else NA
+  b_cutoff <- if (!is.null(level_ctt_res$basic_cutoff))   level_ctt_res$basic_cutoff   else NA
 
-  m_pct <- if (n_total > 0) sprintf("%.2f%%", (m_count / n_total) * 100) else "0.00%"
-  b_pct <- if (n_total > 0) sprintf("%.2f%%", (b_count / n_total) * 100) else "0.00%"
-  i_pct <- if (n_total > 0) sprintf("%.2f%%", (i_count / n_total) * 100) else "0.00%"
+  pct_fmt <- function(n, total) if (!is.na(n) && total > 0) sprintf("%.2f%%", n / total * 100) else "N/A"
+  m_pct <- pct_fmt(m_count, n_total)
+  b_pct <- pct_fmt(b_count, n_total)
+  i_pct <- pct_fmt(i_count, n_total)
+  u_pct <- pct_fmt(u_count, n_total)
+  l_pct <- pct_fmt(l_count, n_total)
 
   wb <- openxlsx::createWorkbook()
   sheet_name <- paste0(grade, "年級")
   openxlsx::addWorksheet(wb, sheet_name)
 
-  title <- paste0(year, "年度", subject_label, grade, "年級 試題分析結果")
-  n_total_str <- paste0("有效樣本人數：", format(n_total, big.mark = ","))
-  m_str <- paste0("精熟人數：", format(m_count, big.mark = ","), " (", m_pct, ")")
-  b_str <- paste0("基礎人數：", format(b_count, big.mark = ","), " (", b_pct, ")")
-  i_str <- paste0("待加強人數：", format(i_count, big.mark = ","), " (", i_pct, ")")
+  # -------------------------------------------------------------------------
+  # 第 1 列：縣市 / 標題 / 人數資訊
+  # -------------------------------------------------------------------------
+  city_label <- if (!is.null(city_name) && nzchar(city_name) && city_name != "未知縣市") city_name else ""
+  title <- paste0(year, "年度", city_label, subject_label, grade, "年級 試題分析結果")
 
   header1 <- rep(NA_character_, n_cols)
-  header1[1] <- title
-  header1[5] <- n_total_str
-  header1[9] <- m_str
-  header1[13] <- b_str
-  header1[17] <- i_str
-  if (n_cols >= 24L) {
-    header1[21] <- "基礎"
-    header1[22] <- if (!is.na(b_cutoff)) as.character(b_cutoff) else ""
-    header1[23] <- "精熟"
-    header1[24] <- if (!is.na(m_cutoff)) as.character(m_cutoff) else ""
+  header1[1]  <- title
+  header1[5]  <- paste0("有效樣本人數：", format(n_total, big.mark = ","))
+  header1[9]  <- paste0("精熟人數：", format(m_count, big.mark = ","), " (", m_pct, ")")
+  header1[13] <- paste0("基礎人數：", format(b_count, big.mark = ","), " (", b_pct, ")")
+  header1[17] <- paste0("待加強人數：", format(i_count, big.mark = ","), " (", i_pct, ")")
+  if (n_cols >= 21L) {
+    header1[21] <- paste0("高分組人數(前27%)：", if (!is.na(u_count)) format(u_count, big.mark = ",") else "N/A", " (", u_pct, ")")
+  }
+  if (n_cols >= 25L) {
+    header1[25] <- paste0("低分組人數(後27%)：", if (!is.na(l_count)) format(l_count, big.mark = ",") else "N/A", " (", l_pct, ")")
+  }
+  if (n_cols >= 29L) {
+    header1[29] <- paste0("精熟門檻：≥", if (!is.na(m_cutoff)) m_cutoff else "N/A", " 題")
+  }
+  if (n_cols >= 30L) {
+    header1[30] <- paste0("基礎門檻：≥", if (!is.na(b_cutoff)) b_cutoff else "N/A", " 題")
   }
   openxlsx::writeData(wb, sheet_name, t(header1), startRow = 1, colNames = FALSE)
 
+  # -------------------------------------------------------------------------
+  # 第 2-3 列：6 組表頭
+  # -------------------------------------------------------------------------
   header2 <- c(
-    "題號", "鑑別度", "通過率", "正確答案",
-    "全體", rep(NA, n_opts),
-    "精熟", rep(NA, n_opts),
-    "基礎", rep(NA, n_opts),
-    "待加強", rep(NA, n_opts)
+    "題號", "鑑別度", "答對率", "正確答案",
+    "全體",   rep(NA, n_opts),
+    "精熟",   rep(NA, n_opts),
+    "基礎",   rep(NA, n_opts),
+    "待加強", rep(NA, n_opts),
+    "高分組(前27%)", rep(NA, n_opts),
+    "低分組(後27%)", rep(NA, n_opts)
   )
   openxlsx::writeData(wb, sheet_name, t(header2), startRow = 2, colNames = FALSE)
 
   header3 <- c(
     NA, NA, NA, NA,
-    opt_labels, "其它",
-    opt_labels, "其它",
-    opt_labels, "其它",
-    opt_labels, "其它"
+    opt_labels, "其它",   # 全體
+    opt_labels, "其它",   # 精熟
+    opt_labels, "其它",   # 基礎
+    opt_labels, "其它",   # 待加強
+    opt_labels, "其它",   # 高分組
+    opt_labels, "其它"    # 低分組
   )
   openxlsx::writeData(wb, sheet_name, t(header3), startRow = 3, colNames = FALSE)
 
+  # -------------------------------------------------------------------------
+  # 資料列（trim 舊 mat 欄，確保欄數吻合）
+  # -------------------------------------------------------------------------
   if (!is.null(mat) && nrow(mat) > 0L) {
-    openxlsx::writeData(wb, sheet_name, mat, startRow = 4, colNames = FALSE, rowNames = FALSE)
+    # mat 可能有 6 組（新版）或 4 組（舊版）；自動補齊至 n_cols
+    if (ncol(mat) < n_cols) {
+      extra <- matrix(NA_real_, nrow = nrow(mat), ncol = n_cols - ncol(mat))
+      mat_out <- cbind(mat, extra)
+    } else {
+      mat_out <- mat[, seq_len(n_cols), drop = FALSE]
+    }
+    openxlsx::writeData(wb, sheet_name, mat_out, startRow = 4, colNames = FALSE, rowNames = FALSE)
   }
 
+  # -------------------------------------------------------------------------
   # 合併儲存格
-  # 第 1 列頂部資訊依區塊合併 (仿照總表版型)
-  openxlsx::mergeCells(wb, sheet_name, cols = 1:4, rows = 1)
-  if (n_cols >= 8L) openxlsx::mergeCells(wb, sheet_name, cols = 5:8, rows = 1)
-  if (n_cols >= 12L) openxlsx::mergeCells(wb, sheet_name, cols = 9:12, rows = 1)
-  if (n_cols >= 16L) openxlsx::mergeCells(wb, sheet_name, cols = 13:16, rows = 1)
-  if (n_cols >= 20L) openxlsx::mergeCells(wb, sheet_name, cols = 17:20, rows = 1)
-  if (n_cols > 24L) openxlsx::mergeCells(wb, sheet_name, cols = 25:n_cols, rows = 1)
+  # -------------------------------------------------------------------------
+  # 第 1 列：每 (n_opts+1) 欄一組
+  merge_step <- n_opts + 1L
+  n_info_blocks <- n_cols %/% 4L
+  for (blk in 0:(n_info_blocks - 1L)) {
+    c_from <- 1L + blk * 4L
+    c_to   <- min(c_from + 3L, n_cols)
+    if (c_to > c_from) openxlsx::mergeCells(wb, sheet_name, cols = c_from:c_to, rows = 1)
+  }
+  if (n_cols %% 4L > 0L) {
+    c_rem_from <- 1L + n_info_blocks * 4L
+    openxlsx::mergeCells(wb, sheet_name, cols = c_rem_from:n_cols, rows = 1)
+  }
 
-  # 表頭第 2-3 列合併
-  openxlsx::mergeCells(wb, sheet_name, cols = 1, rows = 2:3)
-  openxlsx::mergeCells(wb, sheet_name, cols = 2, rows = 2:3)
-  openxlsx::mergeCells(wb, sheet_name, cols = 3, rows = 2:3)
-  openxlsx::mergeCells(wb, sheet_name, cols = 4, rows = 2:3)
+  # 表頭第 2-3 列固定欄合併
+  for (col_fix in 1:4) {
+    openxlsx::mergeCells(wb, sheet_name, cols = col_fix, rows = 2:3)
+  }
 
+  # 6 組各自合併第 2 列
   col_start <- 5L
-  for (grp in 1:4) {
-    c_from <- col_start + (grp - 1L) * (n_opts + 1L)
-    c_to <- c_from + n_opts
+  for (grp in 1:n_groups) {
+    c_from <- col_start + (grp - 1L) * merge_step
+    c_to   <- c_from + n_opts
     openxlsx::mergeCells(wb, sheet_name, cols = seq.int(c_from, c_to), rows = 2)
   }
 
-  # 美化樣式 (對齊簡報截圖: #E2EFDA 綠色表頭, 置中與 border)
+  # -------------------------------------------------------------------------
+  # 美化樣式
+  # -------------------------------------------------------------------------
   green_header <- openxlsx::createStyle(
-    fgFill = "#E2EFDA",
-    halign = "center",
-    valign = "center",
-    wrapText = TRUE,
-    textDecoration = "bold",
-    border = "TopBottomLeftRight",
-    borderStyle = "thin"
+    fgFill = "#E2EFDA", halign = "center", valign = "center",
+    wrapText = TRUE, textDecoration = "bold",
+    border = "TopBottomLeftRight", borderStyle = "thin"
   )
   openxlsx::addStyle(wb, sheet_name, green_header, rows = 1:3, cols = seq_len(n_cols), gridExpand = TRUE)
 
   if (n_items > 0L) {
     data_rows <- seq.int(4L, 3L + n_items)
-    style_num <- openxlsx::createStyle(numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
-    openxlsx::addStyle(wb, sheet_name, style_num, rows = data_rows, cols = c(2:3, seq.int(5L, n_cols)), gridExpand = TRUE)
 
-    style_center <- openxlsx::createStyle(halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
-    openxlsx::addStyle(wb, sheet_name, style_center, rows = data_rows, cols = c(1, 4), gridExpand = TRUE)
+    style_num <- openxlsx::createStyle(
+      numFmt = "0.00", halign = "center",
+      border = "TopBottomLeftRight", borderStyle = "thin"
+    )
+    openxlsx::addStyle(wb, sheet_name, style_num,
+      rows = data_rows, cols = c(2:3, seq.int(5L, n_cols)), gridExpand = TRUE)
+
+    style_center <- openxlsx::createStyle(
+      halign = "center", border = "TopBottomLeftRight", borderStyle = "thin"
+    )
+    openxlsx::addStyle(wb, sheet_name, style_center,
+      rows = data_rows, cols = c(1L, 4L), gridExpand = TRUE)
+
+    # 鑑別度 < 0.20 標紅字
+    if (!is.null(mat) && "鑑別度" %in% colnames(mat)) {
+      disc_red <- openxlsx::createStyle(
+        fontColour = "#FF0000", textDecoration = "bold",
+        numFmt = "0.00", halign = "center",
+        border = "TopBottomLeftRight", borderStyle = "thin"
+      )
+      disc_vals <- suppressWarnings(as.numeric(mat[, "鑑別度"]))
+      for (i in seq_len(n_items)) {
+        if (!is.na(disc_vals[i]) && disc_vals[i] < 0.20) {
+          openxlsx::addStyle(wb, sheet_name, disc_red, rows = i + 3L, cols = 2L)
+        }
+      }
+    }
 
     openxlsx::setRowHeights(wb, sheet_name, rows = data_rows, heights = 18)
   }
 
   openxlsx::setColWidths(wb, sheet_name, cols = seq_len(n_cols), widths = "auto")
-  openxlsx::setRowHeights(wb, sheet_name, rows = 1:3, heights = 25)
+  openxlsx::setRowHeights(wb, sheet_name, rows = 1:3, heights = 28)
+
+  # -------------------------------------------------------------------------
+  # 表尾：6 行臺中教大標準說明附註
+  # -------------------------------------------------------------------------
+  notes_start_row <- 4L + n_items + 1L
+  notes <- c(
+    "【試題分析說明】",
+    paste0("1. 全體：本次參與測驗之所有有效學生（N = ", format(n_total, big.mark = ","), "）。"),
+    paste0("2. 高分組：全體有效學生中總分排列前 27% 之學生（N = ",
+      if (!is.na(u_count)) format(u_count, big.mark = ",") else "N/A", "）。"),
+    paste0("3. 低分組：全體有效學生中總分排列後 27% 之學生（N = ",
+      if (!is.na(l_count)) format(l_count, big.mark = ",") else "N/A", "）。"),
+    "4. 答對率：該題答對人數 / 有效人數（四捨五入至小數第 2 位）。",
+    "5. 鑑別度：高分組答對率 - 低分組答對率。",
+    "6. 鑑別度評估：0.40 以上非常優良；0.30-0.39 優良；0.20-0.29 尚可，需修題；0.19 以下不佳，需刪題或修題（鑑別度 < 0.20 以紅字標記）。"
+  )
+  for (i in seq_along(notes)) {
+    note_df <- data.frame(V1 = notes[i], stringsAsFactors = FALSE)
+    openxlsx::writeData(wb, sheet_name, note_df, startRow = notes_start_row + i - 1L, colNames = FALSE)
+  }
+
+  # 標題行粗體
+  bold_style <- openxlsx::createStyle(textDecoration = "bold")
+  openxlsx::addStyle(wb, sheet_name, bold_style, rows = notes_start_row, cols = 1L)
 
   openxlsx::saveWorkbook(wb, output_path, overwrite = TRUE)
   output_path
