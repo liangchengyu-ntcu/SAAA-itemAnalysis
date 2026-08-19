@@ -214,19 +214,29 @@ write_ctt_analysis_sheet <- function(
   openxlsx::writeData(wb, sheet_name, mat_avg, startRow = avg_row, colNames = FALSE, rowNames = FALSE)
 
   notes_start <- avg_row + 2L
-  notes <- data.frame(
-    col1 = c("", "試題分析說明", "", "", "", ""),
-    col2 = c(
-      "",
-      "1. 難度 = (高分組答對百分比 + 低分組答對百分比) / 2。",
-      "2. 鑑別度 = 高分組答對百分比 - 低分組答對百分比。",
-      "3. 題號黃底為高分組錯誤選項選答率高於正確選項。",
-      "4. 題號灰底為全體錯誤選項選答率高於正確選項。",
-      "5. 鑑別度未達 0.15 以紅字標記，表示鑑別度較低，需注意試題品質。"
-    ),
-    stringsAsFactors = FALSE
+  ctt_notes <- c(
+    "【試題分析說明】",
+    "1. 難度 = (高分組答對百分比 + 低分組答對百分比) / 2。",
+    "2. 鑑別度 = 高分組答對百分比 - 低分組答對百分比。",
+    "3. 題號黃底為高分組錯誤選項選答率高於正確選項。",
+    "4. 題號灰底為全體錯誤選項選答率高於正確選項。",
+    "5. 鑑別度未達 0.15 以紅字標記，表示鑑別度較低，需注意試題品質。"
   )
-  openxlsx::writeData(wb, sheet_name, notes, startRow = notes_start, colNames = FALSE)
+
+  note_style <- openxlsx::createStyle(halign = "left", valign = "center")
+  bold_note_style <- openxlsx::createStyle(halign = "left", valign = "center", textDecoration = "bold")
+
+  for (i in seq_along(ctt_notes)) {
+    r <- notes_start + i - 1L
+    openxlsx::writeData(wb, sheet_name, data.frame(V1 = ctt_notes[i], stringsAsFactors = FALSE), startRow = r, startCol = 1L, colNames = FALSE)
+    openxlsx::mergeCells(wb, sheet_name, cols = seq_len(n_cols), rows = r)
+    if (i == 1L) {
+      openxlsx::addStyle(wb, sheet_name, bold_note_style, rows = r, cols = 1L)
+    } else {
+      openxlsx::addStyle(wb, sheet_name, note_style, rows = r, cols = 1L)
+    }
+    openxlsx::setRowHeights(wb, sheet_name, rows = r, heights = 20)
+  }
 
   # 合併儲存格
   openxlsx::mergeCells(wb, sheet_name, cols = 1:4, rows = 1)
@@ -267,7 +277,14 @@ write_ctt_analysis_sheet <- function(
   header_center_style <- openxlsx::createStyle(halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
   openxlsx::addStyle(wb, sheet_name, header_center_style, rows = 1:3, cols = seq_len(n_cols), gridExpand = TRUE)
 
-  openxlsx::setColWidths(wb, sheet_name, cols = seq_len(n_cols), widths = "auto")
+  openxlsx::setColWidths(wb, sheet_name, cols = 1L, widths = 8)
+  openxlsx::setColWidths(wb, sheet_name, cols = 2L, widths = 10)
+  openxlsx::setColWidths(wb, sheet_name, cols = 3L, widths = 10)
+  openxlsx::setColWidths(wb, sheet_name, cols = 4L, widths = 10)
+  openxlsx::setColWidths(wb, sheet_name, cols = 5L, widths = 10)
+  if (n_cols >= 6L) {
+    openxlsx::setColWidths(wb, sheet_name, cols = seq.int(6L, n_cols), widths = rep(7.5, n_cols - 5L))
+  }
   openxlsx::setRowHeights(wb, sheet_name, rows = 1:3, heights = 30)
 
   # 黃底標記正確選項
@@ -312,9 +329,6 @@ write_ctt_analysis_sheet <- function(
       openxlsx::addStyle(wb, sheet_name, unscored_style, rows = item_row, cols = 2)
     }
   }
-
-  red_bold_style <- openxlsx::createStyle(textDecoration = "bold", fontColour = "#FF0000")
-  openxlsx::addStyle(wb, sheet_name, red_bold_style, rows = c(notes_start + 1L, notes_start + 7L), cols = 1)
 }
 
 # 3. 寫出整併之 CTT 試題分析總表 Excel（包含多個年級 Sheet）
@@ -486,7 +500,7 @@ write_level_ctt_sheet <- function(
     data_rows <- seq.int(4L, 3L + n_items)
 
     style_num <- openxlsx::createStyle(
-      numFmt = "0.00", halign = "center",
+      numFmt = "General", halign = "center",
       border = "TopBottomLeftRight", borderStyle = "thin"
     )
     openxlsx::addStyle(wb, sheet_name, style_num,
@@ -502,7 +516,7 @@ write_level_ctt_sheet <- function(
     if (!is.null(mat) && "鑑別度" %in% colnames(mat)) {
       disc_red <- openxlsx::createStyle(
         fontColour = "#FF0000", textDecoration = "bold",
-        numFmt = "0.00", halign = "center",
+        numFmt = "General", halign = "center",
         border = "TopBottomLeftRight", borderStyle = "thin"
       )
       disc_vals <- suppressWarnings(as.numeric(mat[, "鑑別度"]))
@@ -516,11 +530,18 @@ write_level_ctt_sheet <- function(
     openxlsx::setRowHeights(wb, sheet_name, rows = data_rows, heights = 18)
   }
 
-  openxlsx::setColWidths(wb, sheet_name, cols = seq_len(n_cols), widths = "auto")
+  # 明確設定各欄寬度（避免表尾說明字串將第 1 欄或資料欄撐大失真）
+  openxlsx::setColWidths(wb, sheet_name, cols = 1L, widths = 8)
+  openxlsx::setColWidths(wb, sheet_name, cols = 2L, widths = 10)
+  openxlsx::setColWidths(wb, sheet_name, cols = 3L, widths = 10)
+  openxlsx::setColWidths(wb, sheet_name, cols = 4L, widths = 10)
+  if (n_cols >= 5L) {
+    openxlsx::setColWidths(wb, sheet_name, cols = seq.int(5L, n_cols), widths = rep(7.5, n_cols - 4L))
+  }
   openxlsx::setRowHeights(wb, sheet_name, rows = 1:3, heights = 28)
 
   # -------------------------------------------------------------------------
-  # 表尾：6 行臺中教大標準說明附註
+  # 表尾：6 行標準說明附註（橫向跨欄合併，靠左對齊，不干擾上方欄位辨識）
   # -------------------------------------------------------------------------
   notes_start_row <- 4L + n_items + 1L
   notes <- c(
@@ -530,17 +551,27 @@ write_level_ctt_sheet <- function(
       if (!is.na(u_count)) format(u_count, big.mark = ",") else "N/A", "）。"),
     paste0("3. 低分組：全體有效學生中總分排列後 27% 之學生（N = ",
       if (!is.na(l_count)) format(l_count, big.mark = ",") else "N/A", "）。"),
-    "4. 答對率：該題答對人數 / 有效人數（四捨五入至小數第 2 位）。",
+    "4. 答對率：該題答對人數 / 有效人數（計算使用原始值）。",
     "5. 鑑別度：高分組答對率 - 低分組答對率。",
     "6. 鑑別度評估：0.40 以上非常優良；0.30-0.39 優良；0.20-0.29 尚可，需修題；0.19 以下不佳，需刪題或修題（鑑別度 < 0.20 以紅字標記）。"
   )
-  for (i in seq_along(notes)) {
-    note_df <- data.frame(V1 = notes[i], stringsAsFactors = FALSE)
-    openxlsx::writeData(wb, sheet_name, note_df, startRow = notes_start_row + i - 1L, colNames = FALSE)
-  }
 
-  bold_style <- openxlsx::createStyle(textDecoration = "bold")
-  openxlsx::addStyle(wb, sheet_name, bold_style, rows = notes_start_row, cols = 1L)
+  note_style <- openxlsx::createStyle(halign = "left", valign = "center")
+  bold_note_style <- openxlsx::createStyle(halign = "left", valign = "center", textDecoration = "bold")
+
+  for (i in seq_along(notes)) {
+    r <- notes_start_row + i - 1L
+    note_df <- data.frame(V1 = notes[i], stringsAsFactors = FALSE)
+    openxlsx::writeData(wb, sheet_name, note_df, startRow = r, startCol = 1L, colNames = FALSE)
+    # 跨全欄合併
+    openxlsx::mergeCells(wb, sheet_name, cols = seq_len(n_cols), rows = r)
+    if (i == 1L) {
+      openxlsx::addStyle(wb, sheet_name, bold_note_style, rows = r, cols = 1L)
+    } else {
+      openxlsx::addStyle(wb, sheet_name, note_style, rows = r, cols = 1L)
+    }
+    openxlsx::setRowHeights(wb, sheet_name, rows = r, heights = 20)
+  }
 }
 
 # 5. 寫出縣市標準三等級 (精熟/基礎/待加強) 試題分析 Excel（支援多縣市多分頁或指定縣市）
