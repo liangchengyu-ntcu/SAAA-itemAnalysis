@@ -16,23 +16,49 @@ warn_score <- function(...) {
   warning(..., call. = FALSE)
 }
 
-# 解碼數字型 HTML 實體編碼 (例如 &#32317;&#27969;&#27700;&#34399; -> 總流水號)。
+# 清理字串為標準 UTF-8，並移除隱形 BOM 字元 (\uFEFF) 與非斷行空白 (\u00A0)。
+clean_utf8_vector <- function(x) {
+  if (is.null(x)) return(x)
+  v <- as.character(x)
+  v <- gsub("^\uFEFF", "", v)
+  v <- gsub("\u00A0", " ", v)
+  enc2utf8(v)
+}
+
+# 解碼 HTML 實體編碼（支援 10 進位 &#32317; 與 16 進位 &#x7e3d; 等格式）
 decode_html_entities <- function(x) {
   if (is.null(x)) return(x)
   vapply(as.character(x), function(s) {
     if (is.na(s) || s == "") return(s)
-    matches <- gregexpr("&#([0-9]+);", s)
-    if (matches[[1]][1] != -1) {
-      reg_matches <- regmatches(s, matches)[[1]]
+    # 移除 BOM
+    s <- gsub("^\uFEFF", "", s)
+    s <- gsub("\u00A0", " ", s)
+    # 1. 10 進位 &#32317;
+    matches_dec <- gregexpr("&#([0-9]+);", s)
+    if (matches_dec[[1]][1] != -1) {
+      reg_matches <- regmatches(s, matches_dec)[[1]]
       for (m in reg_matches) {
         num <- as.integer(gsub("[^0-9]", "", m))
-        if (!is.na(num)) {
+        if (!is.na(num) && num > 0) {
           char_val <- intToUtf8(num)
           s <- gsub(m, char_val, s, fixed = TRUE)
         }
       }
     }
-    s
+    # 2. 16 進位 &#x7e3d;
+    matches_hex <- gregexpr("&#x([0-9a-fA-F]+);", s)
+    if (matches_hex[[1]][1] != -1) {
+      reg_matches <- regmatches(s, matches_hex)[[1]]
+      for (m in reg_matches) {
+        hex_str <- gsub("[^0-9a-fA-F]", "", m)
+        num <- as.integer(as.hexmode(hex_str))
+        if (!is.na(num) && num > 0) {
+          char_val <- intToUtf8(num)
+          s <- gsub(m, char_val, s, fixed = TRUE)
+        }
+      }
+    }
+    enc2utf8(s)
   }, character(1), USE.NAMES = FALSE)
 }
 

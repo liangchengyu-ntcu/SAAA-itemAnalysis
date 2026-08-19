@@ -54,7 +54,9 @@ source_files <- list.files(
   pattern = "[.]R$",
   full.names = TRUE
 )
-invisible(lapply(sort(source_files), sys.source, envir = globalenv()))
+invisible(lapply(sort(source_files), function(f) {
+  source(f, encoding = "UTF-8", local = FALSE)
+}))
 
 # 可透過環境變數 SCORE_APP_MAX_UPLOAD_MB 調整上傳上限，預設 500 MB。
 # 非數字或非正值會安全回退到預設值。

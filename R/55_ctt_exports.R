@@ -263,18 +263,18 @@ write_ctt_analysis_sheet <- function(
   # 樣式設定
   if (n_items > 0L) {
     data_rows <- seq.int(data_row_start, data_row_end)
-    style2dec <- openxlsx::createStyle(numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    style2dec <- openxlsx::createStyle(fontName = "Microsoft JhengHei", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     openxlsx::addStyle(wb, sheet_name, style2dec, rows = data_rows, cols = c(2:3, seq.int(6L, n_cols)), gridExpand = TRUE)
 
-    center_style <- openxlsx::createStyle(halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    center_style <- openxlsx::createStyle(fontName = "Microsoft JhengHei", halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     openxlsx::addStyle(wb, sheet_name, center_style, rows = data_rows, cols = c(1, 4, 5), gridExpand = TRUE)
     openxlsx::setRowHeights(wb, sheet_name, rows = data_rows, heights = 15)
   }
 
-  green_header <- openxlsx::createStyle(fgFill = "#E2EFDA", halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+  green_header <- openxlsx::createStyle(fontName = "Microsoft JhengHei", fgFill = "#E2EFDA", halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
   openxlsx::addStyle(wb, sheet_name, green_header, rows = 1:3, cols = seq_len(n_cols), gridExpand = TRUE)
 
-  header_center_style <- openxlsx::createStyle(halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+  header_center_style <- openxlsx::createStyle(fontName = "Microsoft JhengHei", halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
   openxlsx::addStyle(wb, sheet_name, header_center_style, rows = 1:3, cols = seq_len(n_cols), gridExpand = TRUE)
 
   openxlsx::setColWidths(wb, sheet_name, cols = 1L, widths = 8)
@@ -289,7 +289,7 @@ write_ctt_analysis_sheet <- function(
 
   # 黃底標記正確選項
   if (n_items > 0L) {
-    yellow_fill <- openxlsx::createStyle(fgFill = "#FFF2CC", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    yellow_fill <- openxlsx::createStyle(fontName = "Microsoft JhengHei", fgFill = "#FFF2CC", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     for (item in seq_len(n_items)) {
       correct_val <- as.character(mat[item, 5])
       if (is.na(correct_val) || correct_val == "") next
@@ -303,8 +303,8 @@ write_ctt_analysis_sheet <- function(
     }
 
     # 題號黃底與灰底異常標記
-    id_yellow <- openxlsx::createStyle(fgFill = "#FFFF00", halign = "center", valign = "center", border = "TopBottomLeftRight", borderStyle = "thin", textDecoration = "bold")
-    id_grey <- openxlsx::createStyle(fgFill = "#D9D9D9", halign = "center", valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    id_yellow <- openxlsx::createStyle(fontName = "Microsoft JhengHei", fgFill = "#FFFF00", halign = "center", valign = "center", border = "TopBottomLeftRight", borderStyle = "thin", textDecoration = "bold")
+    id_grey <- openxlsx::createStyle(fontName = "Microsoft JhengHei", fgFill = "#D9D9D9", halign = "center", valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     for (i in seq_len(n_items)) {
       if (upper_wrong_higher[i]) {
         openxlsx::addStyle(wb, sheet_name, id_yellow, rows = i + 3L, cols = 1)
@@ -314,7 +314,7 @@ write_ctt_analysis_sheet <- function(
     }
 
     # 鑑別度紅字
-    disc_red_font <- openxlsx::createStyle(fontColour = "#FF0000", textDecoration = "bold", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    disc_red_font <- openxlsx::createStyle(fontName = "Microsoft JhengHei", fontColour = "#FF0000", textDecoration = "bold", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     for (i in seq_len(n_items)) {
       if (!is.na(disc_values[i]) && disc_values[i] < 0.15) {
         openxlsx::addStyle(wb, sheet_name, disc_red_font, rows = i + 3L, cols = 2, gridExpand = TRUE)
@@ -322,7 +322,7 @@ write_ctt_analysis_sheet <- function(
     }
 
     # 不計分題合併欄位
-    unscored_style <- openxlsx::createStyle(halign = "center", valign = "center", textDecoration = "bold")
+    unscored_style <- openxlsx::createStyle(fontName = "Microsoft JhengHei", halign = "center", valign = "center", textDecoration = "bold")
     for (item in unscored_items) {
       item_row <- item + 3L
       openxlsx::mergeCells(wb, sheet_name, cols = seq.int(2L, n_cols), rows = item_row)

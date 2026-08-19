@@ -407,17 +407,34 @@ read_answer_tables <- function(path) {
   ans_sheet <- if ("答案" %in% sheets) "答案" else sheets[1L]
   dim_sheet <- find_dimension_sheet(sheets)
 
+  ans_df <- openxlsx::read.xlsx(
+    path,
+    sheet = ans_sheet,
+    skipEmptyRows = FALSE
+  )
+  dim_df <- openxlsx::read.xlsx(
+    path,
+    sheet = dim_sheet,
+    skipEmptyRows = FALSE
+  )
+
+  # 清理欄名與文字內容為純淨 UTF-8
+  if (!is.null(ans_df) && nrow(ans_df) > 0L) {
+    colnames(ans_df) <- clean_utf8_vector(colnames(ans_df))
+    for (j in seq_along(ans_df)) {
+      if (is.character(ans_df[[j]])) ans_df[[j]] <- clean_utf8_vector(ans_df[[j]])
+    }
+  }
+  if (!is.null(dim_df) && nrow(dim_df) > 0L) {
+    colnames(dim_df) <- clean_utf8_vector(colnames(dim_df))
+    for (j in seq_along(dim_df)) {
+      if (is.character(dim_df[[j]])) dim_df[[j]] <- clean_utf8_vector(dim_df[[j]])
+    }
+  }
+
   list(
-    answers = openxlsx::read.xlsx(
-      path,
-      sheet = ans_sheet,
-      skipEmptyRows = FALSE
-    ),
-    dimensions = openxlsx::read.xlsx(
-      path,
-      sheet = dim_sheet,
-      skipEmptyRows = FALSE
-    )
+    answers = ans_df,
+    dimensions = dim_df
   )
 }
 
@@ -425,11 +442,37 @@ read_answer_tables <- function(path) {
 # colNames=FALSE 表示不讓 openxlsx 自動把第一列當成 data.frame 欄名。
 read_response_table <- function(path) {
   if (grepl("\\.csv$", path, ignore.case = TRUE)) {
-    return(data.table::fread(path, data.table = FALSE, header = FALSE, colClasses = "character"))
+    # 支援 UTF-8、UTF-8 with BOM 以及 Big5 / CP950 自動相容讀取
+    dt <- tryCatch({
+      data.table::fread(path, data.table = FALSE, header = FALSE, colClasses = "character", encoding = "UTF-8")
+    }, error = function(e) {
+      data.table::fread(path, data.table = FALSE, header = FALSE, colClasses = "character", encoding = "unknown")
+    })
+
+    # 若以 UTF-8 讀取後第 1 列出現替換字元 (\ufffd)，嘗試改以 CP950 讀取
+    test_sample <- paste(head(as.character(dt[1, ]), 10L), collapse = "")
+    if (grepl("\ufffd", test_sample)) {
+      dt_cp950 <- tryCatch({
+        data.table::fread(path, data.table = FALSE, header = FALSE, colClasses = "character", encoding = "Latin-1")
+      }, error = function(e) NULL)
+      if (!is.null(dt_cp950)) dt <- dt_cp950
+    }
+
+    for (j in seq_along(dt)) {
+      if (is.character(dt[[j]])) dt[[j]] <- clean_utf8_vector(dt[[j]])
+    }
+    return(dt)
   }
-  openxlsx::read.xlsx(
+
+  raw_df <- openxlsx::read.xlsx(
     path,
     sheet = 1,
     colNames = FALSE
   )
+  for (j in seq_along(raw_df)) {
+    if (is.character(raw_df[[j]])) {
+      raw_df[[j]] <- clean_utf8_vector(raw_df[[j]])
+    }
+  }
+  raw_df
 }

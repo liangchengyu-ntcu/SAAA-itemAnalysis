@@ -70,6 +70,10 @@ prepare_job_input <- function(job) {
 
   info_data <- data[, seq_len(info_boundary), drop = FALSE]
   colnames(info_data) <- info_headers
+  # 清理 info_data 文字欄位
+  for (j in seq_along(info_data)) {
+    info_data[[j]] <- decode_html_entities(info_data[[j]])
+  }
 
   # 1. 總流水號 (id)：若檔中缺少，自動填補 6 位數流水號
   if (is.na(info_columns[["id"]])) {
