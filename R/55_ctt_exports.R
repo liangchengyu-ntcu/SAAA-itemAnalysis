@@ -491,9 +491,10 @@ write_level_ctt_sheet <- function(
   }
 
   # -------------------------------------------------------------------------
-  # 美化樣式
+  # 美化樣式（全部明確指定微軟正黑體 Microsoft JhengHei 避免編碼/字型缺字顯示問題）
   # -------------------------------------------------------------------------
   green_header <- openxlsx::createStyle(
+    fontName = "Microsoft JhengHei",
     fgFill = "#E2EFDA", halign = "center", valign = "center",
     wrapText = TRUE, textDecoration = "bold",
     border = "TopBottomLeftRight", borderStyle = "thin"
@@ -504,6 +505,7 @@ write_level_ctt_sheet <- function(
     data_rows <- seq.int(4L, 3L + n_items)
 
     style_num <- openxlsx::createStyle(
+      fontName = "Microsoft JhengHei",
       numFmt = "General", halign = "center",
       border = "TopBottomLeftRight", borderStyle = "thin"
     )
@@ -511,6 +513,7 @@ write_level_ctt_sheet <- function(
       rows = data_rows, cols = c(2:3, seq.int(5L, n_cols)), gridExpand = TRUE)
 
     style_center <- openxlsx::createStyle(
+      fontName = "Microsoft JhengHei",
       halign = "center", border = "TopBottomLeftRight", borderStyle = "thin"
     )
     openxlsx::addStyle(wb, sheet_name, style_center,
@@ -519,6 +522,7 @@ write_level_ctt_sheet <- function(
     # 鑑別度 < 0.20 標紅字
     if (!is.null(mat) && "鑑別度" %in% colnames(mat)) {
       disc_red <- openxlsx::createStyle(
+        fontName = "Microsoft JhengHei",
         fontColour = "#FF0000", textDecoration = "bold",
         numFmt = "General", halign = "center",
         border = "TopBottomLeftRight", borderStyle = "thin"
@@ -560,8 +564,8 @@ write_level_ctt_sheet <- function(
     "6. 鑑別度評估：0.40 以上非常優良；0.30-0.39 優良；0.20-0.29 尚可，需修題；0.19 以下不佳，需刪題或修題（鑑別度 < 0.20 以紅字標記）。"
   )
 
-  note_style <- openxlsx::createStyle(halign = "left", valign = "center")
-  bold_note_style <- openxlsx::createStyle(halign = "left", valign = "center", textDecoration = "bold")
+  note_style <- openxlsx::createStyle(fontName = "Microsoft JhengHei", halign = "left", valign = "center")
+  bold_note_style <- openxlsx::createStyle(fontName = "Microsoft JhengHei", halign = "left", valign = "center", textDecoration = "bold")
 
   for (i in seq_along(notes)) {
     r <- notes_start_row + i - 1L
