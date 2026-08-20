@@ -88,19 +88,43 @@ app_theme <- bslib::bs_theme(
 
 # 建立「使用說明」頁的通用編號卡片。
 #
-# title：卡片標題；number：步驟編號；items：項目符號文字向量。
-guide_card <- function(title, number, items) {
+# title：卡片標題；number：步驟編號；icon_name：Font Awesome 圖示；
+# items：項目符號文字向量（支援 HTML）；color_class：卡片色調 class。
+guide_card <- function(title, number, icon_name = NULL, items = character(), color_class = "") {
   bslib::card(
-    class = "guide-card",
+    class = paste("guide-card", color_class),
     bslib::card_body(
       shiny::div(
-        class = "guide-number",
-        number
+        class = "guide-card-header",
+        shiny::div(
+          class = "guide-number",
+          if (!is.null(icon_name)) shiny::icon(icon_name) else number
+        ),
+        shiny::div(
+          class = "guide-card-step",
+          paste0("STEP ", number)
+        )
       ),
       shiny::h3(title),
       shiny::tags$ul(
-        lapply(items, shiny::tags$li)
+        lapply(items, function(item) shiny::tags$li(shiny::HTML(item)))
       )
+    )
+  )
+}
+
+# 建立使用說明頁的資訊提示區塊 (帶圖示的說明欄)。
+guide_info_block <- function(icon_name, title, content_html, block_class = "guide-info-block") {
+  shiny::div(
+    class = block_class,
+    shiny::div(
+      class = "guide-info-icon",
+      shiny::icon(icon_name)
+    ),
+    shiny::div(
+      class = "guide-info-body",
+      shiny::tags$strong(title),
+      shiny::HTML(content_html)
     )
   )
 }
@@ -122,12 +146,16 @@ example_download_card <- function() {
   bslib::card(
     class = "example-card",
     bslib::card_body(
-      shiny::div(class = "guide-number", "5"),
+      shiny::div(
+        class = "guide-card-header",
+        shiny::div(class = "guide-number guide-number-example", shiny::icon("flask")),
+        shiny::div(class = "guide-card-step", "範例下載")
+      ),
       shiny::h3("匿名範例檔"),
       shiny::p(
         paste0(
           "建議先用範例確認操作流程與輸出格式。",
-          "所有姓名、學校及代碼均為合成資料。"
+          "所有姓名、學校及代碼均為合成資料，不含任何個人資訊。"
         )
       ),
       shiny::div(
@@ -175,7 +203,7 @@ app_ui <- bslib::page_navbar(
     )
   ),
   id = "main_nav",
-  selected = "analysis",
+  selected = "guide",
   fillable = FALSE,
   theme = app_theme,
   header = shiny::tagList(
@@ -250,46 +278,227 @@ app_ui <- bslib::page_navbar(
     value = "guide",
     shiny::div(
       class = "page-shell guide-page",
-      bslib::layout_columns(
-        col_widths = c(6, 6),
-        guide_card(
-          "單科模式",
-          "1",
-          c(
-            "選擇年度與科目。",
-            "上傳 1 份答案檔，可同時上傳多個年級的作答檔。",
-            "檔案檢查通過後開始計算。"
-          )
-        ),
-        guide_card(
-          "批次模式",
-          "2",
-          c(
-            "將答案檔與所有作答檔放進同一個 ZIP。",
-            "自動解壓並配對科目與年級。"
-          )
-        ),
-        guide_card(
-          "資料清洗",
-          "3",
-          c(
-            "單科答案檔名稱不限，內容通過驗證即可。",
-            "作答檔以年度、科目代號、年級開頭，後方名稱可自訂。",
-            "例如 115_C4.xlsx 或 115-C4-第一次匯出.xlsx。",
-            "科目代號：C 國語、E 英語、M 數學、S 自然。"
-          )
-        ),
-        guide_card(
-          "計算與隱私",
-          "4",
-          c(
-            "平均排除缺考及特殊生代碼 1、2、3。",
-            "學生數 = 到考數 + 缺考數 + 特殊生。",
-            "排名母體為所有非缺考學生。",
-            "頁面只預覽彙總資料；個人資料僅存在下載報表。"
+
+      # ── 頁首橫幅 ──────────────────────────────────────────────
+      shiny::div(
+        class = "guide-hero",
+        shiny::div(
+          class = "guide-hero-content",
+          shiny::h1(
+            class = "guide-hero-title",
+            shiny::icon("book-open"),
+            "使用說明"
+          ),
+          shiny::p(
+            class = "guide-hero-subtitle",
+            paste0(
+              "SAAA-itemAnalysis 提供四大核心功能模組：",
+              "資料清洗、檔案整併與分卷、成績計算與報表、試題分析（CTT）。",
+              "請依照下列說明，按步驟完成資料處理流程。"
+            )
           )
         )
       ),
+
+      # ── 快速流程總覽 ──────────────────────────────────────────
+      shiny::div(
+        class = "guide-flow",
+        shiny::div(
+          class = "guide-flow-item",
+          shiny::div(class = "guide-flow-icon", shiny::icon("wand-magic-sparkles")),
+          shiny::div(class = "guide-flow-label", "① 資料清洗")
+        ),
+        shiny::div(class = "guide-flow-arrow", shiny::icon("chevron-right")),
+        shiny::div(
+          class = "guide-flow-item",
+          shiny::div(class = "guide-flow-icon", shiny::icon("folder-tree")),
+          shiny::div(class = "guide-flow-label", "② 檔案整併與分卷")
+        ),
+        shiny::div(class = "guide-flow-arrow", shiny::icon("chevron-right")),
+        shiny::div(
+          class = "guide-flow-item",
+          shiny::div(class = "guide-flow-icon", shiny::icon("calculator")),
+          shiny::div(class = "guide-flow-label", "③ 成績計算與報表")
+        ),
+        shiny::div(class = "guide-flow-arrow", shiny::icon("chevron-right")),
+        shiny::div(
+          class = "guide-flow-item",
+          shiny::div(class = "guide-flow-icon", shiny::icon("chart-bar")),
+          shiny::div(class = "guide-flow-label", "④ 試題分析 (CTT)")
+        )
+      ),
+
+      # ── 功能模組卡片（2 × 2 格局）────────────────────────────
+      shiny::tags$h2(class = "guide-section-title", "功能模組說明"),
+      bslib::layout_columns(
+        col_widths = c(6, 6),
+
+        # ── 1. 資料清洗 ──
+        guide_card(
+          title = "資料清洗",
+          number = "1",
+          icon_name = "wand-magic-sparkles",
+          items = c(
+            "上傳原始作答檔（<code>.xlsx</code> 或 <code>.zip</code>）。",
+            "<strong>自動修復</strong>：依身分證號修復性別欄、整併特教障礙欄位。",
+            "<strong>學校校對</strong>：比對全台 3,519 所學校名錄，自動修正校名與代碼。",
+            "<strong>縣市流水號</strong>：自動產生格式 <code>115_B_C4_000001</code> 的唯一識別碼。",
+            "<strong>依科目年級拆分</strong>：一鍵將混合資料拆為 C/E/M/S × 年級 的分割檔與 ZIP。",
+            "清洗完成後可下載修復報告、清洗後 Excel 或分割 ZIP。"
+          ),
+          color_class = "guide-card-teal"
+        ),
+
+        # ── 2. 檔案整併與分卷 ──
+        guide_card(
+          title = "檔案整併與分卷",
+          number = "2",
+          icon_name = "folder-tree",
+          items = c(
+            "上傳多校分散的作答檔（支援複選 <code>.xlsx</code> 或 <code>.zip</code>）。",
+            "系統自動依<strong>科目代碼</strong>（C/E/M/S）與<strong>年級</strong>（3–8 年級）整合。",
+            "整併後產出每個分卷的人數、學校數、縣市流水號範圍摘要。",
+            "一鍵下載包含所有分卷 Excel 的整併 ZIP 檔，可直接用於成績計算。",
+            "<em>適用情境</em>：各校或各縣市分批匯出後需集中統一處理的情況。"
+          ),
+          color_class = "guide-card-blue"
+        ),
+
+        # ── 3. 成績計算與報表 ──
+        guide_card(
+          title = "成績計算與報表",
+          number = "3",
+          icon_name = "calculator",
+          items = c(
+            "<strong>單科模式</strong>：選擇年度與科目，上傳 1 份答案檔並選多個年級作答檔。",
+            "<strong>批次 ZIP 模式</strong>：將答案檔與所有作答檔放入同一 ZIP，系統自動配對。",
+            "<strong>作答檔命名規則</strong>：以年度_科目代碼_年級開頭，例如 <code>115_C4.xlsx</code>、<code>115-C4-第一次匯出.xlsx</code>。",
+            "<strong>科目代碼</strong>：C 國語、E 英語、M 數學、S 自然。",
+            "<strong>精熟等級</strong>（選配）：勾選後需設定精熟與基礎門檻題數，輸出等級描述欄（精熟／基礎／待加強）。",
+            "計算完成後可直接在頁面預覽彙總報表，並下載完整 Excel 成果。"
+          ),
+          color_class = "guide-card-green"
+        ),
+
+        # ── 4. 試題分析 (CTT) ──
+        guide_card(
+          title = "試題分析 (CTT)",
+          number = "4",
+          icon_name = "chart-bar",
+          items = c(
+            "支援兩種分析模式：<strong>標準三等級（精熟／基礎／待加強）</strong>與<strong>傳統 27% 高低分組</strong>。",
+            "<strong>三等級模式</strong>：可按縣市篩選範圍，下載全部縣市（多工作表）或單一縣市 Excel。",
+            "<strong>27% 模式</strong>：產出試題品質診斷總表（通過率、鑑別度、難度），並附誘答力明細矩陣。",
+            "頂部指標卡即時顯示 Cronbach's α 信度、平均通過率、鑑別度偏低題數等關鍵指標。",
+            "可在「試題分析 (CTT)」頁籤獨立上傳計算，或直接沿用「成績計算」頁的計算結果。",
+            "數值可選擇四捨五入至小數後 2 位（<code>0.00</code>）輸出。"
+          ),
+          color_class = "guide-card-orange"
+        )
+      ),
+
+      # ── 統計規則與計算說明 ────────────────────────────────────
+      shiny::tags$h2(class = "guide-section-title", "統計規則說明"),
+      shiny::div(
+        class = "guide-rules-grid",
+        guide_info_block(
+          "users",
+          "學生人數計算",
+          "<p>學生數 = <strong>到考數</strong> + <strong>缺考數</strong> + <strong>特殊生數</strong>。<br>
+          平均分數<strong>排除缺考生</strong>（代碼 1）及<strong>特殊生</strong>（代碼 2、3）。</p>"
+        ),
+        guide_info_block(
+          "ranking",
+          "排名計算",
+          "<p>排名母體為<strong>所有非缺考學生</strong>（含特殊生）。<br>
+          排名以縣市為單位進行計算，支援並列排名。</p>"
+        ),
+        guide_info_block(
+          "star",
+          "精熟等級門檻",
+          "<p>精熟門檻題數 &gt; 基礎門檻題數 &gt; 0（三者嚴格遞增）。<br>
+          答案檔可內建門檻；未內建時需在畫面手動輸入。<br>
+          <strong>精熟</strong>：答對題數 ≥ 精熟門檻　<strong>基礎</strong>：答對題數 ≥ 基礎門檻　<strong>待加強</strong>：其餘。</p>"
+        ),
+        guide_info_block(
+          "file-excel",
+          "答案檔格式",
+          "<p>單科模式答案檔名稱不限，內容通過驗證即可。<br>
+          批次 ZIP 中的答案檔需符合系統命名規則（含年度與科目代碼）。</p>"
+        ),
+        guide_info_block(
+          "clock-rotate-left",
+          "試題分析 27% 分組",
+          "<p>以全體<strong>有效學生</strong>的總分由高至低排序，取前後各 27% 作為高低分組。<br>
+          鑑別度 = 高分組通過率 − 低分組通過率；建議 ≥ 0.15。</p>"
+        ),
+        guide_info_block(
+          "shield-halved",
+          "隱私保護",
+          "<p>上傳檔案<strong>僅暫存於本次瀏覽器工作階段</strong>，關閉頁面後即自動刪除。<br>
+          頁面預覽只顯示彙總資料；學生個人資料<strong>僅出現在下載報表</strong>中。</p>"
+        )
+      ),
+
+      # ── 常見問題 / 注意事項 ───────────────────────────────────
+      shiny::tags$h2(class = "guide-section-title", "常見問題與注意事項"),
+      shiny::div(
+        class = "guide-faq",
+        shiny::div(
+          class = "guide-faq-item",
+          shiny::div(class = "guide-faq-q", shiny::icon("circle-question"), "作答檔命名有誤，怎麼辦？"),
+          shiny::div(
+            class = "guide-faq-a",
+            "請確認檔名以",
+            shiny::tags$code("年度_科目代碼年級"),
+            "開頭，例如",
+            shiny::tags$code("115_C4.xlsx"),
+            "或",
+            shiny::tags$code("115-M6-第一批.xlsx"),
+            "。科目代碼：C 國語、E 英語、M 數學、S 自然；年級：3–8。"
+          )
+        ),
+        shiny::div(
+          class = "guide-faq-item",
+          shiny::div(class = "guide-faq-q", shiny::icon("circle-question"), "批次 ZIP 內應如何整理檔案？"),
+          shiny::div(
+            class = "guide-faq-a",
+            "將所有答案檔與作答檔放入同一個 ZIP 根目錄（或子資料夾皆可）。",
+            "系統會遞迴掃描所有 .xlsx 檔並自動配對；一個 ZIP 只需上傳一次。"
+          )
+        ),
+        shiny::div(
+          class = "guide-faq-item",
+          shiny::div(class = "guide-faq-q", shiny::icon("circle-question"), "勾選精熟等級後顯示「門檻留空」錯誤？"),
+          shiny::div(
+            class = "guide-faq-a",
+            "若答案檔未內建門檻欄，請在畫面「精熟門檻題數」與「基礎門檻題數」欄位手動填入數值。",
+            "批次模式下，各卷別若有未設定門檻，會在右側彈出逐卷手動輸入介面。"
+          )
+        ),
+        shiny::div(
+          class = "guide-faq-item",
+          shiny::div(class = "guide-faq-q", shiny::icon("circle-question"), "試題分析與成績計算可以分開使用嗎？"),
+          shiny::div(
+            class = "guide-faq-a",
+            "可以。「試題分析 (CTT)」頁籤上方有獨立的執行區域，可單獨上傳計算；",
+            "也可在「成績計算與報表」完成後，直接切換至試題分析頁籤沿用同一份計算結果。"
+          )
+        ),
+        shiny::div(
+          class = "guide-faq-item",
+          shiny::div(class = "guide-faq-q", shiny::icon("circle-question"), "上傳後頁面重新整理，資料還在嗎？"),
+          shiny::div(
+            class = "guide-faq-a",
+            "不在。",
+            shiny::tags$strong("所有上傳資料僅存於當次瀏覽器工作階段，"),
+            "重新整理頁面後即清除，需重新上傳。這是本系統的隱私保護設計。"
+          )
+        )
+      ),
+
+      # ── 匿名範例下載 ──────────────────────────────────────────
+      shiny::tags$h2(class = "guide-section-title", "匿名範例檔下載"),
       example_download_card()
     )
   ),

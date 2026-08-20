@@ -350,44 +350,332 @@ body {
 }
 
 /* -------------------------------------------------------------------------
- * 使用說明與匿名範例下載
+ * 使用說明：頁首橫幅
  * ---------------------------------------------------------------------- */
 .guide-page {
-  padding-top: 2.5rem;
+  padding-top: 1.5rem;
 }
 
+.guide-hero {
+  margin-bottom: 2rem;
+  padding: 2rem 2.2rem;
+  border-radius: 1.2rem;
+  background: linear-gradient(135deg, #0f766e 0%, #0e7490 60%, #1d4ed8 100%);
+  box-shadow: 0 8px 32px rgba(15, 118, 110, 0.28);
+  color: #fff;
+  overflow: hidden;
+  position: relative;
+}
+
+.guide-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 80% 30%, rgba(255,255,255,0.12), transparent 55%);
+  pointer-events: none;
+}
+
+.guide-hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.guide-hero-title {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.9rem;
+  font-weight: 900;
+  color: #fff;
+  margin-bottom: 0.6rem;
+}
+
+.guide-hero-title .svg-inline--fa {
+  font-size: 1.6rem;
+  opacity: 0.85;
+}
+
+.guide-hero-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.85);
+  max-width: 680px;
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* -------------------------------------------------------------------------
+ * 使用說明：快速流程總覽
+ * ---------------------------------------------------------------------- */
+.guide-flow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 1.25rem 1.5rem;
+  margin-bottom: 2rem;
+  border-radius: 1rem;
+  background: #fff;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.04);
+}
+
+.guide-flow-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.5rem 1rem;
+}
+
+.guide-flow-icon {
+  display: grid;
+  place-items: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 0.75rem;
+  background: linear-gradient(135deg, #ecf8f6, #ddf3f0);
+  color: var(--teal);
+  font-size: 1.1rem;
+  transition: transform 200ms ease, background 200ms ease;
+}
+
+.guide-flow-item:hover .guide-flow-icon {
+  background: linear-gradient(135deg, #0f766e, #0e7490);
+  color: #fff;
+  transform: translateY(-2px);
+}
+
+.guide-flow-label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #475569;
+  white-space: nowrap;
+}
+
+.guide-flow-arrow {
+  color: #cbd5e1;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+/* -------------------------------------------------------------------------
+ * 使用說明：區段標題
+ * ---------------------------------------------------------------------- */
+.guide-section-title {
+  font-size: 1.2rem;
+  font-weight: 900;
+  color: var(--ink);
+  margin: 2rem 0 1rem;
+  padding-left: 0.8rem;
+  border-left: 4px solid var(--teal);
+}
+
+/* -------------------------------------------------------------------------
+ * 使用說明：功能模組卡片
+ * ---------------------------------------------------------------------- */
 .guide-card {
-  min-height: 15rem;
+  min-height: 17rem;
+  transition: transform 200ms ease, box-shadow 200ms ease;
+}
+
+.guide-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 48px rgba(15, 23, 42, 0.11);
+}
+
+.guide-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 0.8rem;
 }
 
 .guide-number {
   display: grid;
   place-items: center;
-  width: 2.3rem;
-  height: 2.3rem;
-  margin-bottom: 1rem;
+  width: 2.4rem;
+  height: 2.4rem;
   border-radius: 0.7rem;
   color: #fff;
   background: var(--teal);
   font-weight: 800;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+/* 範例下載卡的圖示使用琥珀色 */
+.guide-number-example {
+  background: linear-gradient(135deg, #d97706, #b45309);
+}
+
+.guide-card-step {
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
 }
 
 .guide-card h3 {
-  font-size: 1.15rem;
+  font-size: 1.1rem;
   font-weight: 800;
+  color: var(--ink);
+  margin-bottom: 0.65rem;
+}
+
+.guide-card ul {
+  padding-left: 1.2rem;
+  margin: 0;
 }
 
 .guide-card li {
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.45rem;
   color: #475569;
+  line-height: 1.55;
+  font-size: 0.9rem;
 }
 
+.guide-card li code {
+  font-size: 0.82rem;
+  padding: 0.1rem 0.35rem;
+  border-radius: 0.3rem;
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--teal-dark);
+}
+
+/* 四種卡片色調：teal / blue / green / orange */
+.guide-card-teal .guide-number { background: linear-gradient(135deg, #0f766e, #0d9488); }
+.guide-card-teal { border-top: 3px solid #0f766e; }
+
+.guide-card-blue .guide-number { background: linear-gradient(135deg, #1d4ed8, #0ea5e9); }
+.guide-card-blue { border-top: 3px solid #1d4ed8; }
+
+.guide-card-green .guide-number { background: linear-gradient(135deg, #15803d, #16a34a); }
+.guide-card-green { border-top: 3px solid #15803d; }
+
+.guide-card-orange .guide-number { background: linear-gradient(135deg, #d97706, #ea580c); }
+.guide-card-orange { border-top: 3px solid #d97706; }
+
+/* -------------------------------------------------------------------------
+ * 使用說明：統計規則說明格
+ * ---------------------------------------------------------------------- */
+.guide-rules-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-bottom: 1rem;
+}
+
+.guide-info-block {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 1.1rem;
+  border-radius: 0.85rem;
+  background: #fff;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.04);
+  transition: box-shadow 180ms ease, transform 180ms ease;
+}
+
+.guide-info-block:hover {
+  box-shadow: 0 6px 20px rgba(15, 23, 42, 0.09);
+  transform: translateY(-2px);
+}
+
+.guide-info-icon {
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 2.2rem;
+  height: 2.2rem;
+  border-radius: 0.6rem;
+  background: linear-gradient(135deg, #ecf8f6, #ddf3f0);
+  color: var(--teal);
+  font-size: 0.95rem;
+}
+
+.guide-info-body strong {
+  display: block;
+  margin-bottom: 0.3rem;
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--ink);
+}
+
+.guide-info-body p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #475569;
+  line-height: 1.55;
+}
+
+/* -------------------------------------------------------------------------
+ * 使用說明：常見問題區塊
+ * ---------------------------------------------------------------------- */
+.guide-faq {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.guide-faq-item {
+  border-radius: 0.8rem;
+  background: #fff;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.04);
+  transition: box-shadow 180ms ease;
+}
+
+.guide-faq-item:hover {
+  box-shadow: 0 4px 16px rgba(15, 23, 42, 0.08);
+}
+
+.guide-faq-q {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: var(--teal-dark);
+  background: linear-gradient(90deg, #ecf8f6 0%, #f8fafb 100%);
+  border-bottom: 1px solid #e2f4f1;
+}
+
+.guide-faq-q .svg-inline--fa {
+  color: var(--teal);
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.guide-faq-a {
+  padding: 0.7rem 1rem 0.75rem 2.4rem;
+  font-size: 0.86rem;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.guide-faq-a code {
+  font-size: 0.8rem;
+  padding: 0.08rem 0.32rem;
+  border-radius: 0.3rem;
+  background: rgba(15, 118, 110, 0.08);
+  color: var(--teal-dark);
+}
+
+/* -------------------------------------------------------------------------
+ * 使用說明：匿名範例下載卡
+ * ---------------------------------------------------------------------- */
 .example-card {
-  margin-top: 1rem;
+  margin-top: 0;
 }
 
 .example-card p {
   color: var(--muted);
+  font-size: 0.9rem;
 }
 
 .example-downloads {
@@ -451,5 +739,27 @@ body {
 
   .metric-grid {
     grid-template-columns: 1fr;
+  }
+
+  /* 使用說明頁手機適配 */
+  .guide-hero {
+    padding: 1.4rem 1.2rem;
+  }
+
+  .guide-hero-title {
+    font-size: 1.4rem;
+  }
+
+  .guide-flow {
+    gap: 0.3rem;
+    padding: 0.9rem 0.8rem;
+  }
+
+  .guide-flow-arrow {
+    transform: rotate(90deg);
+  }
+
+  .guide-rules-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
