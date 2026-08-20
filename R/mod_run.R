@@ -148,6 +148,7 @@ mod_run_ui <- function(id) {
         ),
         bslib::card_body(
           shiny::uiOutput(ns("status_message")),
+          shiny::uiOutput(ns("manual_cutoff_box")),
           shiny::div(
             class = "table-scroll",
             shiny::tableOutput(ns("job_preview"))
@@ -183,16 +184,17 @@ validate_year_input <- function(year) {
 #   staged_jobs／staged_preview：供測試或其他模組查詢的暫存狀態。
 mod_run_server <- function(id) {
   shiny::moduleServer(id, function(input, output, session) {
+    ns <- session$ns
     # 每個瀏覽器 session 都有獨立暫存根目錄，彼此不共享上傳資料。
     session_root <- tempfile("score-shiny-session-")
     dir.create(session_root, recursive = TRUE, showWarnings = FALSE)
 
+    # discovered_jobs 存放剛解析出的原始 job 陣列（供門檻微調連動）
+    discovered_jobs <- shiny::reactiveVal(NULL)
     # staged_jobs 只有在全部工作通過驗證後才會存入可執行 job。
     staged_jobs <- shiny::reactiveVal(NULL)
     staged_preview <- shiny::reactiveVal(empty_job_table())
     # 控管狀態訊息顯示，避免重新上傳時畫面仍殘留上一次成功／失敗訊息。
-    # 這裡的關鍵是在使用者按「檢查檔案」時切回 TRUE，讓使用者明確看到最新
-    # 訊息而非上一次工作結果。
     show_staging_status <- shiny::reactiveVal(TRUE)
     stage_message <- shiny::reactiveVal(
       list(type = "info", text = "請先選擇檔案並按「檢查檔案」。")
@@ -206,7 +208,6 @@ mod_run_server <- function(id) {
     })
 
     # ExtendedTask 將耗時計算移到 future 背景程序，避免凍結 Shiny 介面。
-    # 這個函式只能接收可序列化資料，不可直接使用 input、output、session。
     task <- shiny::ExtendedTask$new(function(jobs, output_root) {
       promises::future_promise({
         run_job_batch(jobs, output_root)
@@ -222,6 +223,7 @@ mod_run_server <- function(id) {
     shiny::observeEvent(input$prepare_files, {
       # 每次重查都先清除前一次可執行狀態，避免用舊檔誤算。
       show_staging_status(TRUE)
+      discovered_jobs(NULL)
       staged_jobs(NULL)
       staged_preview(empty_job_table())
       stage_message(list(type = "info", text = "正在檢查檔案…"))
@@ -229,15 +231,11 @@ mod_run_server <- function(id) {
       tryCatch(
         {
           year <- validate_year_input(input$year)
-
           calc_level <- isTRUE(input$calc_level)
           mastery_cutoff <- if (calc_level) as.numeric(input$mastery_cutoff) else NA_real_
           basic_cutoff <- if (calc_level) as.numeric(input$basic_cutoff) else NA_real_
 
-          if (calc_level) {
-            if (is.na(mastery_cutoff) || is.na(basic_cutoff)) {
-              abort_score("勾選「計算精熟等級」時，必須輸入「精熟門檻題數」與「基礎門檻題數」。")
-            }
+          if (calc_level && !is.na(mastery_cutoff) && !is.na(basic_cutoff)) {
             if (mastery_cutoff <= basic_cutoff) {
               abort_score("精熟門檻題數（", mastery_cutoff, "）必須大於基礎門檻題數（", basic_cutoff, "）。")
             }
@@ -258,7 +256,6 @@ mod_run_server <- function(id) {
           )
 
           if (identical(input$mode, "single")) {
-            # Shiny 的 datapath 是暫時名稱，先以原檔名複製到 session 目錄。
             answer_paths <- stage_uploaded_files(
               input$answer_file,
               file.path(staging_directory, "answers")
@@ -279,6 +276,18 @@ mod_run_server <- function(id) {
               mastery_cutoff = mastery_cutoff,
               basic_cutoff = basic_cutoff
             )
+
+            # 若答案檔內有門檻且畫面留空，同步更新畫面輸入框
+            if (calc_level && length(jobs) > 0L && !is.na(jobs[[1L]]$mastery_cutoff)) {
+              if (is.na(mastery_cutoff)) {
+                shiny::updateNumericInput(session, "mastery_cutoff", value = jobs[[1L]]$mastery_cutoff)
+              }
+              if (is.na(basic_cutoff)) {
+                shiny::updateNumericInput(session, "basic_cutoff", value = jobs[[1L]]$basic_cutoff)
+              }
+            } else if (calc_level && (is.na(mastery_cutoff) || is.na(basic_cutoff))) {
+              abort_score("勾選「計算精熟等級」時，答案檔中未包含等級門檻，必須手動輸入「精熟門檻題數」與「基礎門檻題數」。")
+            }
           } else {
             # 批次 ZIP 先安全解壓，再掃描所有子資料夾自動配對。
             zip_paths <- stage_uploaded_files(
@@ -294,20 +303,35 @@ mod_run_server <- function(id) {
             )
             jobs <- discover_batch_jobs(
               extracted_directory,
-              year
+              year,
+              calc_level = calc_level,
+              mastery_cutoff = mastery_cutoff,
+              basic_cutoff = basic_cutoff
             )
           }
+
+          discovered_jobs(jobs)
 
           # 逐工作驗證答案欄、工作表與作答檔最低結構。
           preview <- preview_jobs(jobs)
           staged_preview(preview)
-          if (any(preview$狀態 != "可執行")) {
+
+          # 檢查是否有缺少門檻的工作
+          has_missing_cutoffs <- calc_level && any(vapply(jobs, function(j) is.na(j$mastery_cutoff) || is.na(j$basic_cutoff), logical(1)))
+
+          if (has_missing_cutoffs) {
+            staged_jobs(NULL)
+            stage_message(list(
+              type = "warning",
+              text = "部分卷別在答案檔中未設定等級門檻，請在下方輸入各卷門檻後點擊「套用門檻」。"
+            ))
+          } else if (any(preview$狀態 != "可執行")) {
+            staged_jobs(NULL)
             stage_message(list(
               type = "danger",
               text = "部分檔案未通過檢查，請修正後重新上傳。"
             ))
           } else {
-            # 僅當全部工作都可執行時才開放「開始計算」的資料來源。
             staged_jobs(jobs)
             stage_message(list(
               type = "success",
@@ -320,7 +344,7 @@ mod_run_server <- function(id) {
           }
         },
         error = function(error) {
-          # 上傳、解壓或配對任一步出錯，都顯示可讀訊息並禁止執行。
+          discovered_jobs(NULL)
           staged_jobs(NULL)
           stage_message(list(
             type = "danger",
@@ -330,15 +354,147 @@ mod_run_server <- function(id) {
       )
     })
 
+    # 批次模式下，若答案檔未提供門檻時，顯示手動輸入面板
+    output$manual_cutoff_box <- shiny::renderUI({
+      jobs <- discovered_jobs()
+      if (!isTRUE(input$calc_level) || is.null(jobs) || length(jobs) == 0L) {
+        return(NULL)
+      }
+
+      missing_jobs <- Filter(function(j) is.na(j$mastery_cutoff) || is.na(j$basic_cutoff), jobs)
+      if (length(missing_jobs) == 0L) {
+        return(NULL)
+      }
+
+      shiny::div(
+        class = "alert alert-warning p-3 mb-3",
+        shiny::tags$strong("⚠️ 答案檔未包含等級門檻，請手動設定各卷門檻（嚴禁留空）："),
+        shiny::tags$div(
+          class = "row mt-2",
+          lapply(missing_jobs, function(j) {
+            safe_key <- gsub("[^A-Za-z0-9_]", "_", j$key)
+            shiny::div(
+              class = "col-md-6 col-lg-4 mb-2",
+              shiny::div(
+                class = "border p-2 rounded bg-white shadow-sm",
+                shiny::tags$b(sprintf("📌 %s %s年級 (%s)", j$subject_name, j$grade, j$key)),
+                shiny::div(
+                  class = "row g-2 mt-1",
+                  shiny::div(
+                    class = "col-6",
+                    shiny::numericInput(
+                      ns(paste0("m_cut_", safe_key)),
+                      "精熟門檻 (≥)",
+                      value = if (!is.na(j$mastery_cutoff)) j$mastery_cutoff else NA,
+                      min = 1,
+                      step = 1
+                    )
+                  ),
+                  shiny::div(
+                    class = "col-6",
+                    shiny::numericInput(
+                      ns(paste0("b_cut_", safe_key)),
+                      "基礎門檻 (≥)",
+                      value = if (!is.na(j$basic_cutoff)) j$basic_cutoff else NA,
+                      min = 1,
+                      step = 1
+                    )
+                  )
+                )
+              )
+            )
+          })
+        ),
+        shiny::div(
+          class = "mt-2",
+          shiny::actionButton(
+            ns("apply_batch_cutoffs"),
+            "套用門檻並完成檢查",
+            icon = shiny::icon("check"),
+            class = "btn-warning btn-sm fw-bold"
+          )
+        )
+      )
+    })
+
+    # 套用手動填寫的批次門檻
+    shiny::observeEvent(input$apply_batch_cutoffs, {
+      jobs <- discovered_jobs()
+      if (is.null(jobs) || length(jobs) == 0L) return()
+
+      updated_jobs <- lapply(jobs, function(j) {
+        safe_key <- gsub("[^A-Za-z0-9_]", "_", j$key)
+        m_input_val <- input[[paste0("m_cut_", safe_key)]]
+        b_input_val <- input[[paste0("b_cut_", safe_key)]]
+
+        m_val <- if (!is.null(m_input_val) && !is.na(m_input_val)) as.numeric(m_input_val) else j$mastery_cutoff
+        b_val <- if (!is.null(b_input_val) && !is.na(b_input_val)) as.numeric(b_input_val) else j$basic_cutoff
+
+        j$mastery_cutoff <- m_val
+        j$basic_cutoff <- b_val
+        j
+      })
+
+      discovered_jobs(updated_jobs)
+      preview <- preview_jobs(updated_jobs)
+      staged_preview(preview)
+
+      # 檢查是否全部門檻皆已填妥且合法
+      has_missing <- any(vapply(updated_jobs, function(j) is.na(j$mastery_cutoff) || is.na(j$basic_cutoff), logical(1)))
+      has_invalid <- any(vapply(updated_jobs, function(j) {
+        if (is.na(j$mastery_cutoff) || is.na(j$basic_cutoff)) return(TRUE)
+        j$mastery_cutoff <= j$basic_cutoff || j$basic_cutoff <= 0
+      }, logical(1)))
+
+      if (has_missing) {
+        staged_jobs(NULL)
+        stage_message(list(
+          type = "danger",
+          text = "仍有卷別未填寫門檻，請全數填寫完畢。"
+        ))
+      } else if (has_invalid) {
+        staged_jobs(NULL)
+        stage_message(list(
+          type = "danger",
+          text = "門檻數值不合法（精熟門檻必須大於基礎門檻，且基礎門檻必須大於 0）。"
+        ))
+      } else if (any(preview$狀態 != "可執行")) {
+        staged_jobs(NULL)
+        stage_message(list(
+          type = "danger",
+          text = "部分檔案未通過檢查，請修正後重新檢查。"
+        ))
+      } else {
+        staged_jobs(updated_jobs)
+        stage_message(list(
+          type = "success",
+          text = paste0("已成功套用所有門檻並通過檢查，共 ", length(updated_jobs), " 個工作，可開始計算！")
+        ))
+      }
+    })
+
     # 「開始計算」為背景工作的唯一入口。
     shiny::observeEvent(input$run_analysis, {
       jobs <- staged_jobs()
       if (is.null(jobs) || length(jobs) == 0L) {
         shiny::showNotification(
-          "請先完成檔案檢查。",
+          "請先完成檔案檢查與門檻設定。",
           type = "warning"
         )
         return()
+      }
+
+      # 嚴格防呆：若勾選了計算精熟等級，再次確保所有工作皆有門檻數值
+      if (isTRUE(input$calc_level)) {
+        for (j in jobs) {
+          if (is.na(j$mastery_cutoff) || is.na(j$basic_cutoff)) {
+            shiny::showNotification(
+              paste0("工作「", j$key, "」尚未設定門檻，請先填寫門檻。"),
+              type = "error"
+            )
+            return()
+          }
+        }
       }
 
       output_root <- tempfile(

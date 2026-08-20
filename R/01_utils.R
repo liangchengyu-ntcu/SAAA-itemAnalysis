@@ -113,6 +113,92 @@ find_dimension_sheet <- function(sheets) {
   NULL
 }
 
+# 動態識別答案檔中存放等級門檻的工作表名稱
+find_cutoff_sheet <- function(sheets) {
+  candidates <- c("等級門檻", "門檻", "標準門檻", "切點", "Cutoff", "Cutoffs", "cutoff", "cutoffs", "LevelCutoff")
+  for (cand in candidates) {
+    if (cand %in% sheets) return(cand)
+  }
+  for (s in sheets) {
+    if (grepl("門檻|切點|cutoff", s, ignore.case = TRUE)) return(s)
+  }
+  NULL
+}
+
+# 從已讀取的 answer_tables 提取特定年級/科目的精熟與基礎門檻
+# 嚴格規則：只從檔案中明確給定的數值提取，若無則回傳 NULL，絕不自動猜測
+extract_grade_cutoffs <- function(answer_tables, grade, subject_code) {
+  if (is.null(answer_tables)) return(NULL)
+
+  grade_str <- as.character(grade)
+  subject_code <- toupper(as.character(subject_code))
+  key_col <- paste0(subject_code, grade_str)
+
+  # 1. 檢查獨立的 cutoffs 工作表
+  if (!is.null(answer_tables$cutoffs) && nrow(answer_tables$cutoffs) > 0L) {
+    df <- answer_tables$cutoffs
+    cnames <- colnames(df)
+    cnames_norm <- gsub("[[:space:]]+", "", cnames)
+
+    # 1.1 直式長表 (Long format)：含 年級/卷別 欄位與 精熟門檻/基礎門檻 欄位
+    grade_col_idx <- grep("^(年級|grade|卷別|科目年級|科目)$", cnames_norm, ignore.case = TRUE)
+    mastery_col_idx <- grep("^(精熟門檻|精熟|mastery|mastery_cutoff)$", cnames_norm, ignore.case = TRUE)
+    basic_col_idx <- grep("^(基礎門檻|基礎|basic|basic_cutoff)$", cnames_norm, ignore.case = TRUE)
+
+    if (length(grade_col_idx) >= 1L && length(mastery_col_idx) >= 1L && length(basic_col_idx) >= 1L) {
+      g_vals <- trimws(as.character(df[[grade_col_idx[1L]]]))
+      match_row <- which(
+        g_vals == grade_str |
+        toupper(g_vals) == key_col |
+        g_vals == paste0(grade_str, "年級") |
+        toupper(g_vals) == paste0(subject_code, grade_str)
+      )
+      if (length(match_row) >= 1L) {
+        m_val <- suppressWarnings(as.numeric(df[[mastery_col_idx[1L]]][match_row[1L]]))
+        b_val <- suppressWarnings(as.numeric(df[[basic_col_idx[1L]]][match_row[1L]]))
+        if (!is.na(m_val) && !is.na(b_val) && m_val > b_val && b_val > 0) {
+          return(list(mastery_cutoff = m_val, basic_cutoff = b_val))
+        }
+      }
+    }
+
+    # 1.2 橫式寬表 (Wide format)：欄名為 C3, C4, C5 或 3, 4, 5，第 1 欄為「門檻/等級」
+    matched_col <- cnames[cnames == key_col | cnames == grade_str | cnames == paste0(grade_str, "年級")]
+    if (length(matched_col) >= 1L) {
+      target_col <- matched_col[1L]
+      row_labels <- trimws(as.character(df[[1L]]))
+      m_row <- grep("^(精熟門檻|精熟|mastery)$", row_labels, ignore.case = TRUE)
+      b_row <- grep("^(基礎門檻|基礎|basic)$", row_labels, ignore.case = TRUE)
+      if (length(m_row) >= 1L && length(b_row) >= 1L) {
+        m_val <- suppressWarnings(as.numeric(df[[target_col]][m_row[1L]]))
+        b_val <- suppressWarnings(as.numeric(df[[target_col]][b_row[1L]]))
+        if (!is.na(m_val) && !is.na(b_val) && m_val > b_val && b_val > 0) {
+          return(list(mastery_cutoff = m_val, basic_cutoff = b_val))
+        }
+      }
+    }
+  }
+
+  # 2. 檢查答案表 (answers) 底部的門檻列
+  if (!is.null(answer_tables$answers) && nrow(answer_tables$answers) > 0L) {
+    ans_df <- answer_tables$answers
+    if (key_col %in% colnames(ans_df)) {
+      col1_labels <- trimws(as.character(ans_df[[1L]]))
+      m_row <- grep("^(精熟門檻|精熟)$", col1_labels)
+      b_row <- grep("^(基礎門檻|基礎)$", col1_labels)
+      if (length(m_row) >= 1L && length(b_row) >= 1L) {
+        m_val <- suppressWarnings(as.numeric(ans_df[[key_col]][m_row[1L]]))
+        b_val <- suppressWarnings(as.numeric(ans_df[[key_col]][b_row[1L]]))
+        if (!is.na(m_val) && !is.na(b_val) && m_val > b_val && b_val > 0) {
+          return(list(mastery_cutoff = m_val, basic_cutoff = b_val))
+        }
+      }
+    }
+  }
+
+  NULL
+}
+
 # 動態判定學生資訊欄與題目作答欄的分界位置。
 #
 # 支援 23 欄標準格式（含總流水號與縣市流水號）及 21 欄簡化格式（直接從縣市欄位開始）。
@@ -217,6 +303,8 @@ empty_job_table <- function() {
     工作代號 = character(),
     科目 = character(),
     年級 = integer(),
+    精熟門檻 = character(),
+    基礎門檻 = character(),
     狀態 = character(),
     訊息 = character(),
     stringsAsFactors = FALSE

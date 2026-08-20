@@ -255,7 +255,20 @@ discover_single_jobs <- function(
     grades <- vapply(parsed, `[[`, integer(1), "grade")
   }
 
+  ans_tbl <- tryCatch(read_answer_tables(answer_path), error = function(e) NULL)
+
   jobs <- lapply(parsed, function(item) {
+    job_m <- if (isTRUE(calc_level)) as.numeric(mastery_cutoff) else NA_real_
+    job_b <- if (isTRUE(calc_level)) as.numeric(basic_cutoff) else NA_real_
+
+    if (isTRUE(calc_level) && (is.na(job_m) || is.na(job_b)) && !is.null(ans_tbl)) {
+      file_cutoffs <- extract_grade_cutoffs(ans_tbl, item$grade, subject_code)
+      if (!is.null(file_cutoffs)) {
+        if (is.na(job_m)) job_m <- file_cutoffs$mastery_cutoff
+        if (is.na(job_b)) job_b <- file_cutoffs$basic_cutoff
+      }
+    }
+
     make_job(
       year = year,
       subject_code = subject_code,
@@ -263,8 +276,8 @@ discover_single_jobs <- function(
       answer_path = answer_path,
       response_path = item$path,
       calc_level = calc_level,
-      mastery_cutoff = mastery_cutoff,
-      basic_cutoff = basic_cutoff
+      mastery_cutoff = job_m,
+      basic_cutoff = job_b
     )
   })
   jobs[order(grades)]
@@ -328,6 +341,12 @@ discover_batch_jobs <- function(
     answer_keys
   )
 
+  # 快取讀取各答案檔以提取門檻
+  cached_answer_tables <- list()
+  for (ak in names(answer_map)) {
+    cached_answer_tables[[ak]] <- tryCatch(read_answer_tables(answer_map[[ak]]), error = function(e) NULL)
+  }
+
   # 作答檔以「年度_科目年級」為唯一鍵，避免同一工作執行兩次。
   response_keys <- vapply(response_info, function(item) {
     job_key(item$year, item$subject_code, item$grade)
@@ -348,6 +367,20 @@ discover_batch_jobs <- function(
         " 找不到對應答案檔。"
       )
     }
+
+    job_m <- if (isTRUE(calc_level)) as.numeric(mastery_cutoff) else NA_real_
+    job_b <- if (isTRUE(calc_level)) as.numeric(basic_cutoff) else NA_real_
+
+    # 若答案檔內有該卷之等級門檻，自動自檔案帶入
+    ans_tbl <- cached_answer_tables[[lookup]]
+    if (isTRUE(calc_level) && (is.na(job_m) || is.na(job_b)) && !is.null(ans_tbl)) {
+      file_cutoffs <- extract_grade_cutoffs(ans_tbl, item$grade, item$subject_code)
+      if (!is.null(file_cutoffs)) {
+        if (is.na(job_m)) job_m <- file_cutoffs$mastery_cutoff
+        if (is.na(job_b)) job_b <- file_cutoffs$basic_cutoff
+      }
+    }
+
     make_job(
       year = item$year,
       subject_code = item$subject_code,
@@ -355,8 +388,8 @@ discover_batch_jobs <- function(
       answer_path = answer_path,
       response_path = item$path,
       calc_level = calc_level,
-      mastery_cutoff = mastery_cutoff,
-      basic_cutoff = basic_cutoff
+      mastery_cutoff = job_m,
+      basic_cutoff = job_b
     )
   })
 
@@ -387,10 +420,23 @@ preview_jobs <- function(jobs) {
       }
     )
 
+    m_display <- if (isTRUE(job$calc_level)) {
+      if (!is.na(job$mastery_cutoff)) paste0("≥ ", job$mastery_cutoff, " 題") else "未設定"
+    } else {
+      "不計算"
+    }
+    b_display <- if (isTRUE(job$calc_level)) {
+      if (!is.na(job$basic_cutoff)) paste0("≥ ", job$basic_cutoff, " 題") else "未設定"
+    } else {
+      "不計算"
+    }
+
     data.frame(
       工作代號 = job$key,
       科目 = job$subject_name,
       年級 = job$grade,
+      精熟門檻 = m_display,
+      基礎門檻 = b_display,
       狀態 = validation$status,
       訊息 = validation$message,
       stringsAsFactors = FALSE
@@ -400,12 +446,13 @@ preview_jobs <- function(jobs) {
   do.call(rbind, rows)
 }
 
-# 一次讀取答案檔的「答案」與「向度」（或「評量指標」）工作表。
+# 一次讀取答案檔的「答案」、「向度」（或「評量指標」）與「等級門檻」（若存在）工作表。
 # skipEmptyRows=FALSE 很重要，因為空白答案列仍對應原始題號位置。
 read_answer_tables <- function(path) {
   sheets <- openxlsx::getSheetNames(path)
   ans_sheet <- if ("答案" %in% sheets) "答案" else sheets[1L]
   dim_sheet <- find_dimension_sheet(sheets)
+  cut_sheet <- find_cutoff_sheet(sheets)
 
   ans_df <- openxlsx::read.xlsx(
     path,
@@ -417,6 +464,15 @@ read_answer_tables <- function(path) {
     sheet = dim_sheet,
     skipEmptyRows = FALSE
   )
+  cut_df <- if (!is.null(cut_sheet)) {
+    openxlsx::read.xlsx(
+      path,
+      sheet = cut_sheet,
+      skipEmptyRows = TRUE
+    )
+  } else {
+    NULL
+  }
 
   # 清理欄名與文字內容為純淨 UTF-8
   if (!is.null(ans_df) && nrow(ans_df) > 0L) {
@@ -431,10 +487,17 @@ read_answer_tables <- function(path) {
       if (is.character(dim_df[[j]])) dim_df[[j]] <- clean_utf8_vector(dim_df[[j]])
     }
   }
+  if (!is.null(cut_df) && nrow(cut_df) > 0L) {
+    colnames(cut_df) <- clean_utf8_vector(colnames(cut_df))
+    for (j in seq_along(cut_df)) {
+      if (is.character(cut_df[[j]])) cut_df[[j]] <- clean_utf8_vector(cut_df[[j]])
+    }
+  }
 
   list(
     answers = ans_df,
-    dimensions = dim_df
+    dimensions = dim_df,
+    cutoffs = cut_df
   )
 }
 
