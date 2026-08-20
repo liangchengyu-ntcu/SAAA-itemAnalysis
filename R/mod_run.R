@@ -112,6 +112,11 @@ mod_run_ui <- function(id) {
               )
             )
           ),
+          shiny::checkboxInput(
+            ns("ctt_round_two"),
+            "試題分析數值四捨五入至小數後 2 位 (0.00)",
+            value = FALSE
+          ),
           # 先檢查再計算；run_analysis 使用 task button 顯示忙碌狀態。
           shiny::div(
             class = "button-row",
