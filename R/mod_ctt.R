@@ -162,9 +162,14 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
             ),
             selected = "level_3"
           ),
+          shiny::tags$hr(),
+          shiny::checkboxInput(
+            ns("round_two_dec"),
+            "數值四捨五入至小數後 2 位 (0.00)",
+            value = FALSE
+          ),
           shiny::conditionalPanel(
             condition = sprintf("input['%s'] === 'level_3'", ns("ctt_mode")),
-            shiny::tags$hr(),
             shiny::selectInput(
               ns("selected_scope"),
               "選擇分析範圍 / 縣市",
@@ -183,7 +188,6 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           ),
           shiny::conditionalPanel(
             condition = sprintf("input['%s'] === 'ctt_27'", ns("ctt_mode")),
-            shiny::tags$hr(),
             shiny::downloadButton(
               ns("download_ctt_excel"),
               "下載 CTT 試題分析總表 (.xlsx)",
@@ -317,21 +321,37 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
       }
     })
 
+    # 表格數值格式化工具
+    format_table_digits <- function(tab, round_two) {
+      if (is.null(tab) || !isTRUE(round_two)) return(tab)
+      tab_out <- tab
+      for (col in colnames(tab_out)) {
+        if (col %in% c("題號", "正確答案", "答案", "選項", "向度", "指標", "評量指標", "雙向細目")) next
+        vals <- suppressWarnings(as.numeric(tab_out[[col]]))
+        if (!all(is.na(vals))) {
+          tab_out[[col]] <- ifelse(is.na(vals), as.character(tab_out[[col]]), sprintf("%.2f", round_half_up(vals, 2)))
+        }
+      }
+      tab_out
+    }
+
     # 動態主表格（27% 或 三等級）
     output$main_ctt_table <- shiny::renderTable({
-      if (identical(input$ctt_mode, "level_3")) {
+      tab <- if (identical(input$ctt_mode, "level_3")) {
         curr_res <- effective_level_ctt()
         if (!is.null(curr_res)) curr_res$level_summary_table else NULL
       } else {
         selected <- selected_job_result()
         selected$ctt_analysis$item_summary
       }
+      format_table_digits(tab, isTRUE(input$round_two_dec))
     }, striped = TRUE, hover = TRUE, bordered = TRUE, spacing = "s")
 
     # 27% 模式下的誘答力矩陣表
     output$distractor_matrix_table <- shiny::renderTable({
       selected <- selected_job_result()
-      selected$ctt_analysis$distractor_results
+      tab <- selected$ctt_analysis$distractor_results
+      format_table_digits(tab, isTRUE(input$round_two_dec))
     }, striped = TRUE, hover = TRUE, bordered = TRUE, spacing = "s")
 
     get_job_info <- function(selected) {
@@ -362,7 +382,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           subject_label = job$subject_name,
           year = job$year,
           output_path = file,
-          grade_ctt_map = grade_map
+          grade_ctt_map = grade_map,
+          round_two_dec = isTRUE(input$round_two_dec)
         )
       },
       contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -406,7 +427,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           grade = job$grade,
           year = job$year,
           output_path = file,
-          city_name = "ALL"
+          city_name = "ALL",
+          round_two_dec = isTRUE(input$round_two_dec)
         )
       },
       contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
@@ -433,7 +455,8 @@ mod_ctt_server <- function(id, main_run_result = shiny::reactive(NULL)) {
           grade = job$grade,
           year = job$year,
           output_path = file,
-          city_name = city
+          city_name = city,
+          round_two_dec = isTRUE(input$round_two_dec)
         )
       },
       contentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"

@@ -106,9 +106,9 @@ write_ctt_analysis_sheet <- function(
     disc_val <- if (!is.na(hp) && !is.na(lp)) (hp - lp) else NA_real_
     diff_val <- if (!is.na(hp) && !is.na(lp)) (hp + lp) / 2 else NA_real_
 
-    mat[item, 2] <- if (!is.na(disc_val)) disc_val else NA_real_
-    mat[item, 3] <- if (!is.na(diff_val)) diff_val else NA_real_
-    mat[item, 4] <- if (!is.na(pass_rate)) pass_rate else NA_real_
+    mat[item, 2] <- if (!is.na(disc_val)) (if (isTRUE(round_two_dec)) round_half_up(disc_val, 2) else disc_val) else NA_real_
+    mat[item, 3] <- if (!is.na(diff_val)) (if (isTRUE(round_two_dec)) round_half_up(diff_val, 2) else diff_val) else NA_real_
+    mat[item, 4] <- if (!is.na(pass_rate)) (if (isTRUE(round_two_dec)) round_half_up(pass_rate, 2) else pass_rate) else NA_real_
     mat[item, 5] <- correct_key
 
     pass_rates[item] <- pass_rate
@@ -141,16 +141,16 @@ write_ctt_analysis_sheet <- function(
     for (k in seq_len(n_opts)) {
       opt_row <- subset(sub, key == opt_labels[k])
       if (nrow(opt_row) > 0) {
-        mat[item, opt_start + k - 1L] <- opt_row$rspP
-        mat[item, opt_start + (n_opts + 1L) + k - 1L] <- opt_row$upper
-        mat[item, opt_start + 2L * (n_opts + 1L) + k - 1L] <- opt_row$lower
+        mat[item, opt_start + k - 1L] <- if (isTRUE(round_two_dec)) round_half_up(opt_row$rspP, 2) else opt_row$rspP
+        mat[item, opt_start + (n_opts + 1L) + k - 1L] <- if (isTRUE(round_two_dec)) round_half_up(opt_row$upper, 2) else opt_row$upper
+        mat[item, opt_start + 2L * (n_opts + 1L) + k - 1L] <- if (isTRUE(round_two_dec)) round_half_up(opt_row$lower, 2) else opt_row$lower
       }
     }
     other_row <- subset(sub, key == "9")
     if (nrow(other_row) > 0) {
-      mat[item, opt_start + n_opts] <- other_row$rspP
-      mat[item, opt_start + (n_opts + 1L) + n_opts] <- other_row$upper
-      mat[item, opt_start + 2L * (n_opts + 1L) + n_opts] <- other_row$lower
+      mat[item, opt_start + n_opts] <- if (isTRUE(round_two_dec)) round_half_up(other_row$rspP, 2) else other_row$rspP
+      mat[item, opt_start + (n_opts + 1L) + n_opts] <- if (isTRUE(round_two_dec)) round_half_up(other_row$upper, 2) else other_row$upper
+      mat[item, opt_start + 2L * (n_opts + 1L) + n_opts] <- if (isTRUE(round_two_dec)) round_half_up(other_row$lower, 2) else other_row$lower
     }
   }
 
@@ -214,6 +214,11 @@ write_ctt_analysis_sheet <- function(
   openxlsx::writeData(wb, sheet_name, mat_avg, startRow = avg_row, colNames = FALSE, rowNames = FALSE)
 
   notes_start <- avg_row + 2L
+  note_item_4_ctt <- if (isTRUE(round_two_dec)) {
+    "4. 通過率/答對率：四捨五入至小數第 2 位。"
+  } else {
+    "4. 通過率/答對率：計算使用原始值。"
+  }
   ctt_notes <- c(
     "【試題分析說明】",
     "1. 難度 = (高分組答對百分比 + 低分組答對百分比) / 2。",
@@ -261,9 +266,10 @@ write_ctt_analysis_sheet <- function(
   openxlsx::mergeCells(wb, sheet_name, cols = 1, rows = 2:3)
 
   # 樣式設定
+  num_fmt_use <- if (isTRUE(round_two_dec)) "0.00" else "General"
   if (n_items > 0L) {
     data_rows <- seq.int(data_row_start, data_row_end)
-    style2dec <- openxlsx::createStyle(fontName = "Microsoft JhengHei", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    style2dec <- openxlsx::createStyle(fontName = "Microsoft JhengHei", numFmt = num_fmt_use, halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     openxlsx::addStyle(wb, sheet_name, style2dec, rows = data_rows, cols = c(2:3, seq.int(6L, n_cols)), gridExpand = TRUE)
 
     center_style <- openxlsx::createStyle(fontName = "Microsoft JhengHei", halign = "center", wrapText = TRUE, valign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
@@ -289,7 +295,7 @@ write_ctt_analysis_sheet <- function(
 
   # 黃底標記正確選項
   if (n_items > 0L) {
-    yellow_fill <- openxlsx::createStyle(fontName = "Microsoft JhengHei", fgFill = "#FFF2CC", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    yellow_fill <- openxlsx::createStyle(fontName = "Microsoft JhengHei", fgFill = "#FFF2CC", numFmt = num_fmt_use, halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     for (item in seq_len(n_items)) {
       correct_val <- as.character(mat[item, 5])
       if (is.na(correct_val) || correct_val == "") next
@@ -314,7 +320,7 @@ write_ctt_analysis_sheet <- function(
     }
 
     # 鑑別度紅字
-    disc_red_font <- openxlsx::createStyle(fontName = "Microsoft JhengHei", fontColour = "#FF0000", textDecoration = "bold", numFmt = "General", halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
+    disc_red_font <- openxlsx::createStyle(fontName = "Microsoft JhengHei", fontColour = "#FF0000", textDecoration = "bold", numFmt = num_fmt_use, halign = "center", border = "TopBottomLeftRight", borderStyle = "thin")
     for (i in seq_len(n_items)) {
       if (!is.na(disc_values[i]) && disc_values[i] < 0.15) {
         openxlsx::addStyle(wb, sheet_name, disc_red_font, rows = i + 3L, cols = 2, gridExpand = TRUE)
@@ -336,7 +342,8 @@ write_ctt_analysis_by_subject <- function(
   subject_label,
   year,
   output_path,
-  grade_ctt_map
+  grade_ctt_map,
+  round_two_dec = FALSE
 ) {
   wb <- openxlsx::createWorkbook()
   for (grd in names(grade_ctt_map)) {
@@ -348,7 +355,8 @@ write_ctt_analysis_by_subject <- function(
       sheet_name,
       ctt_res,
       subject_label,
-      grd
+      grd,
+      round_two_dec = round_two_dec
     )
   }
   openxlsx::saveWorkbook(wb, output_path, overwrite = TRUE)
@@ -363,7 +371,8 @@ write_level_ctt_sheet <- function(
   subject_label,
   grade,
   year,
-  city_name = NULL
+  city_name = NULL,
+  round_two_dec = FALSE
 ) {
   if (is.null(level_ctt_res)) return()
 
@@ -453,6 +462,14 @@ write_level_ctt_sheet <- function(
   # 資料列
   # -------------------------------------------------------------------------
   if (!is.null(mat) && nrow(mat) > 0L) {
+    if (isTRUE(round_two_dec)) {
+      for (col_i in c(2:3, seq.int(5L, ncol(mat)))) {
+        v <- suppressWarnings(as.numeric(mat[, col_i]))
+        if (!all(is.na(v))) {
+          mat[, col_i] <- round_half_up(v, 2)
+        }
+      }
+    }
     if (ncol(mat) < n_cols) {
       extra <- matrix(NA_real_, nrow = nrow(mat), ncol = n_cols - ncol(mat))
       mat_out <- cbind(mat, extra)
@@ -493,6 +510,8 @@ write_level_ctt_sheet <- function(
   # -------------------------------------------------------------------------
   # 美化樣式（全部明確指定微軟正黑體 Microsoft JhengHei 避免編碼/字型缺字顯示問題）
   # -------------------------------------------------------------------------
+  num_fmt_use <- if (isTRUE(round_two_dec)) "0.00" else "General"
+
   green_header <- openxlsx::createStyle(
     fontName = "Microsoft JhengHei",
     fgFill = "#E2EFDA", halign = "center", valign = "center",
@@ -506,7 +525,7 @@ write_level_ctt_sheet <- function(
 
     style_num <- openxlsx::createStyle(
       fontName = "Microsoft JhengHei",
-      numFmt = "General", halign = "center",
+      numFmt = num_fmt_use, halign = "center",
       border = "TopBottomLeftRight", borderStyle = "thin"
     )
     openxlsx::addStyle(wb, sheet_name, style_num,
@@ -524,7 +543,7 @@ write_level_ctt_sheet <- function(
       disc_red <- openxlsx::createStyle(
         fontName = "Microsoft JhengHei",
         fontColour = "#FF0000", textDecoration = "bold",
-        numFmt = "General", halign = "center",
+        numFmt = num_fmt_use, halign = "center",
         border = "TopBottomLeftRight", borderStyle = "thin"
       )
       disc_vals <- suppressWarnings(as.numeric(mat[, "鑑別度"]))
@@ -552,6 +571,11 @@ write_level_ctt_sheet <- function(
   # 表尾：6 行標準說明附註（橫向跨欄合併，靠左對齊，不干擾上方欄位辨識）
   # -------------------------------------------------------------------------
   notes_start_row <- 4L + n_items + 1L
+  note_item_4_level <- if (isTRUE(round_two_dec)) {
+    "4. 答對率：該題答對人數 / 有效人數（四捨五入至小數第 2 位）。"
+  } else {
+    "4. 答對率：該題答對人數 / 有效人數（計算使用原始值）。"
+  }
   notes <- c(
     "【試題分析說明】",
     paste0("1. 全體：本次參與測驗之所有有效學生（N = ", format(n_total, big.mark = ","), "）。"),
@@ -559,7 +583,7 @@ write_level_ctt_sheet <- function(
       if (!is.na(u_count)) format(u_count, big.mark = ",") else "N/A", "）。"),
     paste0("3. 低分組：全體有效學生中總分排列後 27% 之學生（N = ",
       if (!is.na(l_count)) format(l_count, big.mark = ",") else "N/A", "）。"),
-    "4. 答對率：該題答對人數 / 有效人數（計算使用原始值）。",
+    note_item_4_level,
     "5. 鑑別度：高分組答對率 - 低分組答對率。",
     "6. 鑑別度評估：0.40 以上非常優良；0.30-0.39 優良；0.20-0.29 尚可，需修題；0.19 以下不佳，需刪題或修題（鑑別度 < 0.20 以紅字標記）。"
   )
@@ -589,7 +613,8 @@ write_level_ctt_excel <- function(
   grade,
   year,
   output_path,
-  city_name = NULL
+  city_name = NULL,
+  round_two_dec = FALSE
 ) {
   if (is.null(level_ctt_res)) {
     stop("level_ctt_res is NULL")
@@ -609,7 +634,8 @@ write_level_ctt_excel <- function(
       subject_label = subject_label,
       grade = grade,
       year = year,
-      city_name = "總體"
+      city_name = "總體",
+      round_two_dec = round_two_dec
     )
 
     if (has_by_city) {
@@ -621,7 +647,8 @@ write_level_ctt_excel <- function(
           subject_label = subject_label,
           grade = grade,
           year = year,
-          city_name = c_name
+          city_name = c_name,
+          round_two_dec = round_two_dec
         )
       }
     }
@@ -634,7 +661,8 @@ write_level_ctt_excel <- function(
       subject_label = subject_label,
       grade = grade,
       year = year,
-      city_name = "總體"
+      city_name = "總體",
+      round_two_dec = round_two_dec
     )
   } else {
     # 指定單一縣市
@@ -650,7 +678,8 @@ write_level_ctt_excel <- function(
       subject_label = subject_label,
       grade = grade,
       year = year,
-      city_name = city_name
+      city_name = city_name,
+      round_two_dec = round_two_dec
     )
   }
 
